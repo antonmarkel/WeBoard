@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WeBoard.Client.Core\WeBoard.Client.Core.csproj" />
+    <PackageReference Include="SFML.Net" Version="2.6.1" />
   </ItemGroup>
 
 </Project>

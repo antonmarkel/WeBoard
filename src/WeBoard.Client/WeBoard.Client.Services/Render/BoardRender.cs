@@ -2,7 +2,7 @@
 using SFML.Graphics;
 using WeBoard.Client.Core.Engine;
 
-namespace WeBoard.Client.Board
+namespace WeBoard.Client.Services.Render
 {
     public sealed class BoardRender
     {

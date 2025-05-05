@@ -1,4 +1,4 @@
-﻿namespace WeBoard.Client.Core.Engine.Interfaces
+﻿namespace WeBoard.Client.Services.Interfaces.Base
 {
     public interface IService
     {

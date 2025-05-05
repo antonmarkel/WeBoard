@@ -1,9 +1,8 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
-using WeBoard.Client.Core.Engine;
 
-namespace WeBoard.Client.Board
+namespace WeBoard.Client.Services.Render
 {
     public class BoardCamera
     {
@@ -29,6 +28,16 @@ namespace WeBoard.Client.Board
             _window.MouseButtonReleased += HandleMouseRelease;
             _window.MouseMoved += HandleMouseMove;
             _window.MouseWheelScrolled += HandleMouseWheel;
+            _window.Resized += HandleResize;
+        }
+
+        private void HandleResize(object? sender, SizeEventArgs e)
+        {
+            _cameraView.Size = new Vector2f(e.Width, e.Height);
+            _cameraView.Zoom(_zoomLevel);
+            _initialView = new View(_cameraView);
+            _initialViewCenter = _cameraView.Center;
+
         }
 
         private void HandleMouseWheel(object? sender, MouseWheelScrollEventArgs e)

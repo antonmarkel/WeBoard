@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WeBoard.Client.Core\WeBoard.Client.Core.csproj" />
     <ProjectReference Include="..\WeBoard.Client.Services\WeBoard.Client.Services.csproj" />
   </ItemGroup>
 

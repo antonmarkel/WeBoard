@@ -1,6 +1,6 @@
-﻿using WeBoard.Client.Core.Engine.Interfaces;
+﻿using WeBoard.Client.Services.Interfaces.Base;
 
-namespace WeBoard.Client.Core.Engine
+namespace WeBoard.Client.Services.Engine
 {
     public class BoardEngine
     {
@@ -33,6 +33,7 @@ namespace WeBoard.Client.Core.Engine
             while (_isRunning)
             {
                 OnUpdate?.Invoke();
+                Thread.Sleep(16);
             }
         }
     }
