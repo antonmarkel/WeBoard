@@ -10,8 +10,4 @@
     <PackageReference Include="SFML.Net" Version="2.6.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\WeBoard.Core\WeBoard.Core.csproj" />
-  </ItemGroup>
-
 </Project>

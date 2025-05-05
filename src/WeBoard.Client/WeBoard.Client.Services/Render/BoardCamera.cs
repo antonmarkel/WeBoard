@@ -1,6 +1,8 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
+using WeBoard.Client.Core.Engine;
+using WeBoard.Client.Services.Managers;
 
 namespace WeBoard.Client.Services.Render
 {
@@ -24,6 +26,7 @@ namespace WeBoard.Client.Services.Render
         {
             _window = window;
             _cameraView = new View(new Vector2f(0, 0), new Vector2f(_window.Size.X, _window.Size.Y));
+            BoardGlobal.GetInstance().RenderView = _cameraView;
             _window.MouseButtonPressed += HandleMousePress;
             _window.MouseButtonReleased += HandleMouseRelease;
             _window.MouseMoved += HandleMouseMove;
@@ -57,13 +60,13 @@ namespace WeBoard.Client.Services.Render
 
         private void HandleMouseMove(object? sender, MouseMoveEventArgs e)
         {
-            if (!_isDragging)
+            if (!_isDragging || FocusManager.GetInstance().FocusedComponent != null)
                 return;
 
             var currentScreen = new Vector2i(e.X, e.Y);
             var currentWorld = _window.MapPixelToCoords(currentScreen, _initialView);
-
             var offset = _dragStartWorld - currentWorld;
+            
             _cameraView.Center = _initialViewCenter + offset;
         }
 
@@ -77,11 +80,14 @@ namespace WeBoard.Client.Services.Render
         {
             if (e.Button == Mouse.Button.Left)
             {
-                _dragStartScreen = new Vector2i(e.X, e.Y);
+                var coords = BoardGlobal.GetInstance().RenderWindow!.MapPixelToCoords(new Vector2i(e.X, e.Y));
+                FocusManager.GetInstance().HandleClick(new Vector2f((int)coords.X, (int)coords.Y));
+                if (FocusManager.GetInstance().FocusedComponent != null)
+                    return;
 
+                _dragStartScreen = new Vector2i(e.X, e.Y);
                 _initialView = new View(_cameraView);
                 _initialViewCenter = _cameraView.Center;
-
                 _dragStartWorld = _window.MapPixelToCoords(_dragStartScreen, _initialView);
 
                 _isDragging = true;
