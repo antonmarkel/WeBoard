@@ -8,13 +8,11 @@ namespace WeBoard.Client.Services.Render
     {
         private bool _isRunning = false;
         public bool IsRunning => _isRunning;
-        private BoardCamera _camera;
         private readonly BoardGlobal _global = BoardGlobal.GetInstance();
         public BoardRender(RenderWindow window)
         {
             _global.RenderWindow = window;
             _global.RenderWindow.Closed += (_, _) => _isRunning = false;
-            _camera = new BoardCamera(window);
         }
 
         public void Start()
@@ -23,7 +21,7 @@ namespace WeBoard.Client.Services.Render
             var window = _global.RenderWindow;
             while (_isRunning)
             {
-                window!.SetView(_camera.CameraView);
+                window!.SetView(_global.Camera.CameraView);
                 window.DispatchEvents();
 
                 window.Clear(new Color(255, 238, 242));
@@ -35,6 +33,7 @@ namespace WeBoard.Client.Services.Render
                         window.Draw(renderObject);
                     }
                 }
+
                 window.Display();
 
             }

@@ -8,8 +8,11 @@ using WeBoard.Client.Services.Render;
 using WeBoard.Core.Components.Shapes;
 
 var mainWindow = new RenderWindow(VideoMode.DesktopMode, "WeBoard", Styles.Default);
+var camera = new BoardCamera(mainWindow);
+var globals = new BoardGlobal(mainWindow,camera);
+
 var boardRender = new BoardRender(mainWindow);
-var globals = BoardGlobal.GetInstance();
+
 globals.RenderWindow = mainWindow;
 globals.RenderObjects.TryAdd(Guid.NewGuid(),new Rectangle( new RectangleShape(new Vector2f(100, 100))
 {

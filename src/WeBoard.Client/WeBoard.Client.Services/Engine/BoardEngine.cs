@@ -1,4 +1,5 @@
 ﻿using WeBoard.Client.Services.Interfaces.Base;
+using WeBoard.Client.Services.Managers;
 
 namespace WeBoard.Client.Services.Engine
 {
@@ -20,6 +21,9 @@ namespace WeBoard.Client.Services.Engine
             _isRunning = true;
             _logicThread = new Thread(LogicLoop);
             _logicThread.Start();
+
+            FocusManager.GetInstance();
+            MouseManager.GetInstance();
         }
 
         public void Stop()

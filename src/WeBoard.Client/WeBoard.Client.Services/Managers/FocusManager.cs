@@ -3,32 +3,21 @@ using SFML.Window;
 using WeBoard.Client.Core.Engine;
 using WeBoard.Core.Components.Interfaces;
 
+
 namespace WeBoard.Client.Services.Managers
 {
     public class FocusManager
     {
         private static readonly FocusManager Instance = new();
-        public IFocusable? FocusedComponent { get; set; }
+        public  IFocusable? FocusedComponent { get; set; }
 
         private Vector2f ClickOffset = new(0, 0);
         private BoardGlobal _global = BoardGlobal.GetInstance();
 
         public FocusManager()
         {
-            _global.RenderWindow!.MouseMoved += HandleMouseMove;
+    
         }
-
-        private void HandleMouseMove(object? sender, MouseMoveEventArgs e)
-        {
-            if (FocusedComponent is not IDraggable)
-                return;
-
-            var coords = _global.RenderWindow!.MapPixelToCoords(new Vector2i(e.X, e.Y), _global.RenderView);
-            var draggable = (IDraggable)FocusedComponent;
-            draggable.DragTo(coords);
-            draggable.Drag(-ClickOffset);
-        }
-
 
         public void HandleClick(Vector2f point)
         {
@@ -44,18 +33,22 @@ namespace WeBoard.Client.Services.Managers
             }
 
             var focusedComponent = (IFocusable)clickedComponent;
-            if (focusedComponent.IsInFocus)
+
+            if(focusedComponent != null)
             {
-                focusedComponent.OnLostFocus();
-                FocusedComponent = null;
+                if(FocusedComponent != null)
+                {
+                    FocusedComponent.OnLostFocus();
+                }
+
+                FocusedComponent = focusedComponent;
+                FocusedComponent.OnFocus();
+
                 return;
             }
 
-            focusedComponent.OnFocus();
             FocusedComponent = focusedComponent;
-
-
-
+         
 
         }
 
@@ -66,6 +59,15 @@ namespace WeBoard.Client.Services.Managers
 
             ((IDraggable)FocusedComponent).Drag(offset);
 
+        }
+
+        public void ClearFocus()
+        {
+            if (FocusedComponent != null)
+            {
+                FocusedComponent.OnLostFocus();
+            }
+            FocusedComponent = null;
         }
 
         public static FocusManager GetInstance()
