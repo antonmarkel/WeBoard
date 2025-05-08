@@ -1,7 +1,6 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
-using WeBoard.Client.Core.Engine;
 using WeBoard.Client.Services.Managers;
 
 namespace WeBoard.Client.Services.Render
@@ -76,6 +75,6 @@ namespace WeBoard.Client.Services.Render
         //        _isDragging = true;
         //    }
 
-    //}
-}
+        //}
+    }
 }

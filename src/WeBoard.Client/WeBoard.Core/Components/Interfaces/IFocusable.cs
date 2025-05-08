@@ -1,11 +1,10 @@
-﻿using SFML.Graphics;
-
-namespace WeBoard.Core.Components.Interfaces;
+﻿namespace WeBoard.Core.Components.Interfaces;
 public interface IFocusable
 {
     public bool IsInFocus { get; set; }
     public void OnFocus();
     public void OnLostFocus();
-    ICollection<FloatRect> Collisions { get; set; }
+    public void OnMouseOver();
+    public void OnMouseLeave();
 }
 

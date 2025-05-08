@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 using SFML.Graphics;
-using WeBoard.Client.Core.Engine;
+using WeBoard.Client.Services.Managers;
 
 namespace WeBoard.Client.Services.Render
 {
@@ -8,7 +8,8 @@ namespace WeBoard.Client.Services.Render
     {
         private bool _isRunning = false;
         public bool IsRunning => _isRunning;
-        private readonly BoardGlobal _global = BoardGlobal.GetInstance();
+        private readonly RenderManager _global = RenderManager.GetInstance();
+        private readonly ComponentManager _componentManager = ComponentManager.GetInstance();
         public BoardRender(RenderWindow window)
         {
             _global.RenderWindow = window;
@@ -25,7 +26,7 @@ namespace WeBoard.Client.Services.Render
                 window.DispatchEvents();
 
                 window.Clear(new Color(255, 238, 242));
-                var drawables = _global.RenderObjects.Values.ToImmutableArray();
+                var drawables = _componentManager.GetComponents(false);
                 foreach (var renderObject in drawables)
                 {
                     lock (renderObject)

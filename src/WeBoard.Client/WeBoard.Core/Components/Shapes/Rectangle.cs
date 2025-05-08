@@ -1,66 +1,42 @@
 ﻿using SFML.Graphics;
 using SFML.System;
-using WeBoard.Core.Components.Interfaces;
+using WeBoard.Core.Components.Base;
 
 namespace WeBoard.Core.Components.Shapes
 {
-    public class Rectangle : IComponent,IDraggable,IClickable,Drawable
+    public class Rectangle : InteractiveComponentBase
     {
-        private readonly RectangleShape _shape;
-        private readonly RectangleShape _focusRectangle;
+        private RectangleShape _rectangleShape;
 
-        public ICollection<FloatRect> Collisions { get; set; } = [];
-        public Rectangle(RectangleShape shape)
+        public Rectangle(RectangleShape rectangleShape, Vector2f position) : base()
         {
-            _shape = shape;
-            _focusRectangle = new RectangleShape();
-            AdjustFocusRectangleSize();
-
+            _rectangleShape = rectangleShape;
+            Position = position;
         }
 
-        public bool IsInFocus { get; set; } = false;
-        public void OnFocus()
-        {
-            AdjustFocusRectangleSize();
-            IsInFocus = true;
+        public override Vector2f Position { 
+            get => _rectangleShape.Position;
+            set
+             {
+                base.Position = value;
+                _rectangleShape.Position = value; 
+             } 
         }
 
-        public void OnLostFocus()
+        public override FloatRect GetGlobalBounds()
         {
-            IsInFocus = false;
-        }
-        public void Drag(Vector2f offset)
-        {
-            _shape.Position += offset;
-            AdjustFocusRectangleSize();
-        }
-        public void DragTo(Vector2f coords)
-        {
-            _shape.Position = coords;
-            AdjustFocusRectangleSize();
+            return _rectangleShape.GetGlobalBounds();
         }
 
-        public void Draw(RenderTarget target, RenderStates states)
+        public override void Draw(RenderTarget target, RenderStates states)
         {
-            _shape.Draw(target, states);
-            if(IsInFocus)_focusRectangle.Draw(target, states);
+            base.Draw(target, states);
+            _rectangleShape.Draw(target, states);
         }
 
-        private void AdjustFocusRectangleSize()
+        public override void Drag(Vector2f offset)
         {
-            _focusRectangle.FillColor = Color.Transparent;
-            _focusRectangle.Position = _shape.Position;
-            _focusRectangle.OutlineThickness = 4;
-            _focusRectangle.OutlineColor = Color.Black;
-            _focusRectangle.Size = _shape.Size;
-        }
-
-        public bool Intersect(Vector2i point,out Vector2f offset)
-        {
-            FloatRect bounds = _shape.GetGlobalBounds();
-            offset = new Vector2f(point.X, point.Y) - bounds.Position; 
-
-            return bounds.Contains(point.X, point.Y);
+            Position += offset;
         }
     }
 }

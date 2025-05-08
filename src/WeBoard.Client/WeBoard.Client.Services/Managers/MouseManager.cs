@@ -1,13 +1,12 @@
 ﻿using SFML.System;
 using SFML.Window;
-using WeBoard.Client.Core.Engine;
 
 namespace WeBoard.Client.Services.Managers
 {
     public class MouseManager
     {
         private static readonly MouseManager Instance = new();
-        private readonly BoardGlobal _global = BoardGlobal.GetInstance();
+        private readonly RenderManager _global = RenderManager.GetInstance();
         private readonly FocusManager _focusManager = FocusManager.GetInstance();
         public bool IsDragging { get; set; }
         public Vector2i DragStartScreen { get; private set; }

@@ -1,6 +1,5 @@
 ﻿using SFML.System;
 using SFML.Window;
-using WeBoard.Client.Core.Engine;
 using WeBoard.Core.Components.Interfaces;
 
 
@@ -12,7 +11,7 @@ namespace WeBoard.Client.Services.Managers
         public  IFocusable? FocusedComponent { get; set; }
 
         private Vector2f ClickOffset = new(0, 0);
-        private BoardGlobal _global = BoardGlobal.GetInstance();
+        private ComponentManager _componentManager = ComponentManager.GetInstance();
 
         public FocusManager()
         {
@@ -21,8 +20,10 @@ namespace WeBoard.Client.Services.Managers
 
         public void HandleClick(Vector2f point)
         {
-            var clickedComponent = _global.RenderObjects.Values.Where(obj => obj is IClickable and IFocusable)
-                .FirstOrDefault(obj => ((IClickable)obj).Intersect(new Vector2i((int)point.X, (int)point.Y), out ClickOffset));
+            var components = _componentManager.GetComponents(true);
+
+            var pointInt = new Vector2i((int)point.X, (int)point.Y);
+            var clickedComponent = components.FirstOrDefault(obj => obj.Intersect(pointInt, out ClickOffset));
 
             if (clickedComponent is null)
             {
@@ -32,24 +33,14 @@ namespace WeBoard.Client.Services.Managers
                 return;
             }
 
-            var focusedComponent = (IFocusable)clickedComponent;
-
-            if(focusedComponent != null)
+            
+            if(FocusedComponent != null)
             {
-                if(FocusedComponent != null)
-                {
-                    FocusedComponent.OnLostFocus();
-                }
-
-                FocusedComponent = focusedComponent;
-                FocusedComponent.OnFocus();
-
-                return;
+                FocusedComponent.OnLostFocus();
             }
 
-            FocusedComponent = focusedComponent;
-         
-
+            FocusedComponent = clickedComponent;
+            FocusedComponent.OnFocus();
         }
 
         public void HandleDrag(Vector2f offset)
