@@ -24,6 +24,8 @@ namespace WeBoard.Client.Services.Engine
 
             FocusManager.GetInstance();
             MouseManager.GetInstance();
+            ComponentManager.GetInstance();
+            MenuManager.GetInstance();
         }
 
         public void Stop()

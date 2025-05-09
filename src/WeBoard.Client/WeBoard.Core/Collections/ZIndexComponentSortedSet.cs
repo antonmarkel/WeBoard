@@ -3,21 +3,22 @@ using WeBoard.Core.Components.Base.Comparers;
 
 namespace WeBoard.Core.Collections
 {
-    public class ZIndexComponentSortedSet
+    public class ZIndexComponentSortedSet<TComponent> 
+        where TComponent : ComponentBase
     {
-        private readonly SortedSet<ComponentBase> _sortedSet;
+        private readonly SortedSet<TComponent> _sortedSet;
         private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
         private readonly ComponentBaseComparer _comparer = new ComponentBaseComparer();
 
         public int Count { get => _sortedSet.Count; }
-        public ComponentBase? Last { get =>  _sortedSet.Count == 0 ? null : _sortedSet.Last(); }
-        public ComponentBase? First { get => _sortedSet.Count == 0 ? null : _sortedSet.First(); }
+        public TComponent? Last { get =>  _sortedSet.Count == 0 ? null : _sortedSet.Last(); }
+        public TComponent? First { get => _sortedSet.Count == 0 ? null : _sortedSet.First(); }
         public ZIndexComponentSortedSet()
         {
-            _sortedSet = new SortedSet<ComponentBase>(_comparer);
+            _sortedSet = new SortedSet<TComponent>(_comparer);
         }
 
-        public void Add(ComponentBase component)
+        public void Add(TComponent component)
         {
             _lock.EnterWriteLock();
             try
@@ -33,7 +34,7 @@ namespace WeBoard.Core.Collections
             }
         }
 
-        public void Remove(ComponentBase component)
+        public void Remove(TComponent component)
         {
             _lock.EnterWriteLock();
             try
@@ -54,9 +55,9 @@ namespace WeBoard.Core.Collections
             _lock.EnterWriteLock();
             try
             {
-                if (_sortedSet.Remove(component))
+                if (_sortedSet.Remove((TComponent)component))
                 {
-                    _sortedSet.Add(component);
+                    _sortedSet.Add((TComponent)component);
                 }
             }
             finally
@@ -65,7 +66,7 @@ namespace WeBoard.Core.Collections
             }
         }
 
-        public IEnumerable<ComponentBase> GetComponentsAscending()
+        public IEnumerable<TComponent> GetComponentsAscending()
         {
             _lock.EnterReadLock();
             try
@@ -81,7 +82,7 @@ namespace WeBoard.Core.Collections
             }
         }
 
-        public IEnumerable<ComponentBase> GetComponentsDescending()
+        public IEnumerable<TComponent> GetComponentsDescending()
         {
             _lock.EnterReadLock();
             try

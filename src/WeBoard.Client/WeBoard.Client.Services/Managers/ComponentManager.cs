@@ -12,7 +12,7 @@ namespace WeBoard.Client.Services.Managers
             return Instance ?? (Instance = new());
         }
         public int Count { get => _componentSet.Count; }
-        private ZIndexComponentSortedSet _componentSet { get; set; } = new();
+        private ZIndexComponentSortedSet<ComponentBase> _componentSet { get; set; } = new();
 
         public void AddComponent(ComponentBase component)
         {
