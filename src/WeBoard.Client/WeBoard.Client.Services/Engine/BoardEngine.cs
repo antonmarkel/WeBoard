@@ -1,5 +1,9 @@
-﻿using WeBoard.Client.Services.Interfaces.Base;
+﻿using SFML.Graphics;
+using SFML.System;
+using System;
+using WeBoard.Client.Services.Interfaces.Base;
 using WeBoard.Client.Services.Managers;
+using WeBoard.Core.Components.Menu;
 
 namespace WeBoard.Client.Services.Engine
 {
@@ -25,7 +29,9 @@ namespace WeBoard.Client.Services.Engine
             FocusManager.GetInstance();
             MouseManager.GetInstance();
             ComponentManager.GetInstance();
-            MenuManager.GetInstance();
+            var random = new Random();
+            MenuManager.GetInstance().Init([
+                new TextComponent(new Vector2f(300,300), "Hello kitties!")]);
         }
 
         public void Stop()

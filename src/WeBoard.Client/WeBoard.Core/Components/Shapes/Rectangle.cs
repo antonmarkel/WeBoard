@@ -29,6 +29,11 @@ namespace WeBoard.Core.Components.Shapes
             return _rectangleShape.GetGlobalBounds();
         }
 
+        public override FloatRect GetLocalBounds()
+        {
+            return _rectangleShape.GetLocalBounds();
+        }
+
         public override void Draw(RenderTarget target, RenderStates states)
         {
             base.Draw(target, states);

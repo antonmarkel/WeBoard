@@ -1,12 +1,13 @@
 ﻿using SFML.System;
 using SFML.Window;
+using WeBoard.Core.Components.Interfaces;
 
 namespace WeBoard.Client.Services.Managers
 {
     public class MouseManager
     {
         private static readonly MouseManager Instance = new();
-        private readonly RenderManager _global = RenderManager.GetInstance();
+        private readonly RenderManager _renderManager = RenderManager.GetInstance();
         private readonly FocusManager _focusManager = FocusManager.GetInstance();
         public bool IsDragging { get; set; }
         public Vector2i DragStartScreen { get; private set; }
@@ -14,15 +15,15 @@ namespace WeBoard.Client.Services.Managers
 
         public MouseManager()
         {
-            _global.RenderWindow.MouseButtonPressed += HandleMouseButtonPress;
-            _global.RenderWindow.MouseButtonReleased += HandleMouseButtonReleased;
-            _global.RenderWindow.MouseMoved += HandleMouseMove;
-            _global.RenderWindow.MouseWheelScrolled += HandleMouseWheelScroll;
+            _renderManager.RenderWindow.MouseButtonPressed += HandleMouseButtonPress;
+            _renderManager.RenderWindow.MouseButtonReleased += HandleMouseButtonReleased;
+            _renderManager.RenderWindow.MouseMoved += HandleMouseMove;
+            _renderManager.RenderWindow.MouseWheelScrolled += HandleMouseWheelScroll;
         }
 
         private void HandleMouseWheelScroll(object? sender, MouseWheelScrollEventArgs e)
         {
-            _global.Camera.Zoom(e.Delta);
+            _renderManager.Camera.Zoom(e.Delta);
 
         }
 
@@ -32,21 +33,27 @@ namespace WeBoard.Client.Services.Managers
                 return;
 
             var currentScreen = new Vector2i(e.X, e.Y);
-            var currentWorld = _global.RenderWindow.MapPixelToCoords(currentScreen);
+            var currentWorld = _renderManager.RenderWindow.MapPixelToCoords(currentScreen);
             var offsetScreen = DragStartScreen - currentScreen;
             var offsetWorld = DragStartWorld - currentWorld;
 
             if (_focusManager.FocusedComponent != null)
             {
                 DragStartScreen = new Vector2i(e.X, e.Y);
-                DragStartWorld = _global.RenderWindow.MapPixelToCoords(DragStartScreen);
+                DragStartWorld = _renderManager.RenderWindow.MapPixelToCoords(DragStartScreen);
 
-                _focusManager.HandleDrag(-offsetWorld);
+                if (_focusManager.FocusedComponent is not IDraggable)
+                {
+                    _renderManager.Camera.MoveCamera(offsetWorld);
+                    return;
+                }
+
+                ((IDraggable)_focusManager.FocusedComponent).Drag(-offsetWorld);
 
                 return;
             }
 
-            _global.Camera.MoveCamera(offsetWorld);
+            _renderManager.Camera.MoveCamera(offsetWorld);
 
         }
 
@@ -64,9 +71,9 @@ namespace WeBoard.Client.Services.Managers
             {
                 IsDragging = true;
                 DragStartScreen = new Vector2i(e.X, e.Y);
-                DragStartWorld = _global.RenderWindow.MapPixelToCoords(DragStartScreen);
+                DragStartWorld = _renderManager.RenderWindow.MapPixelToCoords(DragStartScreen);
 
-                FocusManager.GetInstance().HandleClick(DragStartWorld);
+                FocusManager.GetInstance().HandleClick(DragStartWorld, DragStartScreen);
                 if (FocusManager.GetInstance().FocusedComponent != null)
                     return;
 

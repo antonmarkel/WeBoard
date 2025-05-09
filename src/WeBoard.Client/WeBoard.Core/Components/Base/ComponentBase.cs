@@ -6,7 +6,7 @@ namespace WeBoard.Core.Components.Base
 {
     public abstract class ComponentBase : IComponent, IFocusable, IClickable
     {
-        private RectangleShape _focusShape;
+        protected RectangleShape _focusShape;
         public bool IsInFocus { get; set; }
         private int _zIndex;
         public int ZIndex
@@ -39,7 +39,7 @@ namespace WeBoard.Core.Components.Base
         }
 
         public abstract FloatRect GetGlobalBounds();
-
+        public abstract FloatRect GetLocalBounds();
         public virtual bool Intersect(Vector2i point, out Vector2f offset)
         {
             var bounds = GetGlobalBounds();
@@ -55,7 +55,7 @@ namespace WeBoard.Core.Components.Base
             Console.WriteLine(GetTotalArea());
             _focusShape.Size = GetGlobalBounds().Size;
             _focusShape.Position = GetGlobalBounds().Position;
-            _focusShape.OutlineThickness = GetTotalArea() / (1 * 50_000);
+            _focusShape.OutlineThickness = Math.Max(GetTotalArea() / (1 * 50_000) , 1);
         }
 
         public virtual void OnLostFocus()

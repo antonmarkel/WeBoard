@@ -7,11 +7,11 @@ using WeBoard.Client.Services.Render;
 
 var mainWindow = new RenderWindow(VideoMode.DesktopMode, "WeBoard", Styles.Default);
 var camera = new BoardCamera(mainWindow);
+
 var renderManager = RenderManager.GetInstance();
 renderManager.Camera = camera;
 renderManager.RenderWindow = mainWindow;
 
-var componentManager = ComponentManager.GetInstance();
 var boardRender = new BoardRender(renderManager.RenderWindow);
 
 BoardEngine engine = new BoardEngine();

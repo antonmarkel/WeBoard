@@ -1,4 +1,5 @@
 ﻿using SFML.System;
+using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
 
 namespace WeBoard.Client.Services.Managers
@@ -14,12 +15,19 @@ namespace WeBoard.Client.Services.Managers
 
         }
 
-        public void HandleClick(Vector2f point)
+        public void HandleClick(Vector2f point, Vector2i screenPoint)
         {
-            var components = _componentManager.GetComponentsForLogic();
 
-            var pointInt = new Vector2i((int)point.X, (int)point.Y);
-            var clickedComponent = components.FirstOrDefault(obj => obj.Intersect(pointInt, out _));
+           
+            IEnumerable<MenuComponentBase> menuComponents = MenuManager.GetInstance().GetMenuComponents();
+            var clickedComponent = (ComponentBase?)menuComponents.FirstOrDefault(obj => obj.Intersect(screenPoint, out _));
+            if(clickedComponent is null)
+            {
+                var pointInt = new Vector2i((int)point.X, (int)point.Y);
+                var components = _componentManager.GetComponentsForLogic();
+                clickedComponent = components.FirstOrDefault(obj => obj.Intersect(pointInt, out _));
+
+            }
 
             if (clickedComponent is null)
             {
@@ -36,15 +44,6 @@ namespace WeBoard.Client.Services.Managers
 
             FocusedComponent = clickedComponent;
             FocusedComponent.OnFocus();
-        }
-
-        public void HandleDrag(Vector2f offset)
-        {
-            if (FocusedComponent is not IDraggable)
-                return;
-
-            ((IDraggable)FocusedComponent).Drag(offset);
-
         }
 
         public void ClearFocus()

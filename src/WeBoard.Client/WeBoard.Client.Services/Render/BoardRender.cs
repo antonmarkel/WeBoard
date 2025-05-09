@@ -33,6 +33,8 @@ namespace WeBoard.Client.Services.Render
                         window.Draw(renderObject);
                     }
                 }
+
+                window.SetView(_global.Camera.UiView);
                 var menuObjects = MenuManager.GetInstance().GetMenuComponents();
                 foreach (var menuObject in menuObjects)
                 {

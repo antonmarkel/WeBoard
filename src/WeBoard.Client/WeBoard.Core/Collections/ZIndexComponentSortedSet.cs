@@ -87,7 +87,7 @@ namespace WeBoard.Core.Collections
             _lock.EnterReadLock();
             try
             {
-                var list = new List<ComponentBase>(_sortedSet);
+                var list = new List<TComponent>(_sortedSet);
                 for (int i = list.Count - 1; i >= 0; i--)
                 {
                     yield return list[i];
