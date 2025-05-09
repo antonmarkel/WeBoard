@@ -29,7 +29,8 @@ namespace WeBoard.Client.Services.Engine
             ComponentManager.GetInstance();
             var random = new Random();
             MenuManager.GetInstance().Init([
-                new TextComponent(new Vector2f(300,300), "Hello kitties!")]);
+                new TextComponent(new Vector2f(300,300), "Hello kitties!"),
+                new ScrollBarComponent(new Vector2f(50,50),400)]);
         }
 
         public void Stop()

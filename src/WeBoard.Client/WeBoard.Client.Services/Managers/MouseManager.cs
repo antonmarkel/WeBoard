@@ -24,6 +24,13 @@ namespace WeBoard.Client.Services.Managers
 
         private void HandleMouseWheelScroll(object? sender, MouseWheelScrollEventArgs e)
         {
+            if(_focusManager.UnderMouse != null && _focusManager.UnderMouse is IScrollable)
+            {
+                ((IScrollable)_focusManager.UnderMouse).Scroll(e.Delta);
+
+                return;
+            }
+
             _renderManager.Camera.Zoom(e.Delta);
 
         }
