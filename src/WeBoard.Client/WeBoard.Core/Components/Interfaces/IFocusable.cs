@@ -4,7 +4,5 @@ public interface IFocusable
     public bool IsInFocus { get; set; }
     public void OnFocus();
     public void OnLostFocus();
-    public void OnMouseOver();
-    public void OnMouseLeave();
 }
 

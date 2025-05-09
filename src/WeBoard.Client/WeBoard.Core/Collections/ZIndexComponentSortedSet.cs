@@ -3,7 +3,7 @@ using WeBoard.Core.Components.Base.Comparers;
 
 namespace WeBoard.Core.Collections
 {
-    public class ZIndexComponentSortedSet<TComponent> 
+    public class ZIndexComponentSortedSet<TComponent>
         where TComponent : ComponentBase
     {
         private readonly SortedSet<TComponent> _sortedSet;
@@ -11,7 +11,7 @@ namespace WeBoard.Core.Collections
         private readonly ComponentBaseComparer _comparer = new ComponentBaseComparer();
 
         public int Count { get => _sortedSet.Count; }
-        public TComponent? Last { get =>  _sortedSet.Count == 0 ? null : _sortedSet.Last(); }
+        public TComponent? Last { get => _sortedSet.Count == 0 ? null : _sortedSet.Last(); }
         public TComponent? First { get => _sortedSet.Count == 0 ? null : _sortedSet.First(); }
         public ZIndexComponentSortedSet()
         {

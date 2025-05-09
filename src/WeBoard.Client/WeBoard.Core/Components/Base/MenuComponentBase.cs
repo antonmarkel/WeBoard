@@ -23,5 +23,15 @@ namespace WeBoard.Core.Components.Base
 
             return bounds.Contains(point.X, point.Y);
         }
+
+        public virtual void OnMouseOver()
+        {
+
+        }
+
+        public virtual void OnMouseLeave()
+        {
+
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using WeBoard.Core.Collections;
+﻿using SFML.System;
+using WeBoard.Core.Collections;
 using WeBoard.Core.Components.Base;
 
 namespace WeBoard.Client.Services.Managers
@@ -22,6 +23,21 @@ namespace WeBoard.Client.Services.Managers
         public void RemoveComponent(ComponentBase component)
         {
             _componentSet.Remove(component);
+
+        }
+
+        public ComponentBase? GetByPoints(Vector2f worldPoint, Vector2i screenPoint)
+        {
+            IEnumerable<MenuComponentBase> menuComponents = MenuManager.GetInstance().GetMenuComponents();
+            var clickedComponent = (ComponentBase?)menuComponents.FirstOrDefault(obj => obj.Intersect(screenPoint, out _));
+            if (clickedComponent is null)
+            {
+                var pointInt = new Vector2i((int)worldPoint.X, (int)worldPoint.Y);
+                var components = GetComponentsForLogic();
+                clickedComponent = components.FirstOrDefault(obj => obj.Intersect(pointInt, out _));
+            }
+
+            return clickedComponent;
 
         }
 

@@ -17,7 +17,7 @@ namespace WeBoard.Client.Services.Managers
 
         public void Init(IEnumerable<MenuComponentBase> menuComponents)
         {
-            foreach(var component in menuComponents)
+            foreach (var component in menuComponents)
             {
                 _sortedSet.Add(component);
             }

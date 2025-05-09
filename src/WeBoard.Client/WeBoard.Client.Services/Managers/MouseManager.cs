@@ -9,6 +9,7 @@ namespace WeBoard.Client.Services.Managers
         private static readonly MouseManager Instance = new();
         private readonly RenderManager _renderManager = RenderManager.GetInstance();
         private readonly FocusManager _focusManager = FocusManager.GetInstance();
+        private readonly ComponentManager _componentManager = ComponentManager.GetInstance();
         public bool IsDragging { get; set; }
         public Vector2i DragStartScreen { get; private set; }
         public Vector2f DragStartWorld { get; private set; }
@@ -27,13 +28,35 @@ namespace WeBoard.Client.Services.Managers
 
         }
 
+        private void HandleMouseOver(Vector2i screen, Vector2f worlds)
+        {
+            var component = _componentManager.GetByPoints(worlds, screen);
+            if (component != null && component is IMouseDetective)
+            {
+                if (_focusManager.UnderMouse != component)
+                    _focusManager.UnderMouse?.OnMouseLeave();
+
+                _focusManager.UnderMouse = (IMouseDetective)component;
+                _focusManager.UnderMouse.OnMouseOver();
+
+                return;
+            }
+
+            _focusManager.UnderMouse?.OnMouseLeave();
+            _focusManager.UnderMouse = null;
+        }
+
         private void HandleMouseMove(object? sender, MouseMoveEventArgs e)
         {
-            if (!IsDragging)
-                return;
-
             var currentScreen = new Vector2i(e.X, e.Y);
             var currentWorld = _renderManager.RenderWindow.MapPixelToCoords(currentScreen);
+            HandleMouseOver(currentScreen, currentWorld);
+            if (!IsDragging)
+            {
+
+                return;
+            }
+
             var offsetScreen = DragStartScreen - currentScreen;
             var offsetWorld = DragStartWorld - currentWorld;
 

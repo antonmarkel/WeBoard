@@ -4,7 +4,7 @@ using WeBoard.Core.Components.Interfaces;
 
 namespace WeBoard.Core.Components.Base
 {
-    public abstract class ComponentBase : IComponent, IFocusable, IClickable
+    public abstract class ComponentBase : IComponent, IClickable
     {
         protected RectangleShape _focusShape;
         public bool IsInFocus { get; set; }
@@ -48,23 +48,6 @@ namespace WeBoard.Core.Components.Base
             return bounds.Contains(point.X, point.Y);
 
         }
-
-        public virtual void OnFocus()
-        {
-            IsInFocus = true;
-            Console.WriteLine(GetTotalArea());
-            _focusShape.Size = GetGlobalBounds().Size;
-            _focusShape.Position = GetGlobalBounds().Position;
-            _focusShape.OutlineThickness = Math.Max(GetTotalArea() / (1 * 50_000) , 1);
-        }
-
-        public virtual void OnLostFocus()
-        {
-            IsInFocus = false;
-        }
-
-        public virtual void OnMouseLeave() { }
-        public virtual void OnMouseOver() { }
 
         public virtual float GetTotalArea()
         {

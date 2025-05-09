@@ -1,6 +1,5 @@
 ﻿using SFML.Graphics;
 using SFML.System;
-using System.Numerics;
 using WeBoard.Core.Components.Base;
 
 namespace WeBoard.Core.Components.Menu
@@ -8,9 +7,12 @@ namespace WeBoard.Core.Components.Menu
     public class TextComponent : MenuComponentBase
     {
         private readonly Text _text;
-        public uint Size {
+        private bool _isMouseOver = false;
+        public uint Size
+        {
             get => _text.CharacterSize;
-            set => _text.CharacterSize = value; }
+            set => _text.CharacterSize = value;
+        }
         public TextComponent(Vector2f position, string text) : base()
         {
             var font = new Font(@"C:\Windows\Fonts\arial.ttf");
@@ -33,10 +35,24 @@ namespace WeBoard.Core.Components.Menu
             return _text.GetGlobalBounds();
         }
 
+        public override void OnMouseOver()
+        {
+            _isMouseOver = true;
+            var bounds = GetGlobalBounds();
+            _focusShape.Position = bounds.Position;
+            _focusShape.Size = bounds.Size;
+        }
+        public override void OnMouseLeave()
+        {
+            _isMouseOver = false;
+        }
+
+
         public override void Draw(RenderTarget target, RenderStates states)
-        { 
+        {
             _text.Draw(target, states);
-            base.Draw(target, states);
+            if (_isMouseOver)
+                _focusShape.Draw(target, states);
         }
     }
 }

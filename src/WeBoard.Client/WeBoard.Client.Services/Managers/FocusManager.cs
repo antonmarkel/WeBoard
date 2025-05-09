@@ -1,5 +1,4 @@
 ﻿using SFML.System;
-using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
 
 namespace WeBoard.Client.Services.Managers
@@ -8,6 +7,7 @@ namespace WeBoard.Client.Services.Managers
     {
         private static readonly FocusManager Instance = new();
         public IFocusable? FocusedComponent { get; set; }
+        public IMouseDetective? UnderMouse { get; set; }
         private ComponentManager _componentManager = ComponentManager.GetInstance();
 
         public FocusManager()
@@ -15,21 +15,12 @@ namespace WeBoard.Client.Services.Managers
 
         }
 
-        public void HandleClick(Vector2f point, Vector2i screenPoint)
+        public void HandleClick(Vector2f worldPoint, Vector2i screenPoint)
         {
 
-           
-            IEnumerable<MenuComponentBase> menuComponents = MenuManager.GetInstance().GetMenuComponents();
-            var clickedComponent = (ComponentBase?)menuComponents.FirstOrDefault(obj => obj.Intersect(screenPoint, out _));
-            if(clickedComponent is null)
-            {
-                var pointInt = new Vector2i((int)point.X, (int)point.Y);
-                var components = _componentManager.GetComponentsForLogic();
-                clickedComponent = components.FirstOrDefault(obj => obj.Intersect(pointInt, out _));
+            var clickedComponent = _componentManager.GetByPoints(worldPoint, screenPoint);
 
-            }
-
-            if (clickedComponent is null)
+            if (clickedComponent is null || clickedComponent is not IFocusable)
             {
                 if (FocusedComponent != null)
                     FocusedComponent.OnLostFocus();
@@ -42,7 +33,7 @@ namespace WeBoard.Client.Services.Managers
                 FocusedComponent.OnLostFocus();
             }
 
-            FocusedComponent = clickedComponent;
+            FocusedComponent = (IFocusable)clickedComponent;
             FocusedComponent.OnFocus();
         }
 

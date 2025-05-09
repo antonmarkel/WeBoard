@@ -1,6 +1,4 @@
-﻿using SFML.Graphics;
-using SFML.System;
-using System;
+﻿using SFML.System;
 using WeBoard.Client.Services.Interfaces.Base;
 using WeBoard.Client.Services.Managers;
 using WeBoard.Core.Components.Menu;

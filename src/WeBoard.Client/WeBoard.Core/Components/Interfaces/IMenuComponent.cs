@@ -1,8 +1,6 @@
-﻿using WeBoard.Core.Components.Base;
-
-namespace WeBoard.Core.Components.Interfaces
+﻿namespace WeBoard.Core.Components.Interfaces
 {
-    public interface IMenuComponent : IComponent, IFocusable, IClickable
+    public interface IMenuComponent : IComponent, IClickable, IMouseDetective
     {
         public bool IsVisible { get; set; }
         public void Hide();
