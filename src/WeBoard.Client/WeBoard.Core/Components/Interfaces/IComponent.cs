@@ -8,5 +8,6 @@ namespace WeBoard.Core.Components.Interfaces
         public Vector2f Position { get; set; }
         public int ZIndex { get; set; }
         public FloatRect GetGlobalBounds();
+        public float GetTotalArea();
     }
 }

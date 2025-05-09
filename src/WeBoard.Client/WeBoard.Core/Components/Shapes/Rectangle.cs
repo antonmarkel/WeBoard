@@ -14,13 +14,14 @@ namespace WeBoard.Core.Components.Shapes
             Position = position;
         }
 
-        public override Vector2f Position { 
+        public override Vector2f Position
+        {
             get => _rectangleShape.Position;
             set
-             {
+            {
                 base.Position = value;
-                _rectangleShape.Position = value; 
-             } 
+                _rectangleShape.Position = value;
+            }
         }
 
         public override FloatRect GetGlobalBounds()

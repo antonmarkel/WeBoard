@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using System.Collections.Immutable;
+﻿using WeBoard.Core.Collections;
 using WeBoard.Core.Components.Base;
 
 namespace WeBoard.Client.Services.Managers
@@ -12,28 +11,28 @@ namespace WeBoard.Client.Services.Managers
         {
             return Instance ?? (Instance = new());
         }
-        private int count = 0;
-        public ConcurrentDictionary<Guid, ComponentBase> RenderObjects { get; set; } = [];
+        public int Count { get => _componentSet.Count; }
+        private ZIndexComponentSortedSet _componentSet { get; set; } = new();
 
-        public bool TryAddComponent(ComponentBase component)
+        public void AddComponent(ComponentBase component)
         {
-            var guid = Guid.NewGuid();
-            component.ZIndex = count++;
-            return RenderObjects.TryAdd(guid, component);
+            component.ZIndex = _componentSet.Last is null ? 0 : _componentSet.Last.ZIndex + 1;
+            _componentSet.Add(component);
+        }
+        public void RemoveComponent(ComponentBase component)
+        {
+            _componentSet.Remove(component);
+
         }
 
-        public IImmutableList<ComponentBase> GetComponents(bool forLogic)
+        public IEnumerable<ComponentBase> GetComponentsForLogic()
         {
-            lock (RenderObjects)
-            {
-                var query = RenderObjects.Values.AsQueryable();
-                if (forLogic)
-                    query = query.OrderByDescending(comp => comp.ZIndex);
-                else
-                    query = query.OrderBy(comp => comp.ZIndex);
+            return _componentSet.GetComponentsAscending();
+        }
 
-                return query.ToImmutableList();
-            }
+        public IEnumerable<ComponentBase> GetComponentsForRender()
+        {
+            return _componentSet.GetComponentsDescending();
         }
     }
 }

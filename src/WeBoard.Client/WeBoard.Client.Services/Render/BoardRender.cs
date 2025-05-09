@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using SFML.Graphics;
+﻿using SFML.Graphics;
 using WeBoard.Client.Services.Managers;
 
 namespace WeBoard.Client.Services.Render
@@ -26,7 +25,7 @@ namespace WeBoard.Client.Services.Render
                 window.DispatchEvents();
 
                 window.Clear(new Color(255, 238, 242));
-                var drawables = _componentManager.GetComponents(false);
+                var drawables = _componentManager.GetComponentsForRender();
                 foreach (var renderObject in drawables)
                 {
                     lock (renderObject)

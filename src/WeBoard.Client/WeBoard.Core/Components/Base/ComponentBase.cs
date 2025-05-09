@@ -8,7 +8,17 @@ namespace WeBoard.Core.Components.Base
     {
         private RectangleShape _focusShape;
         public bool IsInFocus { get; set; }
-        public int ZIndex { get; set; }
+        private int _zIndex;
+        public int ZIndex
+        {
+            get => _zIndex;
+            set
+            {
+                _zIndex = value;
+                ZIndexChanged?.Invoke(this);
+            }
+        }
+        public event Action<ComponentBase> ZIndexChanged;
         public virtual Vector2f Position { get => _focusShape.Position; set => _focusShape.Position = value; }
 
         public ComponentBase()
@@ -19,7 +29,7 @@ namespace WeBoard.Core.Components.Base
                 OutlineColor = Color.Black,
                 OutlineThickness = 5,
             };
-           
+
         }
 
         public virtual void Draw(RenderTarget target, RenderStates states)
@@ -42,9 +52,10 @@ namespace WeBoard.Core.Components.Base
         public virtual void OnFocus()
         {
             IsInFocus = true;
-
+            Console.WriteLine(GetTotalArea());
             _focusShape.Size = GetGlobalBounds().Size;
             _focusShape.Position = GetGlobalBounds().Position;
+            _focusShape.OutlineThickness = GetTotalArea() / (1 * 50_000);
         }
 
         public virtual void OnLostFocus()
@@ -54,5 +65,11 @@ namespace WeBoard.Core.Components.Base
 
         public virtual void OnMouseLeave() { }
         public virtual void OnMouseOver() { }
+
+        public virtual float GetTotalArea()
+        {
+            var bounds = GetGlobalBounds();
+            return bounds.Size.X * bounds.Size.Y;
+        }
     }
 }

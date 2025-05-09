@@ -8,7 +8,7 @@ namespace WeBoard.Client.Services
 {
     public class TestService : IService
     {
-        private readonly ComponentManager componentManager  = ComponentManager.GetInstance();
+        private readonly ComponentManager componentManager = ComponentManager.GetInstance();
         private DateTime _lastUpdatedAt = DateTime.Now;
         private double _afterLastShift = 0;
         private const int StepMs = 1000;
@@ -28,17 +28,17 @@ namespace WeBoard.Client.Services
         private void ShiftShapes()
         {
 
-            var count = componentManager.RenderObjects.Count;
+            var count = componentManager.Count;
             var random = new Random();
             var flag = random.Next() % 3 == 0;
 
             if (flag && count > 3)
             {
                 var index = random.Next(0, count);
-                var renderList = componentManager.RenderObjects.ToList();
+                var renderList = componentManager.GetComponentsForLogic().ToList();
                 var toRemoveDrawable = renderList[index];
 
-                componentManager.RenderObjects.Remove(toRemoveDrawable.Key, out _);
+                componentManager.RemoveComponent(toRemoveDrawable);
 
                 return;
             }
@@ -49,7 +49,7 @@ namespace WeBoard.Client.Services
                     (byte)random.Next(150, 255),
                     (byte)random.Next(150, 255))
             }, new Vector2f(random.Next(-1000, 1000), random.Next(-1000, 1000)));
-            componentManager.TryAddComponent(rectangle);
+            componentManager.AddComponent(rectangle);
 
         }
     }

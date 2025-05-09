@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using SFML.Graphics;
+﻿using SFML.Graphics;
 using WeBoard.Client.Services.Render;
 
 namespace WeBoard.Client.Services.Managers

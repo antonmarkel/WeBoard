@@ -34,7 +34,7 @@ namespace WeBoard.Client.Services.Managers
             var currentScreen = new Vector2i(e.X, e.Y);
             var currentWorld = _global.RenderWindow.MapPixelToCoords(currentScreen);
             var offsetScreen = DragStartScreen - currentScreen;
-            var offsetWorld = DragStartWorld - currentWorld;       
+            var offsetWorld = DragStartWorld - currentWorld;
 
             if (_focusManager.FocusedComponent != null)
             {
@@ -53,8 +53,8 @@ namespace WeBoard.Client.Services.Managers
         private void HandleMouseButtonReleased(object? sender, MouseButtonEventArgs e)
         {
             if (e.Button == Mouse.Button.Left)
-            { 
-                IsDragging = false; 
+            {
+                IsDragging = false;
             }
         }
 
@@ -65,7 +65,7 @@ namespace WeBoard.Client.Services.Managers
                 IsDragging = true;
                 DragStartScreen = new Vector2i(e.X, e.Y);
                 DragStartWorld = _global.RenderWindow.MapPixelToCoords(DragStartScreen);
-    
+
                 FocusManager.GetInstance().HandleClick(DragStartWorld);
                 if (FocusManager.GetInstance().FocusedComponent != null)
                     return;
