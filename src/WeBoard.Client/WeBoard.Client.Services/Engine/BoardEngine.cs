@@ -1,7 +1,10 @@
 ﻿using SFML.System;
+using System.Drawing;
 using WeBoard.Client.Services.Interfaces.Base;
 using WeBoard.Client.Services.Managers;
+using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Menu;
+using WeBoard.Core.Components.Menu.Scrolls;
 
 namespace WeBoard.Client.Services.Engine
 {
@@ -29,12 +32,33 @@ namespace WeBoard.Client.Services.Engine
             ComponentManager.GetInstance();
             var random = new Random();
 
-            var scrollView = new ScrollViewComponent(new Vector2f(100, 100), new Vector2f(600, 600));
-            for(int i = 0; i < 10; i++)
+            var scrollChildern = new List<MenuComponentBase>();
+            var childScrollChildren = new List<MenuComponentBase>();
+            for (int i = 0; i < 20; i++)
             {
-                scrollView.AddChild(new TextComponent(new Vector2f(0, i * 100), $"Hello kitties!{i}"));
+                scrollChildern.Add(new TextComponent(new Vector2f(20, i * 100), $"Hello kitties!{i}")
+                {
+                    Size = 14
+                });
+                childScrollChildren.Add(new TextComponent(new Vector2f(20, i * 100), $"Hello kitties!{i}")
+                {
+                    Size = 14
+                });
             }
 
+            var scrollView2 = new ScrollViewComponent(new Vector2f(100, 100), new Vector2f(300, 600), childScrollChildren, true, 20)
+            {
+                BackgroundColor = new SFML.Graphics.Color(50, 50, 50),
+                IsVisible = true
+            };
+            scrollChildern.Add(scrollView2);
+
+            var scrollView = new ScrollViewComponent(new Vector2f(100, 100), new Vector2f(300, 600), scrollChildern, true, 20)
+            {
+                BackgroundColor = new SFML.Graphics.Color(50, 50, 50),
+                IsVisible = true
+            };
+           
 
             MenuManager.GetInstance().Init([
                 new TextComponent(new Vector2f(300,300), "Hello kitties!"),

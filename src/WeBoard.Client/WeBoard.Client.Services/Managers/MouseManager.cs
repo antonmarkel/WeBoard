@@ -24,9 +24,9 @@ namespace WeBoard.Client.Services.Managers
 
         private void HandleMouseWheelScroll(object? sender, MouseWheelScrollEventArgs e)
         {
-            if(_focusManager.UnderMouse != null && _focusManager.UnderMouse is IScrollable)
+            if (_focusManager.Scrollable != null)
             {
-                ((IScrollable)_focusManager.UnderMouse).Scroll(e.Delta);
+                _focusManager.Scrollable.Scroll(e.Delta);
 
                 return;
             }
@@ -40,24 +40,31 @@ namespace WeBoard.Client.Services.Managers
             var component = _componentManager.GetByPointsWithOffset(worlds, screen, out Vector2f offset);
 
             bool flag = false;
+            if (component is IScrollable)
+                _focusManager.Scrollable = (IScrollable)component;
+            else
+                _focusManager.Scrollable = null;
+
             while (component is IComplexMenuComponent && !flag)
-            { 
+            {
                 var newOffset = offset;
-                var childComponent = ((IComplexMenuComponent?)component)?.ChildUnderMouse(offset,out newOffset) ?? component;
-                if(childComponent == component)
+                var childComponent = ((IComplexMenuComponent?)component)?.ChildUnderMouse(offset, out newOffset) ?? component;
+                if (childComponent == component)
                 {
                     flag = true;
                 }
 
                 offset = newOffset;
                 component = childComponent;
+                if (component is IScrollable)
+                    _focusManager.Scrollable = (IScrollable)component;
             }
 
             if (component != null && component is IMouseDetective)
             {
                 if (_focusManager.UnderMouse != component)
                     _focusManager.UnderMouse?.OnMouseLeave();
-                
+
 
                 _focusManager.UnderMouse = (IMouseDetective)component;
                 _focusManager.UnderMouse.OnMouseOver();

@@ -31,7 +31,8 @@ namespace WeBoard.Client.Services.Managers
             IEnumerable<MenuComponentBase> menuComponents = MenuManager.GetInstance().GetMenuComponents();
             foreach(var menuItem in menuComponents)
             {
-                if (menuItem.Intersect(screenPoint,out offset)){
+                if (menuItem.Intersect(screenPoint,out offset))
+                {
                     return menuItem;
                 }
             }
@@ -40,7 +41,8 @@ namespace WeBoard.Client.Services.Managers
             var components = GetComponentsForLogic();
             foreach (var component in components)
             {
-                if (component.Intersect(screenPoint, out offset)){
+                if (component.Intersect(screenPoint, out offset))
+                {
                     return component;
                 }
 

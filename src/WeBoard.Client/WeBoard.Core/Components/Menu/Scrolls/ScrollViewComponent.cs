@@ -3,7 +3,7 @@ using SFML.System;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
 
-namespace WeBoard.Core.Components.Menu
+namespace WeBoard.Core.Components.Menu.Scrolls
 {
     public class ScrollViewComponent : MenuComponentBase, IComplexMenuComponent, IScrollable
     {
@@ -13,44 +13,60 @@ namespace WeBoard.Core.Components.Menu
         private readonly View _contentView;
         private float _contentHeight;
         private Vector2f _size;
-        private readonly List<MenuComponentBase> _children = new();
+        protected readonly List<MenuComponentBase> _children = new();
+        public Color BackgroundColor { get; set; }
 
-        public ScrollViewComponent(Vector2f position, Vector2f size)
+        public ScrollViewComponent(Vector2f position, Vector2f maxVisibleSize, IEnumerable<MenuComponentBase> children, bool isVerticalStacked = false,uint padding = 0)
         {
-            _size = size;
-            Position = position;
+            _children = children.ToList();
+            if (isVerticalStacked)
+                _size = CalculateVerticalStackedSizes(maxVisibleSize, padding);
+            else
+                _size = CalculateSizes(maxVisibleSize);
 
-            _contentTexture = new RenderTexture((uint)size.X, (uint)size.Y);
+            Position = position;
+            _contentTexture = new RenderTexture((uint)_size.X, (uint)_size.Y);
             _contentSprite = new Sprite(_contentTexture.Texture)
             {
                 Position = position
             };
-            _contentView = new View(new FloatRect(0, 0, size.X, size.Y));
+            _contentView = new View(new FloatRect(0, 0, _size.X, _size.Y));
             _contentTexture.SetView(_contentView);
 
-            _scrollBar = new ScrollBarComponent(new Vector2f(Position.X + size.X, Position.Y),
-                size.Y);
+            _scrollBar = new ScrollBarComponent(new Vector2f(Position.X + _size.X, Position.Y),
+                _size.Y);
+            float visibleRatio = _size.Y / _contentHeight;
+            _scrollBar.ThumbSize = visibleRatio;
+            if(_contentHeight > _size.Y)
+            {
+                _scrollBar.IsVisible = true;
+            }
 
         }
 
-        public void AddChild(MenuComponentBase component)
-        {
-            _children.Add(component);
-            UpdateContentSize();
-        }
-
-        private void UpdateContentSize()
+        protected virtual Vector2f CalculateSizes(Vector2f maxVisibleSize)
         {
             _contentHeight = _children.Max(c => c.GetGlobalBounds().Top + c.GetGlobalBounds().Height);
 
-            float visibleRatio = _size.Y / _contentHeight;
-            _scrollBar.ThumbSize = visibleRatio;
+            return new Vector2f(maxVisibleSize.X, Math.Min(maxVisibleSize.Y, _contentHeight));
+        }
+
+        private Vector2f CalculateVerticalStackedSizes(Vector2f maxVisibleSize,uint padding)
+        {
+            var totalHeight = 0f;
+            foreach (var child in _children)
+            {
+                child.Position = new Vector2f(child.Position.X, totalHeight);
+                totalHeight += child.GetGlobalBounds().Size.Y + padding;
+            }
+
+            return CalculateSizes(maxVisibleSize);
         }
 
         public void Scroll(float delta)
-        {
+        {           
             _scrollBar.Scroll(delta);
-            var centerY = (_contentHeight - _size.Y) * _scrollBar.Value + (_size.Y / 2);
+            var centerY = (_contentHeight - _size.Y) * _scrollBar.Value + _size.Y / 2;
 
             _contentView.Center = new Vector2f(_contentView.Center.X, centerY);
             _contentTexture.SetView(_contentView);
@@ -58,7 +74,10 @@ namespace WeBoard.Core.Components.Menu
 
         public override void Draw(RenderTarget target, RenderStates states)
         {
-            _contentTexture.Clear(new Color(0,0,0,140));
+            if (!IsVisible)
+                return;
+
+            _contentTexture.Clear(BackgroundColor);
             foreach (var child in _children)
             {
                 child.Draw(_contentTexture, states);

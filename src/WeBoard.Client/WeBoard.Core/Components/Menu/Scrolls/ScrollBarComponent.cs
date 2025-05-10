@@ -3,7 +3,7 @@ using SFML.System;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
 
-namespace WeBoard.Core.Components.Menu
+namespace WeBoard.Core.Components.Menu.Scrolls
 {
     public class ScrollBarComponent : MenuComponentBase, IScrollable
     {
@@ -33,15 +33,12 @@ namespace WeBoard.Core.Components.Menu
             Height = height;
             _position = position;
 
-            TrackShape = new RectangleShape(new Vector2f(Math.Max(Height / 10f, 1f), Height))
+            TrackShape = new RectangleShape(new Vector2f(5f, Height))
             {
                 Position = position,
                 FillColor = Color.Black,
             };
-            ThumbShape = new RectangleShape(new Vector2f
-                (Math.Max(Height / 10f, 0),
-                Math.Max(Height / 10f, 0))
-                )
+            ThumbShape = new RectangleShape(new Vector2f(5f,5f))
             {
                 Position = position,
                 FillColor = Color.White,
@@ -53,9 +50,12 @@ namespace WeBoard.Core.Components.Menu
 
         public override void Draw(RenderTarget target, RenderStates states)
         {
-            TrackShape.Draw(target, states);
-            ThumbShape.Draw(target, states);
-            base.Draw(target, states);
+            if (IsVisible)
+            {
+                TrackShape.Draw(target, states);
+                ThumbShape.Draw(target, states);
+                base.Draw(target, states);
+            }
         }
 
         public void Scroll(float delta)

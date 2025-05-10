@@ -8,6 +8,11 @@ namespace WeBoard.Core.Components.Menu
     {
         private readonly Text _text;
         private bool _isMouseOver = false;
+
+        public override Vector2f Position { 
+            get => _text.Position; 
+            set => _text.Position = value; 
+        }
         public uint Size
         {
             get => _text.CharacterSize;
@@ -15,10 +20,10 @@ namespace WeBoard.Core.Components.Menu
         }
         public TextComponent(Vector2f position, string text) : base()
         {
-            var font = new Font(@"C:\Windows\Fonts\arial.ttf");
+            var font = new Font(@"C:\Windows\Fonts\RAVIE.ttf");
             _text = new Text(text, font, 25);
             _text.Position = position;
-            _text.FillColor = Color.Black;
+            _text.FillColor = Color.White;
             _text.Style = Text.Styles.Bold;
             Size = 25;
 
