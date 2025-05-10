@@ -12,6 +12,7 @@ namespace WeBoard.Core.Components.Shapes
         {
             _rectangleShape = rectangleShape;
             Position = position;
+            UpdateHandles();
         }
 
         public override Vector2f Position
@@ -31,13 +32,19 @@ namespace WeBoard.Core.Components.Shapes
 
         public override void Draw(RenderTarget target, RenderStates states)
         {
-            base.Draw(target, states);
             _rectangleShape.Draw(target, states);
+            base.Draw(target, states);
         }
 
         public override void Drag(Vector2f offset)
         {
             Position += offset;
+            base.Drag(offset);
+            UpdateHandles();
         }
+
+        public override Vector2f GetSize() => _rectangleShape.Size;
+        public override void SetSize(Vector2f size) => _rectangleShape.Size = size;
+        
     }
 }

@@ -55,6 +55,7 @@ namespace WeBoard.Client.Services.Managers
             if (e.Button == Mouse.Button.Left)
             {
                 IsDragging = false;
+                FocusManager.GetInstance().ClearDragging();
             }
         }
 

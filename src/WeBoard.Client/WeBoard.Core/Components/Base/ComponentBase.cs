@@ -53,9 +53,7 @@ namespace WeBoard.Core.Components.Base
         {
             IsInFocus = true;
             Console.WriteLine(GetTotalArea());
-            _focusShape.Size = GetGlobalBounds().Size;
-            _focusShape.Position = GetGlobalBounds().Position;
-            _focusShape.OutlineThickness = GetTotalArea() / (1 * 50_000);
+            UpdateFocusShape();
         }
 
         public virtual void OnLostFocus()
@@ -71,5 +69,18 @@ namespace WeBoard.Core.Components.Base
             var bounds = GetGlobalBounds();
             return bounds.Size.X * bounds.Size.Y;
         }
+
+        public void UpdateFocusShape()
+        {
+            if (!IsInFocus) return;
+
+            var bounds = GetGlobalBounds();
+            _focusShape.Size = bounds.Size;
+            _focusShape.Position = bounds.Position;
+
+            float thickness = Math.Clamp(Math.Min(bounds.Width, bounds.Height) * 0.05f, 2f, 10f);
+            _focusShape.OutlineThickness = thickness;
+        }
+
     }
 }
