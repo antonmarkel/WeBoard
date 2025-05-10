@@ -48,7 +48,7 @@ namespace WeBoard.Core.Components.Handlers
             float sizeFactor = Math.Min(bounds.Width, bounds.Height) * 0.05f;
             float radius = Math.Clamp(sizeFactor, 4f, 15f);
             _shape.Radius = radius;
-            _shape.Origin = new Vector2f(radius, radius); 
+            _shape.Origin = new Vector2f(radius, radius);
 
             Vector2f pos = _direction switch
             {

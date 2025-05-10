@@ -44,7 +44,7 @@ namespace WeBoard.Core.Components.Base
                     resizeHandles.Add(handle);
                 }
             }
-            
+
             UpdateHandles();
         }
 
@@ -60,55 +60,59 @@ namespace WeBoard.Core.Components.Base
         public virtual void Resize(Vector2f delta, ResizeDirectionEnum direction)
         {
             var originalSize = GetSize();
-            var originalPosition = Position;
+            var originalPos = Position;
 
-            var size = originalSize;
-            var position = originalPosition;
-
-            float minWidth = MinWidth;
-            float minHeight = MinHeight;
-
-            float allowedDeltaX = 0;
-            float allowedDeltaY = 0;
+            Vector2f sizeDelta = delta;
+            Vector2f newSize = originalSize;
+            Vector2f newPosition = originalPos;
 
             switch (direction)
             {
                 case ResizeDirectionEnum.TopLeft:
-                    allowedDeltaX = Math.Min(delta.X, size.X - minWidth);
-                    allowedDeltaY = Math.Min(delta.Y, size.Y - minHeight);
-                    size.X -= allowedDeltaX;
-                    size.Y -= allowedDeltaY;
-                    position.X += allowedDeltaX;
-                    position.Y += allowedDeltaY;
+                    newSize.X -= sizeDelta.X;
+                    newSize.Y -= sizeDelta.Y;
+                    newPosition.X += sizeDelta.X;
+                    newPosition.Y += sizeDelta.Y;
                     break;
 
                 case ResizeDirectionEnum.TopRight:
-                    allowedDeltaX = Math.Max(delta.X, minWidth - size.X);
-                    allowedDeltaY = Math.Min(delta.Y, size.Y - minHeight);
-                    size.X += allowedDeltaX;
-                    size.Y -= allowedDeltaY;
-                    position.Y += allowedDeltaY;
+                    newSize.X += sizeDelta.X;
+                    newSize.Y -= sizeDelta.Y;
+                    newPosition.Y += sizeDelta.Y;
                     break;
 
                 case ResizeDirectionEnum.BottomLeft:
-                    allowedDeltaX = Math.Min(delta.X, size.X - minWidth);
-                    allowedDeltaY = Math.Max(delta.Y, minHeight - size.Y);
-                    size.X -= allowedDeltaX;
-                    size.Y += allowedDeltaY;
-                    position.X += allowedDeltaX;
+                    newSize.X -= sizeDelta.X;
+                    newSize.Y += sizeDelta.Y;
+                    newPosition.X += sizeDelta.X;
                     break;
 
                 case ResizeDirectionEnum.BottomRight:
-                    allowedDeltaX = Math.Max(delta.X, minWidth - size.X);
-                    allowedDeltaY = Math.Max(delta.Y, minHeight - size.Y);
-                    size.X += allowedDeltaX;
-                    size.Y += allowedDeltaY;
+                    newSize.X += sizeDelta.X;
+                    newSize.Y += sizeDelta.Y;
                     break;
             }
 
-            SetSize(size);
-            Position = position;
+            if (newSize.X < MinWidth)
+            {
+                float diff = MinWidth - newSize.X;
+                newSize.X = MinWidth;
+                if (direction == ResizeDirectionEnum.TopLeft ||
+                    direction == ResizeDirectionEnum.BottomLeft)
+                    newPosition.X -= diff;
+            }
 
+            if (newSize.Y < MinHeight)
+            {
+                float diff = MinHeight - newSize.Y;
+                newSize.Y = MinHeight;
+                if (direction == ResizeDirectionEnum.TopLeft ||
+                    direction == ResizeDirectionEnum.TopRight)
+                    newPosition.Y -= diff;
+            }
+
+            SetSize(newSize);
+            Position = newPosition;
             UpdateHandles();
             UpdateFocusShape();
         }

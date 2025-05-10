@@ -51,6 +51,27 @@ namespace WeBoard.Client.Services
             }, new Vector2f(random.Next(-1000, 1000), random.Next(-1000, 1000)));
             componentManager.AddComponent(rectangle);
 
+            var triangle = new Triangle(new Vector2f(random.Next(100, 300), random.Next(100, 300)), 
+                new Vector2f(random.Next(-1000, 1000), random.Next(-1000, 1000)))
+            {
+                FillColor = new Color(
+                    (byte)random.Next(150, 255),
+                    (byte)random.Next(150, 255),
+                    (byte)random.Next(150, 255)
+                )
+            };
+            componentManager.AddComponent(triangle);
+
+            var circle = new Ellipse(new Vector2f(random.Next(100, 300), random.Next(100, 300)),
+                new Vector2f(random.Next(-1000, 1000), random.Next(-1000, 1000)))
+            {
+                FillColor = new Color(
+                    (byte)random.Next(150, 255),
+                    (byte)random.Next(150, 255),
+                    (byte)random.Next(150, 255)
+                )
+            };
+            componentManager.AddComponent(circle);
         }
     }
 }
