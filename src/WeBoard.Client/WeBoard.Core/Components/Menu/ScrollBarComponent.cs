@@ -14,6 +14,12 @@ namespace WeBoard.Core.Components.Menu
         private float _value = 0f;
         private float _step = 0.05f;
         public float Value { get => _value; }
+        public float ThumbSize { 
+            set {
+                var fixedValue = Math.Clamp(value, 0.001f, 1f);
+                ThumbShape.Size = new Vector2f(ThumbShape.Size.X, Height * fixedValue);
+            } 
+        }
         public float Step
         {
             get => _step;

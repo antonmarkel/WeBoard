@@ -37,11 +37,27 @@ namespace WeBoard.Client.Services.Managers
 
         private void HandleMouseOver(Vector2i screen, Vector2f worlds)
         {
-            var component = _componentManager.GetByPoints(worlds, screen);
+            var component = _componentManager.GetByPointsWithOffset(worlds, screen, out Vector2f offset);
+
+            bool flag = false;
+            while (component is IComplexMenuComponent && !flag)
+            { 
+                var newOffset = offset;
+                var childComponent = ((IComplexMenuComponent?)component)?.ChildUnderMouse(offset,out newOffset) ?? component;
+                if(childComponent == component)
+                {
+                    flag = true;
+                }
+
+                offset = newOffset;
+                component = childComponent;
+            }
+
             if (component != null && component is IMouseDetective)
             {
                 if (_focusManager.UnderMouse != component)
                     _focusManager.UnderMouse?.OnMouseLeave();
+                
 
                 _focusManager.UnderMouse = (IMouseDetective)component;
                 _focusManager.UnderMouse.OnMouseOver();

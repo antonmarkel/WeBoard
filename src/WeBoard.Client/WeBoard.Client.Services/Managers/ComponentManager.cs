@@ -26,6 +26,31 @@ namespace WeBoard.Client.Services.Managers
 
         }
 
+        public ComponentBase? GetByPointsWithOffset(Vector2f worldPoint, Vector2i screenPoint, out Vector2f offset)
+        {
+            IEnumerable<MenuComponentBase> menuComponents = MenuManager.GetInstance().GetMenuComponents();
+            foreach(var menuItem in menuComponents)
+            {
+                if (menuItem.Intersect(screenPoint,out offset)){
+                    return menuItem;
+                }
+            }
+         
+            var pointInt = new Vector2i((int)worldPoint.X, (int)worldPoint.Y);
+            var components = GetComponentsForLogic();
+            foreach (var component in components)
+            {
+                if (component.Intersect(screenPoint, out offset)){
+                    return component;
+                }
+
+            }
+            offset = new Vector2f(0, 0);
+
+            return null;
+
+        }
+
         public ComponentBase? GetByPoints(Vector2f worldPoint, Vector2i screenPoint)
         {
             IEnumerable<MenuComponentBase> menuComponents = MenuManager.GetInstance().GetMenuComponents();

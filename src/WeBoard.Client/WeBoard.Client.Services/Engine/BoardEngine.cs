@@ -28,9 +28,17 @@ namespace WeBoard.Client.Services.Engine
             MouseManager.GetInstance();
             ComponentManager.GetInstance();
             var random = new Random();
+
+            var scrollView = new ScrollViewComponent(new Vector2f(100, 100), new Vector2f(600, 600));
+            for(int i = 0; i < 10; i++)
+            {
+                scrollView.AddChild(new TextComponent(new Vector2f(0, i * 100), $"Hello kitties!{i}"));
+            }
+
+
             MenuManager.GetInstance().Init([
                 new TextComponent(new Vector2f(300,300), "Hello kitties!"),
-                new ScrollBarComponent(new Vector2f(50,50),400)]);
+                scrollView]);
         }
 
         public void Stop()
