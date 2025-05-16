@@ -7,6 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Handlers\Arrow.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\Handlers\Arrow.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="SFML.Net" Version="2.6.1" />
   </ItemGroup>
 </Project>
