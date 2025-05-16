@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WeBoard.Core.Components.Interfaces
+namespace WeBoard.Core.Components.Base.Comparers
 {
-    internal interface IButton
+    internal class MenuComponentBase
     {
     }
 }

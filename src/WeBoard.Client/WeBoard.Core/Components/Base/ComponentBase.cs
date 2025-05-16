@@ -4,7 +4,7 @@ using WeBoard.Core.Components.Interfaces;
 
 namespace WeBoard.Core.Components.Base
 {
-    public abstract class ComponentBase : IComponent, IFocusable, IClickable
+    public abstract class ComponentBase : IComponent, IFocusable
     {
         private RectangleShape _focusShape;
         protected abstract Shape Shape { get; }
