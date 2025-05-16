@@ -3,7 +3,7 @@ using SFML.System;
 
 namespace WeBoard.Core.Components.Interfaces
 {
-    public interface IViewContent : Drawable
+    public interface IContentView : Drawable
     {
         public Vector2f Position { get; set; }
         public Vector2f Size { get; set; }

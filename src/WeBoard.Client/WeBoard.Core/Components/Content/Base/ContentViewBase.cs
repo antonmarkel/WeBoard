@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SFML.Graphics;
+using SFML.System;
+using WeBoard.Core.Components.Interfaces;
 
 namespace WeBoard.Core.Components.Content.Base
 {
-    internal class ContentViewBase
+    public abstract class ContentViewBase : IContentView
     {
+        public virtual Vector2f Position { get; set; }
+        public virtual Vector2f Size { get; set; }
+        public virtual float Rotation { get; set; }
+        public abstract void Draw(RenderTarget target, RenderStates states);
+       
     }
 }
