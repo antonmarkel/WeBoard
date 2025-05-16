@@ -9,5 +9,4 @@
   <ItemGroup>
     <PackageReference Include="SFML.Net" Version="2.6.1" />
   </ItemGroup>
-
 </Project>

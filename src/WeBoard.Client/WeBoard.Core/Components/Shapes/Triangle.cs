@@ -9,35 +9,17 @@ namespace WeBoard.Core.Components.Shapes
         private ConvexShape _triangleShape;
         private Vector2f _size;
 
-        public Triangle(Vector2f size, Vector2f position) : base()
-        {
-            _triangleShape = new ConvexShape(3);
-            _size = size;
-            Position = position;
+        protected override Shape Shape => _triangleShape;
 
-            UpdateShape();
-            UpdateHandles();
-        }
-
-        public override Vector2f Position
+        public Triangle(Vector2f size, Vector2f position)
         {
-            get => _triangleShape.Position;
-            set
+            _triangleShape = new ConvexShape(3)
             {
-                base.Position = value;
-                _triangleShape.Position = value;
-            }
-        }
-
-        public Color FillColor
-        {
-            get => _triangleShape.FillColor;
-            set => _triangleShape.FillColor = value;
-        }
-
-        public override FloatRect GetGlobalBounds()
-        {
-            return _triangleShape.GetGlobalBounds();
+                Origin = size / 2f 
+            };
+            _size = size;
+            UpdateTrianglePoints(size);
+            Position = position;
         }
 
         public override Vector2f GetSize() => _size;
@@ -48,28 +30,17 @@ namespace WeBoard.Core.Components.Shapes
                 Math.Max(size.X, MinWidth),
                 Math.Max(size.Y, MinHeight)
             );
-
-            UpdateShape();
-        }
-
-        public override void Drag(Vector2f offset)
-        {
-            Position += offset;
-            base.Drag(offset);
+            _triangleShape.Origin = _size / 2f;
+            UpdateTrianglePoints(_size); 
             UpdateHandles();
+            UpdateFocusShape();
         }
 
-        public override void Draw(RenderTarget target, RenderStates states)
+        private void UpdateTrianglePoints(Vector2f size)
         {
-            _triangleShape.Draw(target, states);
-            base.Draw(target, states);      
-        }
-
-        private void UpdateShape()
-        {
-            _triangleShape.SetPoint(0, new Vector2f(_size.X / 2f, 0));
-            _triangleShape.SetPoint(1, new Vector2f(_size.X, _size.Y));
-            _triangleShape.SetPoint(2, new Vector2f(0, _size.Y));
+            _triangleShape.SetPoint(0, new Vector2f(size.X / 2f, 0));
+            _triangleShape.SetPoint(1, new Vector2f(size.X, size.Y));
+            _triangleShape.SetPoint(2, new Vector2f(0, size.Y));
         }
     }
 }

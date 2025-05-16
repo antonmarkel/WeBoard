@@ -43,12 +43,15 @@ namespace WeBoard.Client.Services
                 return;
             }
 
-            var rectangle = new Rectangle(new RectangleShape(new Vector2f(random.Next(300, 600), random.Next(300, 600)))
+            var rectangle = new Rectangle(new Vector2f(random.Next(100, 300), random.Next(100, 300)),
+                new Vector2f(random.Next(-1000, 1000), random.Next(-1000, 1000)))
             {
-                FillColor = new Color((byte)random.Next(150, 255),
+                FillColor = new Color(
                     (byte)random.Next(150, 255),
-                    (byte)random.Next(150, 255))
-            }, new Vector2f(random.Next(-1000, 1000), random.Next(-1000, 1000)));
+                    (byte)random.Next(150, 255),
+                    (byte)random.Next(150, 255)
+                )
+            };
             componentManager.AddComponent(rectangle);
 
             var triangle = new Triangle(new Vector2f(random.Next(100, 300), random.Next(100, 300)), 

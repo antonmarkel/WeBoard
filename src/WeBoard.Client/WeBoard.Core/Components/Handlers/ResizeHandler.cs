@@ -1,5 +1,6 @@
 ﻿using SFML.Graphics;
 using SFML.System;
+using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
 using WeBoard.Core.Enums;
 
@@ -40,27 +41,51 @@ namespace WeBoard.Core.Components.Handlers
 
         public void Drag(Vector2f offset)
         {
-            _target.Resize(offset, _direction);
+            if (_target is InteractiveComponentBase component)
+            {
+                float angleRad = -component.Rotation * MathF.PI / 180f;
+                float cos = MathF.Cos(angleRad);
+                float sin = MathF.Sin(angleRad);
+
+                Vector2f localOffset = new Vector2f(
+                    offset.X * cos - offset.Y * sin,
+                    offset.X * sin + offset.Y * cos
+                );
+
+                _target.Resize(localOffset, _direction);
+            }
         }
 
-        public void UpdatePosition(FloatRect bounds)
+
+        public void UpdatePosition(Vector2f center, Vector2f size, float rotationDegrees)
         {
-            float sizeFactor = Math.Min(bounds.Width, bounds.Height) * 0.05f;
+            float sizeFactor = Math.Min(size.X, size.Y) * 0.05f;
             float radius = Math.Clamp(sizeFactor, 4f, 15f);
             _shape.Radius = radius;
             _shape.Origin = new Vector2f(radius, radius);
 
-            Vector2f pos = _direction switch
+            Vector2f localOffset = _direction switch
             {
-                ResizeDirectionEnum.TopLeft => new(bounds.Left, bounds.Top),
-                ResizeDirectionEnum.TopRight => new(bounds.Left + bounds.Width, bounds.Top),
-                ResizeDirectionEnum.BottomLeft => new(bounds.Left, bounds.Top + bounds.Height),
-                ResizeDirectionEnum.BottomRight => new(bounds.Left + bounds.Width, bounds.Top + bounds.Height),
-                _ => bounds.Position,
+                ResizeDirectionEnum.TopLeft => new Vector2f(-size.X / 2f, -size.Y / 2f),
+                ResizeDirectionEnum.TopRight => new Vector2f(size.X / 2f, -size.Y / 2f),
+                ResizeDirectionEnum.BottomLeft => new Vector2f(-size.X / 2f, size.Y / 2f),
+                ResizeDirectionEnum.BottomRight => new Vector2f(size.X / 2f, size.Y / 2f),
+                _ => new Vector2f(0, 0),
             };
 
-            _shape.Position = pos;
+            float angleRad = rotationDegrees * MathF.PI / 180f;
+            float cos = MathF.Cos(angleRad);
+            float sin = MathF.Sin(angleRad);
+
+            Vector2f rotatedOffset = new Vector2f(
+                localOffset.X * cos - localOffset.Y * sin,
+                localOffset.X * sin + localOffset.Y * cos
+            );
+
+            _shape.Position = center + rotatedOffset;
         }
+
+
 
         public bool Intersect(Vector2i point, out Vector2f offset)
         {

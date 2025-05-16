@@ -7,6 +7,7 @@ namespace WeBoard.Core.Components.Base
     public abstract class ComponentBase : IComponent, IFocusable, IClickable
     {
         private RectangleShape _focusShape;
+        protected abstract Shape Shape { get; }
         public bool IsInFocus { get; set; }
         private int _zIndex;
         public int ZIndex
@@ -19,7 +20,7 @@ namespace WeBoard.Core.Components.Base
             }
         }
         public event Action<ComponentBase> ZIndexChanged;
-        public virtual Vector2f Position { get => _focusShape.Position; set => _focusShape.Position = value; }
+        public virtual Vector2f Position { get => Shape.Position; set => Shape.Position = value; }
 
         public ComponentBase()
         {
@@ -73,12 +74,18 @@ namespace WeBoard.Core.Components.Base
         public void UpdateFocusShape()
         {
             if (!IsInFocus) return;
+            Vector2f actualSize = (this is InteractiveComponentBase interactive)
+                ? interactive.GetSize()
+                : new Vector2f(100f, 100f);
 
-            var bounds = GetGlobalBounds();
-            _focusShape.Size = bounds.Size;
-            _focusShape.Position = bounds.Position;
+            _focusShape.Position = Position;
+            _focusShape.Size = actualSize;
+            _focusShape.Origin = actualSize / 2f;
+            _focusShape.Rotation = Shape.Rotation;
 
-            float thickness = Math.Clamp(Math.Min(bounds.Width, bounds.Height) * 0.05f, 2f, 10f);
+            float thickness = Math.Clamp(
+                Math.Min(actualSize.X, actualSize.Y) * 0.05f, 2f, 10f
+            );
             _focusShape.OutlineThickness = thickness;
         }
 

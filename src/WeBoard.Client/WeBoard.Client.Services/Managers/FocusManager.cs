@@ -11,7 +11,6 @@ namespace WeBoard.Client.Services.Managers
         private ComponentManager _componentManager = ComponentManager.GetInstance();
         private IDraggable? DraggingComponent { get; set; }
 
-
         public FocusManager()
         {
 
@@ -35,6 +34,14 @@ namespace WeBoard.Client.Services.Managers
                             interactive.OnFocus();
                             return;
                         }
+                    }
+
+                    var rotateHandle = interactive.GetRotateHandle();
+                    if (rotateHandle != null && rotateHandle.Intersect(pointInt, out _))
+                    {
+                        DraggingComponent = rotateHandle;
+                        interactive.OnFocus();
+                        return;
                     }
                 }
             }

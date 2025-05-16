@@ -6,45 +6,29 @@ namespace WeBoard.Core.Components.Shapes
 {
     public class Rectangle : InteractiveComponentBase
     {
-        private RectangleShape _rectangleShape;
+        private readonly RectangleShape _rectangleShape;
+        protected override Shape Shape => _rectangleShape;
 
-        public Rectangle(RectangleShape rectangleShape, Vector2f position) : base()
+        public Rectangle(Vector2f size, Vector2f position)
         {
-            _rectangleShape = rectangleShape;
-            Position = position;
-            UpdateHandles();
-        }
-
-        public override Vector2f Position
-        {
-            get => _rectangleShape.Position;
-            set
+            _rectangleShape = new RectangleShape(size)
             {
-                base.Position = value;
-                _rectangleShape.Position = value;
-            }
-        }
-
-        public override FloatRect GetGlobalBounds()
-        {
-            return _rectangleShape.GetGlobalBounds();
-        }
-
-        public override void Draw(RenderTarget target, RenderStates states)
-        {
-            _rectangleShape.Draw(target, states);
-            base.Draw(target, states);
-        }
-
-        public override void Drag(Vector2f offset)
-        {
-            Position += offset;
-            base.Drag(offset);
-            UpdateHandles();
+                Origin = size / 2f 
+            };
+            Position = position;
         }
 
         public override Vector2f GetSize() => _rectangleShape.Size;
-        public override void SetSize(Vector2f size) => _rectangleShape.Size = size;
-        
+
+        public override void SetSize(Vector2f size)
+        {
+            _rectangleShape.Size = new Vector2f(
+                Math.Max(size.X, MinWidth),
+                Math.Max(size.Y, MinHeight)
+            );
+            _rectangleShape.Origin = _rectangleShape.Size / 2f;
+            UpdateHandles();
+            UpdateFocusShape();
+        }
     }
 }
