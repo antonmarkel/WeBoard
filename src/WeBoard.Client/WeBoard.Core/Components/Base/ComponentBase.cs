@@ -71,7 +71,7 @@ namespace WeBoard.Core.Components.Base
             return bounds.Size.X * bounds.Size.Y;
         }
 
-        public void UpdateFocusShape()
+        protected void UpdateFocusShape()
         {
             if (!IsInFocus) return;
             Vector2f actualSize = (this is InteractiveComponentBase interactive)

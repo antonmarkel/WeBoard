@@ -1,5 +1,6 @@
 ﻿using SFML.System;
 using SFML.Window;
+using WeBoard.Core.Components.Interfaces;
 
 namespace WeBoard.Client.Services.Managers
 {
@@ -36,12 +37,23 @@ namespace WeBoard.Client.Services.Managers
             var offsetScreen = DragStartScreen - currentScreen;
             var offsetWorld = DragStartWorld - currentWorld;
 
+            DragStartScreen = new Vector2i(e.X, e.Y);
+            DragStartWorld = _global.RenderWindow.MapPixelToCoords(DragStartScreen);
+
+            if (_focusManager.ActiveHandler != null && _focusManager.ActiveHandler is IDraggable)
+            {
+                ((IDraggable)_focusManager.ActiveHandler).Drag(-offsetWorld);
+
+                return;
+            }
+
             if (_focusManager.FocusedComponent != null)
             {
-                DragStartScreen = new Vector2i(e.X, e.Y);
-                DragStartWorld = _global.RenderWindow.MapPixelToCoords(DragStartScreen);
+                   
+                if (_focusManager.FocusedComponent is not IDraggable)
+                    return;
 
-                _focusManager.HandleDrag(-offsetWorld);
+                ((IDraggable)_focusManager.FocusedComponent).Drag(-offsetWorld);
 
                 return;
             }
@@ -54,8 +66,7 @@ namespace WeBoard.Client.Services.Managers
         {
             if (e.Button == Mouse.Button.Left)
             {
-                IsDragging = false;
-                FocusManager.GetInstance().ClearDragging();
+                IsDragging = false;   
             }
         }
 

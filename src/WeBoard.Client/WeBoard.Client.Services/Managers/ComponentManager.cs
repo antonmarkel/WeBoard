@@ -1,5 +1,8 @@
-﻿using WeBoard.Core.Collections;
+﻿using System.Collections.Immutable;
+using SFML.System;
+using WeBoard.Core.Collections;
 using WeBoard.Core.Components.Base;
+using WeBoard.Core.Components.Interfaces;
 
 namespace WeBoard.Client.Services.Managers
 {
@@ -13,6 +16,28 @@ namespace WeBoard.Client.Services.Managers
         }
         public int Count { get => _componentSet.Count; }
         private ZIndexComponentSortedSet _componentSet { get; set; } = new();
+        private IImmutableList<MenuComponentBase> _menuComponents { get; set; } = [];
+
+        public ComponentBase? GetByScreenPoint(Vector2i point, out Vector2f offset)
+        {
+            Vector2f newOffset = new Vector2f(0, 0);
+            var menuComponent = _menuComponents.FirstOrDefault(comp => comp.Intersect(point,out newOffset));
+            if (menuComponent != null)
+            {
+                offset = newOffset;
+                return menuComponent;
+            }
+
+            var component = _componentSet.GetComponentsAscending().FirstOrDefault(comp => comp.Intersect(point, out newOffset));
+            offset = newOffset;
+
+            return component;
+        }
+
+        public void InitMenu(IEnumerable<MenuComponentBase> components)
+        {
+            _menuComponents = components.ToList().ToImmutableList();
+        }
 
         public void AddComponent(ComponentBase component)
         {
@@ -27,12 +52,14 @@ namespace WeBoard.Client.Services.Managers
 
         public IEnumerable<ComponentBase> GetComponentsForLogic()
         {
-            return _componentSet.GetComponentsAscending();
+            //Check perf of this line
+            return _menuComponents.Union(_componentSet.GetComponentsAscending());
         }
 
         public IEnumerable<ComponentBase> GetComponentsForRender()
         {
-            return _componentSet.GetComponentsDescending();
+            //Check perf of this line
+            return _componentSet.GetComponentsDescending().Union(_menuComponents);
         }
     }
 }

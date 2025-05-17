@@ -1,12 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SFML.Graphics;
+using SFML.System;
+using WeBoard.Core.Components.Interfaces;
 
-namespace WeBoard.Core.Components.Base.Comparers
+namespace WeBoard.Core.Components.Base
 {
-    internal class MenuComponentBase
+    public abstract class MenuComponentBase : ComponentBase,IClickable
     {
+        public override FloatRect GetGlobalBounds()
+        {
+            return GetScreenBounds();
+        }
+
+        public abstract FloatRect GetScreenBounds();
+
+        public override float GetTotalArea()
+        {
+            return GetScreenBounds().Height * GetScreenBounds().Width;
+        }
+
+        public override bool Intersect(Vector2i screenPoint, out Vector2f offset)
+        {
+            var bounds = GetScreenBounds();
+            offset = bounds.Position - new Vector2f(screenPoint.X, screenPoint.Y);
+
+            return bounds.Contains(screenPoint.X, screenPoint.Y);
+        }
+        public abstract void OnClick();
+
+
+        public override void OnFocus()
+        {
+            IsInFocus = true;
+            OnClick();
+        }
+
+        public override void OnLostFocus()
+        {
+            IsInFocus = false;
+        }
+
+        public override void OnMouseLeave()
+        {
+           
+        }
+
+        public override void OnMouseOver()
+        {
+     
+        }
     }
 }
