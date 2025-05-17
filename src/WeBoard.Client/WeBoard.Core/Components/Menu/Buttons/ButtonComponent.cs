@@ -63,7 +63,7 @@ namespace WeBoard.Core.Components.Menu.Buttons
             if (ContentView is not null)
             {
                 ContentView.Size = Size - new Vector2f(Padding, Padding);
-                Position = Position + new Vector2f(Padding, Padding);
+                Position += new Vector2f(Padding, Padding);
             }
         }
 

@@ -17,7 +17,6 @@ namespace WeBoard.Client.Services.Managers
 
         public void HandleClick(Vector2f point)
         {
-            var components = _componentManager.GetComponentsForLogic();
             var pointInt = new Vector2i((int)point.X, (int)point.Y);
 
             if (FocusedComponent != null && FocusedComponent is InteractiveComponentBase interactive)

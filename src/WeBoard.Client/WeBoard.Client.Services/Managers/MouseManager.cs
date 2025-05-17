@@ -35,13 +35,16 @@ namespace WeBoard.Client.Services.Managers
             var offsetScreen = DragStartScreen - currentScreen;
             var offsetWorld = DragStartWorld - currentWorld;
 
-           
-
             if (!IsDragging)
                 return;
 
+          
+
             if (_focusManager.ActiveHandler is IDraggable draggable)
             {
+                DragStartScreen = new Vector2i(e.X, e.Y);
+                DragStartWorld = _global.RenderWindow.MapPixelToCoords(DragStartScreen);
+
                 draggable.Drag(-offsetWorld);
 
                 return;
@@ -79,6 +82,13 @@ namespace WeBoard.Client.Services.Managers
                 IsDragging = true;
                 DragStartScreen = new Vector2i(e.X, e.Y);
                 DragStartWorld = _global.RenderWindow.MapPixelToCoords(DragStartScreen);
+
+                var menuClickedComponent = ComponentManager.GetInstance().GetMenuComponents()
+                    .FirstOrDefault(comp => comp.Intersect(DragStartScreen, out _));
+                if (menuClickedComponent is IClickable clickable)
+                {
+                    clickable.OnClick();
+                }
 
                 FocusManager.GetInstance().HandleClick(DragStartWorld);
                 if (FocusManager.GetInstance().FocusedComponent != null)
