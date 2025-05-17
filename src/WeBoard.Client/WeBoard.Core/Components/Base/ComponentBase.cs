@@ -53,7 +53,7 @@ namespace WeBoard.Core.Components.Base
         public virtual void OnFocus()
         {
             IsInFocus = true;
-            ZIndex = 0;
+            //ZIndex = 0;
             //Console.WriteLine(GetTotalArea());
             UpdateFocusShape();
         }

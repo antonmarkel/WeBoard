@@ -1,5 +1,7 @@
-﻿using WeBoard.Client.Services.Interfaces.Base;
+﻿using SFML.Graphics;
+using WeBoard.Client.Services.Interfaces.Base;
 using WeBoard.Client.Services.Managers;
+using WeBoard.Core.Components.Content;
 using WeBoard.Core.Components.Menu.Buttons;
 
 namespace WeBoard.Client.Services.Engine
@@ -25,7 +27,11 @@ namespace WeBoard.Client.Services.Engine
 
             FocusManager.GetInstance();
             MouseManager.GetInstance();
-            ComponentManager.GetInstance().InitMenu([new ButtonComponent(new SFML.System.Vector2f(100, 100), new SFML.System.Vector2f(400, 100))]);
+            var imageContent = new ImageContentView(new Texture("Resources/Handlers/Arrow.png"));
+            ComponentManager.GetInstance().InitMenu([new ButtonComponent(new SFML.System.Vector2f(100, 100), new SFML.System.Vector2f(400, 100))
+            {
+                ContentView = imageContent
+            }]);
         }
 
         public void Stop()

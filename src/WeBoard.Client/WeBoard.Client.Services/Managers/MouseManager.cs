@@ -83,11 +83,13 @@ namespace WeBoard.Client.Services.Managers
                 DragStartScreen = new Vector2i(e.X, e.Y);
                 DragStartWorld = _global.RenderWindow.MapPixelToCoords(DragStartScreen);
 
+                Vector2f clickOffset = new Vector2f(0, 0);
                 var menuClickedComponent = ComponentManager.GetInstance().GetMenuComponents()
-                    .FirstOrDefault(comp => comp.Intersect(DragStartScreen, out _));
+                    .FirstOrDefault(comp => comp.Intersect(DragStartScreen, out clickOffset));
                 if (menuClickedComponent is IClickable clickable)
                 {
-                    clickable.OnClick();
+                    clickable.OnClick(clickOffset);
+                    return;
                 }
 
                 FocusManager.GetInstance().HandleClick(DragStartWorld);

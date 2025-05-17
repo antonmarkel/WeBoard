@@ -25,13 +25,12 @@ namespace WeBoard.Core.Components.Base
 
             return bounds.Contains(screenPoint.X, screenPoint.Y);
         }
-        public abstract void OnClick();
+        public abstract void OnClick(Vector2f offset);
 
 
         public override void OnFocus()
         {
             IsInFocus = true;
-            OnClick();
         }
 
         public override void OnLostFocus()

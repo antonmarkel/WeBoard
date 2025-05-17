@@ -2,24 +2,26 @@
 using SFML.System;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
+using WeBoard.Core.Drawables.Shapes;
 
 namespace WeBoard.Core.Components.Menu.Buttons
 {
     public class ButtonComponent : MenuComponentBase, IContainerView
     {
-        private RectangleShape _buttonShape;
+        private RoundedRectangle _buttonShape;
+        private RectangleShape _focusRectangle;
         public IContentView? ContentView { get; set; }
         public uint Padding { get; set; }
 
         public override Vector2f Position
         {
             get => _buttonShape.Position;
-            set => _buttonShape.Position = value;
+            set => _buttonShape.Position = _focusRectangle.Position = value;
         }
         public Vector2f Size
         {
             get => _buttonShape.Size;
-            set => _buttonShape.Size = value;
+            set => _buttonShape.Size = _focusRectangle.Size = value;
         }
         public Color OutlineColor
         {
@@ -37,11 +39,12 @@ namespace WeBoard.Core.Components.Menu.Buttons
             set => _buttonShape.FillColor = value;
         }
 
-        protected override Shape Shape => _buttonShape;
+        protected override Shape Shape => _focusRectangle;
 
         public ButtonComponent(Vector2f position, Vector2f size)
         {
-            _buttonShape = new RectangleShape();
+            _buttonShape = new RoundedRectangle();
+            _focusRectangle = new RectangleShape();
 
             Position = position;
             Size = size;
@@ -52,7 +55,7 @@ namespace WeBoard.Core.Components.Menu.Buttons
 
         public override void Draw(RenderTarget target, RenderStates states)
         {
-
+            UpdateContentView();
 
             _buttonShape.Draw(target, states);
             ContentView?.Draw(target, states);
@@ -63,13 +66,13 @@ namespace WeBoard.Core.Components.Menu.Buttons
             if (ContentView is not null)
             {
                 ContentView.Size = Size - new Vector2f(Padding, Padding);
-                Position += new Vector2f(Padding, Padding);
+                ContentView.Position = Position + new Vector2f(Padding, Padding);
             }
         }
 
         public override FloatRect GetScreenBounds()
         {
-            return _buttonShape.GetLocalBounds();
+            return _focusRectangle.GetGlobalBounds();
         }
 
         public override void OnLostFocus()
@@ -90,9 +93,9 @@ namespace WeBoard.Core.Components.Menu.Buttons
             base.OnLostFocus();
         }
 
-        public override void OnClick()
+        public override void OnClick(Vector2f offset)
         {
-            Console.WriteLine("Clicked");
+            OnFocus();
         }
     }
 }
