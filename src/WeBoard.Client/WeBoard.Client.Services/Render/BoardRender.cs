@@ -34,6 +34,8 @@ namespace WeBoard.Client.Services.Render
                     }
                 }
 
+                ToolManager.GetInstance().Draw(window, RenderStates.Default);
+
                 window.SetView(_global.Camera.UiView);
                 var menuObjects = _componentManager.GetMenuComponents();
                 foreach (var menuObject in menuObjects)
@@ -43,7 +45,7 @@ namespace WeBoard.Client.Services.Render
                         window.Draw(menuObject);
                     }
                 }
-
+                
                 window.Display();
             }
         }

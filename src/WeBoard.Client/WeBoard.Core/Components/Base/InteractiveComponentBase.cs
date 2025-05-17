@@ -97,9 +97,7 @@ namespace WeBoard.Core.Components.Base
         public virtual void Resize(Vector2f delta, ResizeDirectionEnum direction)
         {
             var originalSize = GetSize();
-            var originalPos = Position;
 
-            // Определяем направление смещения (локальные единицы от центра)
             Vector2f localOffset = direction switch
             {
                 ResizeDirectionEnum.TopLeft => new Vector2f(-1, -1),
@@ -109,20 +107,17 @@ namespace WeBoard.Core.Components.Base
                 _ => new Vector2f(0, 0)
             };
 
-            // Вычисляем новое значение размера
             Vector2f newSize = new Vector2f(
                 MathF.Max(MinWidth, originalSize.X + delta.X * localOffset.X),
                 MathF.Max(MinHeight, originalSize.Y + delta.Y * localOffset.Y)
             );
 
-            // Сдвигаем центр в зависимости от того, какая ручка тянется
             Vector2f sizeDiff = newSize - originalSize;
             Vector2f centerShift = new Vector2f(
                 (sizeDiff.X / 2f) * localOffset.X,
                 (sizeDiff.Y / 2f) * localOffset.Y
             );
 
-            // Учитываем поворот при смещении центра
             float angleRad = Rotation * MathF.PI / 180f;
             float cos = MathF.Cos(angleRad);
             float sin = MathF.Sin(angleRad);
@@ -132,14 +127,12 @@ namespace WeBoard.Core.Components.Base
                 centerShift.X * sin + centerShift.Y * cos
             );
 
-            // Применяем изменения
             SetSize(newSize);
             Position += rotatedShift;
 
             UpdateHandles();
             UpdateFocusShape();
         }
-
 
         public abstract Vector2f GetSize();
         public abstract void SetSize(Vector2f size);

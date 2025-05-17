@@ -29,11 +29,12 @@ namespace WeBoard.Client.Services.Managers
 
         private void HandleMouseMove(object? sender, MouseMoveEventArgs e)
         {
-
             var currentScreen = new Vector2i(e.X, e.Y);
             var currentWorld = _global.RenderWindow.MapPixelToCoords(currentScreen);
             var offsetScreen = DragStartScreen - currentScreen;
             var offsetWorld = DragStartWorld - currentWorld;
+
+            ToolManager.GetInstance().OnMouseMoved(currentWorld);
 
             if (!IsDragging)
                 return;
@@ -69,6 +70,12 @@ namespace WeBoard.Client.Services.Managers
 
         private void HandleMouseButtonReleased(object? sender, MouseButtonEventArgs e)
         {
+            if (e.Button == Mouse.Button.Left && Keyboard.IsKeyPressed(Keyboard.Key.LControl))
+            {
+                ToolManager.GetInstance().OnMouseReleased(_global.RenderWindow.MapPixelToCoords(new Vector2i(e.X, e.Y)));
+                return;
+            }
+
             if (e.Button == Mouse.Button.Left)
             {
                 IsDragging = false;   
@@ -77,6 +84,16 @@ namespace WeBoard.Client.Services.Managers
 
         private void HandleMouseButtonPress(object? sender, MouseButtonEventArgs e)
         {
+            if (e.Button == Mouse.Button.Left && Keyboard.IsKeyPressed(Keyboard.Key.LControl))
+            {
+                DragStartScreen = new Vector2i(e.X, e.Y);
+                DragStartWorld = _global.RenderWindow.MapPixelToCoords(DragStartScreen);
+
+                ToolManager.GetInstance().OnMousePressed(DragStartWorld);
+                return;
+            }
+
+
             if (e.Button == Mouse.Button.Left)
             {
                 IsDragging = true;
