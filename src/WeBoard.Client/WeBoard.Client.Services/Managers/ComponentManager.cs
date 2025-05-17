@@ -56,10 +56,14 @@ namespace WeBoard.Client.Services.Managers
             return _menuComponents.Union(_componentSet.GetComponentsAscending());
         }
 
+        public IEnumerable<MenuComponentBase> GetMenuComponents()
+        {
+            return _menuComponents;
+        }
+
         public IEnumerable<ComponentBase> GetComponentsForRender()
         {
-            //Check perf of this line
-            return _componentSet.GetComponentsDescending().Union(_menuComponents);
+            return _componentSet.GetComponentsDescending();
         }
     }
 }

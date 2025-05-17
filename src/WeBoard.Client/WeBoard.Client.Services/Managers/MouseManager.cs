@@ -29,27 +29,29 @@ namespace WeBoard.Client.Services.Managers
 
         private void HandleMouseMove(object? sender, MouseMoveEventArgs e)
         {
-            if (!IsDragging)
-                return;
 
             var currentScreen = new Vector2i(e.X, e.Y);
             var currentWorld = _global.RenderWindow.MapPixelToCoords(currentScreen);
             var offsetScreen = DragStartScreen - currentScreen;
             var offsetWorld = DragStartWorld - currentWorld;
 
-            DragStartScreen = new Vector2i(e.X, e.Y);
-            DragStartWorld = _global.RenderWindow.MapPixelToCoords(DragStartScreen);
+           
 
-            if (_focusManager.ActiveHandler != null && _focusManager.ActiveHandler is IDraggable)
+            if (!IsDragging)
+                return;
+
+            if (_focusManager.ActiveHandler is IDraggable draggable)
             {
-                ((IDraggable)_focusManager.ActiveHandler).Drag(-offsetWorld);
+                draggable.Drag(-offsetWorld);
 
                 return;
             }
 
             if (_focusManager.FocusedComponent != null)
             {
-                   
+                DragStartScreen = new Vector2i(e.X, e.Y);
+                DragStartWorld = _global.RenderWindow.MapPixelToCoords(DragStartScreen);
+
                 if (_focusManager.FocusedComponent is not IDraggable)
                     return;
 

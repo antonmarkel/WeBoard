@@ -1,6 +1,5 @@
 ﻿using SFML.Graphics;
 using SFML.System;
-using SFML.Window;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
 
@@ -9,12 +8,21 @@ namespace WeBoard.Core.Components.Menu.Buttons
     public class ButtonComponent : MenuComponentBase, IContainerView
     {
         private RectangleShape _buttonShape;
-        public override Vector2f Position { get; set; }
-        public Vector2f Size { get; set; }
         public IContentView? ContentView { get; set; }
         public uint Padding { get; set; }
 
-        public Color OutlineColor {
+        public override Vector2f Position
+        {
+            get => _buttonShape.Position;
+            set => _buttonShape.Position = value;
+        }
+        public Vector2f Size
+        {
+            get => _buttonShape.Size;
+            set => _buttonShape.Size = value;
+        }
+        public Color OutlineColor
+        {
             get => _buttonShape.OutlineColor;
             set => _buttonShape.OutlineColor = value;
         }
@@ -23,14 +31,15 @@ namespace WeBoard.Core.Components.Menu.Buttons
             get => _buttonShape.OutlineThickness;
             set => _buttonShape.OutlineThickness = value;
         }
-        public Color BackgroundColor { 
+        public Color BackgroundColor
+        {
             get => _buttonShape.FillColor;
             set => _buttonShape.FillColor = value;
         }
 
         protected override Shape Shape => _buttonShape;
 
-        public ButtonComponent(Vector2f position,Vector2f size)
+        public ButtonComponent(Vector2f position, Vector2f size)
         {
             _buttonShape = new RectangleShape();
 
@@ -43,8 +52,8 @@ namespace WeBoard.Core.Components.Menu.Buttons
 
         public override void Draw(RenderTarget target, RenderStates states)
         {
-           
-   
+
+
             _buttonShape.Draw(target, states);
             ContentView?.Draw(target, states);
         }
@@ -53,8 +62,8 @@ namespace WeBoard.Core.Components.Menu.Buttons
         {
             if (ContentView is not null)
             {
-                ContentView.Size = Size - new Vector2f(Padding,Padding);
-                Position = Position + new Vector2f(Padding,Padding);
+                ContentView.Size = Size - new Vector2f(Padding, Padding);
+                Position = Position + new Vector2f(Padding, Padding);
             }
         }
 

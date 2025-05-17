@@ -34,8 +34,17 @@ namespace WeBoard.Client.Services.Render
                     }
                 }
 
-                window.Display();
+                window.SetView(_global.Camera.UiView);
+                var menuObjects = _componentManager.GetMenuComponents();
+                foreach (var menuObject in menuObjects)
+                {
+                    lock (menuObject)
+                    {
+                        window.Draw(menuObject);
+                    }
+                }
 
+                window.Display();
             }
         }
     }
