@@ -1,5 +1,4 @@
-﻿using System.Reflection.Metadata;
-using SFML.System;
+﻿using SFML.System;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
 
@@ -19,41 +18,34 @@ namespace WeBoard.Client.Services.Managers
         public void HandleClick(Vector2f point)
         {
             var components = _componentManager.GetComponentsForLogic();
-            ComponentBase? clickedComponent = null;
             var pointInt = new Vector2i((int)point.X, (int)point.Y);
-            foreach (var comp in components)
-            {
-                if (comp is InteractiveComponentBase interactive)
-                {
-                    foreach (var handle in interactive.GetResizeHandles())
-                    {
-                        if (handle.Intersect(pointInt, out _))
-                        {
-                            ActiveHandler = handle;
-                            interactive.OnFocus();
-                            return;
-                        }
-                    }
 
-                    var rotateHandle = interactive.GetRotateHandle();
-                    if (rotateHandle != null && rotateHandle.Intersect(pointInt, out _))
+            if (FocusedComponent != null && FocusedComponent is InteractiveComponentBase interactive)
+            {
+                foreach (var handle in interactive.GetResizeHandles())
+                {
+                    if (handle.Intersect(pointInt, out _))
                     {
-                        ActiveHandler = rotateHandle;
+                        ActiveHandler = handle;
                         interactive.OnFocus();
                         return;
                     }
                 }
-                if(comp.Intersect(pointInt, out _))
-                {
-                    clickedComponent = comp;
 
-                    break;
+                var rotateHandle = interactive.GetRotateHandle();
+                if (rotateHandle != null && rotateHandle.Intersect(pointInt, out _))
+                {
+                    ActiveHandler = rotateHandle;
+                    interactive.OnFocus();
+                    return;
                 }
             }
 
+            var clickedComponent = _componentManager.GetByScreenPoint(pointInt, out _);
+
             ActiveHandler = null;
 
-            UpdateFocus(clickedComponent);   
+            UpdateFocus(clickedComponent);
         }
 
         private void UpdateFocus(ComponentBase? clickedComponent)
