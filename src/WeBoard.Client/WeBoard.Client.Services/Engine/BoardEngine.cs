@@ -1,9 +1,11 @@
 ﻿using SFML.Graphics;
+using SFML.System;
 using WeBoard.Client.Services.Interfaces.Base;
 using WeBoard.Client.Services.Managers;
 using WeBoard.Core.Animations;
 using WeBoard.Core.Components.Content;
 using WeBoard.Core.Components.Menu.Buttons;
+using WeBoard.Core.Components.Menu.Containers;
 
 namespace WeBoard.Client.Services.Engine
 {
@@ -30,12 +32,32 @@ namespace WeBoard.Client.Services.Engine
             MouseManager.GetInstance();
             KeyboardManager.GetInstance();
             var imageContent = new ImageContentView(new Texture("Resources/Handlers/Arrow.png"));
-            var button = new ButtonComponent(new SFML.System.Vector2f(100, 100), new SFML.System.Vector2f(400, 100))
+            List<ButtonComponent> buttons = new ();
+            for (int i = 0; i < 5; i++)
             {
-                ContentView = imageContent
+                buttons.Add(new ButtonComponent(new SFML.System.Vector2f(0, 0), new SFML.System.Vector2f(50, 50))
+                {
+                    BackgroundColor = new Color(255,255,255,255),
+                    ContentView = imageContent,
+                    CornerRadius = 5,
+                    CornerPointCount = 20,
+                    OutlineThickness = 1
+                });
+            }
+
+            var verticalStack = new VerticalStackContainer(buttons)
+            {
+                BackgroundColor = new Color(255, 255, 255, 80),
+                OutlineThickness = 1f,
+                OutlineColor = Color.Black,
+                Padding = new Vector2f(15, 7),
+                SpaceBetween = 15f,
+                Position = new Vector2f(-10, 200),
+                CornerRadius = 10,
+                CornerPointCount = 40
             };
 
-            ComponentManager.GetInstance().InitMenu([button]);
+            ComponentManager.GetInstance().InitMenu([verticalStack]);
         }
 
         public void Stop()

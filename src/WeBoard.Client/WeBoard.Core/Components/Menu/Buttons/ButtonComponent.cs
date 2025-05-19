@@ -47,6 +47,19 @@ namespace WeBoard.Core.Components.Menu.Buttons
             get => _buttonShape.FillColor;
             set => _buttonShape.FillColor = value;
         }
+        public uint CornerPointCount
+        {
+            get => _buttonShape.CornerPointCount;
+            set => _buttonShape.CornerPointCount = value;
+            
+        }
+        public float CornerRadius
+        {
+            get => _buttonShape.CornerRadius;
+            set => _buttonShape.CornerRadius = value;
+           
+        }
+
 
         protected override Shape Shape => _focusRectangle;
 
@@ -92,12 +105,12 @@ namespace WeBoard.Core.Components.Menu.Buttons
 
         public override FloatRect GetScreenBounds()
         {
-            return _focusRectangle.GetGlobalBounds();
+            return new FloatRect(Position, Size);
         }
         public override void OnClick(Vector2f offset)
         {
             _activeAnimations.Remove(_clickAnimation);
-            _clickAnimation = new ButtonClickAnimation(Color.White, BackgroundColor, 200);
+            _clickAnimation = new ButtonClickAnimation(Color.Black, BackgroundColor, 200);
             _clickAnimation.Reset();
             _clickAnimation.ApplyTo(this);
             _activeAnimations.Add(_clickAnimation);
