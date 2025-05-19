@@ -37,17 +37,25 @@ namespace WeBoard.Client.Services.Managers
         public void InitMenu(IEnumerable<MenuComponentBase> components)
         {
             _menuComponents = components.ToList().ToImmutableList();
+            foreach (var menuComponent in _menuComponents)
+            {
+                if(menuComponent is IAnimatible animatible)
+                    AnimationManager.GetInstance().Add(animatible);
+            }
         }
 
         public void AddComponent(ComponentBase component)
         {
             component.ZIndex = _componentSet.Last is null ? 0 : _componentSet.Last.ZIndex + 1;
             _componentSet.Add(component);
+            if(component is IAnimatible animatible)
+                AnimationManager.GetInstance().Add(animatible);
         }
         public void RemoveComponent(ComponentBase component)
         {
             _componentSet.Remove(component);
-
+            if (component is IAnimatible animatible)
+                AnimationManager.GetInstance().Remove(animatible);
         }
 
         public IEnumerable<ComponentBase> GetComponentsForLogic()

@@ -1,17 +1,23 @@
-﻿using SFML.Graphics;
+﻿using System.Collections.Immutable;
+using SFML.Graphics;
 using SFML.System;
+using WeBoard.Core.Animations.ButtonAnimations;
+using WeBoard.Core.Animations.Interfaces;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
 using WeBoard.Core.Drawables.Shapes;
 
 namespace WeBoard.Core.Components.Menu.Buttons
 {
-    public class ButtonComponent : MenuComponentBase, IContainerView
+    public class ButtonComponent : MenuComponentBase, IContainerView, IAnimatible
     {
         private RoundedRectangle _buttonShape;
         private RectangleShape _focusRectangle;
+        private ButtonClickAnimation _clickAnimation;
+        private List<IAnimation> _activeAnimations = [];
         public IContentView? ContentView { get; set; }
         public uint Padding { get; set; }
+        public event Action<Vector2f> OnClickEvent;
 
         public override Vector2f Position
         {
@@ -40,6 +46,17 @@ namespace WeBoard.Core.Components.Menu.Buttons
         }
 
         protected override Shape Shape => _focusRectangle;
+
+        public IImmutableList<IAnimation> ActiveAnimations
+        {
+            get
+            {
+                _activeAnimations = _activeAnimations.Where(anim => !anim.IsCompleted).ToList();
+
+                return _activeAnimations.ToImmutableList();
+            }
+        }
+
 
         public ButtonComponent(Vector2f position, Vector2f size)
         {
@@ -77,25 +94,31 @@ namespace WeBoard.Core.Components.Menu.Buttons
 
         public override void OnLostFocus()
         {
-            if (IsInFocus)
-            {
-                OutlineThickness -= 2;
-            }
             base.OnLostFocus();
         }
 
         public override void OnFocus()
         {
-            if (!IsInFocus)
-            {
-                OutlineThickness += 2;
-            }
+      
             base.OnLostFocus();
         }
 
         public override void OnClick(Vector2f offset)
         {
+            _activeAnimations.Remove(_clickAnimation);
+            _clickAnimation = new ButtonClickAnimation(Color.White, BackgroundColor, 200);
+            _clickAnimation.Reset();
+            _clickAnimation.ApplyTo(this);
+            _activeAnimations.Add(_clickAnimation);
+
+            OnClickEvent?.Invoke(offset);
             OnFocus();
+        }
+
+        public void PlayAnimation(IAnimation animation)
+        {
+            animation.ApplyTo(this);
+            _activeAnimations.Add(animation);
         }
     }
 }
