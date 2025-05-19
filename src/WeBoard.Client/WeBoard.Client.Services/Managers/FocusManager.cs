@@ -8,6 +8,7 @@ namespace WeBoard.Client.Services.Managers
     {
         private static readonly FocusManager Instance = new();
         public IFocusable? FocusedComponent { get; set; }
+        public IFocusable? UnderMouse { get; set; }
         private ComponentManager _componentManager = ComponentManager.GetInstance();
         public IComponent? ActiveHandler { get; set; }
         public FocusManager()

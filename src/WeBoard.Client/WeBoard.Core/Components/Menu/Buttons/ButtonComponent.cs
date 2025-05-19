@@ -15,6 +15,8 @@ namespace WeBoard.Core.Components.Menu.Buttons
         private RectangleShape _focusRectangle;
         private ButtonClickAnimation _clickAnimation;
         private List<IAnimation> _activeAnimations = [];
+        private bool _underMouse = false;
+
         public IContentView? ContentView { get; set; }
         public uint Padding { get; set; }
         public event Action<Vector2f> OnClickEvent;
@@ -91,18 +93,6 @@ namespace WeBoard.Core.Components.Menu.Buttons
         {
             return _focusRectangle.GetGlobalBounds();
         }
-
-        public override void OnLostFocus()
-        {
-            base.OnLostFocus();
-        }
-
-        public override void OnFocus()
-        {
-      
-            base.OnLostFocus();
-        }
-
         public override void OnClick(Vector2f offset)
         {
             _activeAnimations.Remove(_clickAnimation);
@@ -119,6 +109,23 @@ namespace WeBoard.Core.Components.Menu.Buttons
         {
             animation.ApplyTo(this);
             _activeAnimations.Add(animation);
+        }
+
+        public override void OnMouseOver()
+        {
+            if(!_underMouse);
+            {
+                Console.WriteLine("Over");
+            }
+            _underMouse = true;
+            base.OnMouseOver();
+        }
+
+        public override void OnMouseLeave()
+        {
+            _underMouse = false;
+            Console.WriteLine("Leave");
+            base.OnMouseLeave();
         }
     }
 }

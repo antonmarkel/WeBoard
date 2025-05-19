@@ -27,6 +27,28 @@ namespace WeBoard.Client.Services.Managers
 
         }
 
+        private void HandleMouseOver(Vector2i currentScreen)
+        {
+            var underMouse = ComponentManager.GetInstance().GetByScreenPoint(currentScreen, out _);
+            if (underMouse is null)
+            {
+                if(_focusManager.UnderMouse != null)
+                    _focusManager.UnderMouse.OnMouseLeave();
+                _focusManager.UnderMouse = underMouse;
+
+                return;
+            }
+
+            if (underMouse != _focusManager.UnderMouse)
+            {
+                _focusManager.UnderMouse?.OnMouseLeave();
+
+                _focusManager.UnderMouse = underMouse;
+                underMouse.OnMouseOver();
+            }
+
+        }
+
         private void HandleMouseMove(object? sender, MouseMoveEventArgs e)
         {
 
@@ -35,10 +57,10 @@ namespace WeBoard.Client.Services.Managers
             var offsetScreen = DragStartScreen - currentScreen;
             var offsetWorld = DragStartWorld - currentWorld;
 
+            HandleMouseOver(currentScreen);
+
             if (!IsDragging)
                 return;
-
-          
 
             if (_focusManager.ActiveHandler is IDraggable draggable)
             {
