@@ -1,6 +1,7 @@
 ﻿using SFML.Graphics;
 using WeBoard.Client.Services.Interfaces.Base;
 using WeBoard.Client.Services.Managers;
+using WeBoard.Core.Animations;
 using WeBoard.Core.Components.Content;
 using WeBoard.Core.Components.Menu.Buttons;
 
@@ -29,10 +30,12 @@ namespace WeBoard.Client.Services.Engine
             MouseManager.GetInstance();
             KeyboardManager.GetInstance();
             var imageContent = new ImageContentView(new Texture("Resources/Handlers/Arrow.png"));
-            ComponentManager.GetInstance().InitMenu([new ButtonComponent(new SFML.System.Vector2f(100, 100), new SFML.System.Vector2f(400, 100))
+            var button = new ButtonComponent(new SFML.System.Vector2f(100, 100), new SFML.System.Vector2f(400, 100))
             {
                 ContentView = imageContent
-            }]);
+            };
+
+            ComponentManager.GetInstance().InitMenu([button]);
         }
 
         public void Stop()
@@ -43,8 +46,14 @@ namespace WeBoard.Client.Services.Engine
 
         private void LogicLoop()
         {
+            var lastTime = DateTime.Now;
             while (_isRunning)
             {
+                var currentTime = DateTime.Now;
+                var delta = (currentTime - lastTime).TotalMilliseconds;
+                lastTime = currentTime;
+
+                AnimationManager.GetInstance().OnUpdate((float)delta);
                 OnUpdate?.Invoke();
                 Thread.Sleep(16);
             }
