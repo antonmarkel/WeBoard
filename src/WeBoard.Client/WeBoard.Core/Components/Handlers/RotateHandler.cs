@@ -26,6 +26,7 @@ namespace WeBoard.Core.Components.Handlers
             get => _sprite.Position;
             set => _sprite.Position = value;
         }
+        public IComponent? Parent { get; set; }
 
         public RotateHandler(InteractiveComponentBase target)
         {

@@ -21,6 +21,7 @@ namespace WeBoard.Core.Components.Base
         }
         public event Action<ComponentBase> ZIndexChanged;
         public virtual Vector2f Position { get => Shape.Position; set => Shape.Position = value; }
+        public IComponent? Parent { get; set; } = null;
 
         public ComponentBase()
         {

@@ -18,6 +18,7 @@ namespace WeBoard.Core.Components.Handlers
             get => _shape.Position;
             set => _shape.Position = value;
         }
+        public IComponent? Parent { get; set; }
 
         public ResizeHandler(IResizable target, ResizeDirectionEnum direction)
         {

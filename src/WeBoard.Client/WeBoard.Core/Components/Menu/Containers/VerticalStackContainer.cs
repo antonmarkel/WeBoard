@@ -17,6 +17,11 @@ namespace WeBoard.Core.Components.Menu.Containers
         public VerticalStackContainer(IEnumerable<MenuComponentBase> components)
         {
             _children = components.ToImmutableList();
+            _children.ForEach(child =>
+            {
+                child.Parent = this;
+                child.ZIndex = this.ZIndex + 1;
+            });
 
             _focusShape = new RectangleShape();
             _bodyShape = new RoundedRectangle();
@@ -120,14 +125,6 @@ namespace WeBoard.Core.Components.Menu.Containers
 
         public override void OnClick(Vector2f offset)
         {
-            Vector2f childOffset = new Vector2f(0, 0);
-            var point = new Vector2i((int)(Position.X + offset.X), (int)(Position.Y + offset.Y));
-            var clickedChild = _children.FirstOrDefault(child => child.Intersect(point, out childOffset));
-
-            if (clickedChild != null)
-            {
-                clickedChild.OnClick(offset);
-            }
         }
     }
 }

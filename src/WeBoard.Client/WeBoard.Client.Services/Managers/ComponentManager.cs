@@ -60,7 +60,7 @@ namespace WeBoard.Client.Services.Managers
 
         public IEnumerable<ComponentBase> GetComponentsForLogic()
         {
-            //Check perf of this line
+            
             return _menuComponents.Union(_componentSet.GetComponentsAscending());
         }
 

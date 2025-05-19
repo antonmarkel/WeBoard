@@ -110,8 +110,8 @@ namespace WeBoard.Core.Components.Menu.Buttons
         public override void OnClick(Vector2f offset)
         {
             _activeAnimations.Remove(_clickAnimation);
+            _clickAnimation?.Reset();
             _clickAnimation = new ButtonClickAnimation(Color.Black, BackgroundColor, 200);
-            _clickAnimation.Reset();
             _clickAnimation.ApplyTo(this);
             _activeAnimations.Add(_clickAnimation);
 
@@ -127,11 +127,12 @@ namespace WeBoard.Core.Components.Menu.Buttons
 
         public override void OnMouseOver()
         {
-            if(!_underMouse);
+            
+            if(!_underMouse)
             {
                 _activeAnimations.Remove(_resizeAnimation);
-                _resizeAnimation = new ButtonResizeAnimation(Size, 1.02f, 100);
-                _resizeAnimation.Reset();
+                _resizeAnimation?.Reset();
+                _resizeAnimation = new ButtonResizeAnimation(Size, 1.3f, 100);
                 _resizeAnimation.ApplyTo(this);
                 _activeAnimations.Add(_resizeAnimation);
             }

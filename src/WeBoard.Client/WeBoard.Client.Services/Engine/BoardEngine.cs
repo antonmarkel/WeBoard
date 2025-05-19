@@ -3,6 +3,7 @@ using SFML.System;
 using WeBoard.Client.Services.Interfaces.Base;
 using WeBoard.Client.Services.Managers;
 using WeBoard.Core.Animations;
+using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Content;
 using WeBoard.Core.Components.Menu.Buttons;
 using WeBoard.Core.Components.Menu.Containers;
@@ -32,6 +33,7 @@ namespace WeBoard.Client.Services.Engine
             MouseManager.GetInstance();
             KeyboardManager.GetInstance();
             var imageContent = new ImageContentView(new Texture("Resources/Handlers/Arrow.png"));
+            List<MenuComponentBase> menuComponents = new List<MenuComponentBase>();
             List<ButtonComponent> buttons = new ();
             for (int i = 0; i < 5; i++)
             {
@@ -43,6 +45,7 @@ namespace WeBoard.Client.Services.Engine
                     CornerPointCount = 20,
                     OutlineThickness = 1
                 });
+                menuComponents.Add(buttons[i]);
             }
 
             var verticalStack = new VerticalStackContainer(buttons)
@@ -56,8 +59,9 @@ namespace WeBoard.Client.Services.Engine
                 CornerRadius = 10,
                 CornerPointCount = 40
             };
+            menuComponents.Add(verticalStack);
 
-            ComponentManager.GetInstance().InitMenu([verticalStack]);
+            ComponentManager.GetInstance().InitMenu(menuComponents);
         }
 
         public void Stop()
