@@ -1,7 +1,7 @@
 ﻿using System.Collections.Immutable;
 using SFML.Graphics;
 using SFML.System;
-using WeBoard.Core.Animations.ButtonAnimations;
+using WeBoard.Core.Animations.Button;
 using WeBoard.Core.Animations.Interfaces;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
@@ -14,6 +14,7 @@ namespace WeBoard.Core.Components.Menu.Buttons
         private RoundedRectangle _buttonShape;
         private RectangleShape _focusRectangle;
         private ButtonClickAnimation _clickAnimation;
+        private ButtonResizeAnimation _resizeAnimation;
         private List<IAnimation> _activeAnimations = [];
         private bool _underMouse = false;
 
@@ -115,7 +116,11 @@ namespace WeBoard.Core.Components.Menu.Buttons
         {
             if(!_underMouse);
             {
-                Console.WriteLine("Over");
+                _activeAnimations.Remove(_resizeAnimation);
+                _resizeAnimation = new ButtonResizeAnimation(Size, 1.02f, 100);
+                _resizeAnimation.Reset();
+                _resizeAnimation.ApplyTo(this);
+                _activeAnimations.Add(_resizeAnimation);
             }
             _underMouse = true;
             base.OnMouseOver();
@@ -124,7 +129,9 @@ namespace WeBoard.Core.Components.Menu.Buttons
         public override void OnMouseLeave()
         {
             _underMouse = false;
-            Console.WriteLine("Leave");
+            _activeAnimations.Remove(_resizeAnimation);
+            _resizeAnimation.Reset();
+         
             base.OnMouseLeave();
         }
     }

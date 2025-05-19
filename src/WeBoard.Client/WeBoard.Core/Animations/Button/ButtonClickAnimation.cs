@@ -2,7 +2,7 @@
 using WeBoard.Core.Animations.Base;
 using WeBoard.Core.Components.Menu.Buttons;
 
-namespace WeBoard.Core.Animations.ButtonAnimations
+namespace WeBoard.Core.Animations.Button
 {
     public class ButtonClickAnimation : AnimationBase
     {
