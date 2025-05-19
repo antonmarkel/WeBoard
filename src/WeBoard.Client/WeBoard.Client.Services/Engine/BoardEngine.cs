@@ -27,6 +27,7 @@ namespace WeBoard.Client.Services.Engine
 
             FocusManager.GetInstance();
             MouseManager.GetInstance();
+            KeyboardManager.GetInstance();
             var imageContent = new ImageContentView(new Texture("Resources/Handlers/Arrow.png"));
             ComponentManager.GetInstance().InitMenu([new ButtonComponent(new SFML.System.Vector2f(100, 100), new SFML.System.Vector2f(400, 100))
             {
