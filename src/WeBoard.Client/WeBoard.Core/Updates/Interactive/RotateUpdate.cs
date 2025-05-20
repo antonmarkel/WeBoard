@@ -6,7 +6,7 @@ namespace WeBoard.Core.Updates.Interactive
 {
     public class RotateUpdate : UpdateBase
     {
-        private float _offsetRotate;
+        private readonly float _offsetRotate;
 
         public RotateUpdate(long targetId, float offsetRotate) : base(targetId)
         {

@@ -29,6 +29,8 @@ namespace WeBoard.Core.Components.Shapes
             _rectangleShape.Origin = _rectangleShape.Size / 2f;
             UpdateHandles();
             UpdateFocusShape();
+
+            base.SetSize(size);
         }
     }
 }

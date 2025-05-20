@@ -1,9 +1,12 @@
-﻿using SFML.Graphics;
+﻿using System.Drawing;
+using SFML.Graphics;
 using SFML.System;
 using WeBoard.Core.Components.Handlers;
 using WeBoard.Core.Components.Interfaces;
 using WeBoard.Core.Enums;
+using WeBoard.Core.Updates.Interactive;
 using WeBoard.Core.Updates.Interfaces;
+using Color = SFML.Graphics.Color;
 
 namespace WeBoard.Core.Components.Base
 {
@@ -33,11 +36,13 @@ namespace WeBoard.Core.Components.Base
             get => Shape.Rotation;
             set => Shape.Rotation = value;
         }
-        public List<IUpdate> Updates { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public List<IUpdate> Updates { get; set; } = [];
 
         public virtual void SetRotation(float angle)
         {
             Rotation = angle;
+            Updates.Add(new RotateUpdate(Id, angle - Rotation));
             UpdateHandles();
             UpdateFocusShape();
         }
@@ -45,6 +50,7 @@ namespace WeBoard.Core.Components.Base
         public virtual void Drag(Vector2f offset)
         {
             Position += offset;
+            Updates.Add(new DragUpdate(Id,offset));
             UpdateHandles();
             UpdateFocusShape();
         }
@@ -139,6 +145,10 @@ namespace WeBoard.Core.Components.Base
 
 
         public abstract Vector2f GetSize();
-        public abstract void SetSize(Vector2f size);
+
+        public virtual void SetSize(Vector2f size)
+        {
+            Updates.Add(new ResizeUpdate(Id, size - GetSize()));
+        }
     }
 }

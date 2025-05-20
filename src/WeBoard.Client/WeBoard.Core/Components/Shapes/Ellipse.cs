@@ -33,6 +33,8 @@ namespace WeBoard.Core.Components.Shapes
             UpdateEllipsePoints(_size);
             UpdateHandles();
             UpdateFocusShape();
+
+            base.SetSize(size);
         }
 
         private void UpdateEllipsePoints(Vector2f size)

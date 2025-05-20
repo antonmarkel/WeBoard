@@ -63,7 +63,9 @@ namespace WeBoard.Core.Components.Content
             UpdateSpriteScale();
 
             UpdateHandles();       
-            UpdateFocusShape();   
+            UpdateFocusShape();
+
+            base.SetSize(size);
         }
 
         public override void Draw(RenderTarget target, RenderStates states)
