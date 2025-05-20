@@ -1,4 +1,5 @@
-﻿using SFML.Graphics;
+﻿using System.Windows.Documents;
+using SFML.Graphics;
 using SFML.System;
 using WeBoard.Client.Services.Interfaces.Base;
 using WeBoard.Client.Services.Managers;
@@ -33,19 +34,38 @@ namespace WeBoard.Client.Services.Engine
             MouseManager.GetInstance();
             KeyboardManager.GetInstance();
             UpdateManager.GetInstance();
-            var imageContent = new ImageContentView(new Texture("Resources/Handlers/Arrow.png"));
+            var imagePencil = new ImageContentView(new Texture("Resources/Menu/pencil.png"));
+            var imageBrush = new ImageContentView(new Texture("Resources/Menu/brush.png"));
+            var imageCursor = new ImageContentView(new Texture("Resources/Menu/cursor.png"));
             List<MenuComponentBase> menuComponents = new List<MenuComponentBase>();
             List<ButtonComponent> buttons = new ();
-            for (int i = 0; i < 5; i++)
+            buttons.Add(new ButtonComponent(new SFML.System.Vector2f(0, 0), new SFML.System.Vector2f(50, 50))
             {
-                buttons.Add(new ButtonComponent(new SFML.System.Vector2f(0, 0), new SFML.System.Vector2f(50, 50))
-                {
-                    BackgroundColor = new Color(255,255,255,255),
-                    ContentView = imageContent,
-                    CornerRadius = 5,
-                    CornerPointCount = 20,
-                    OutlineThickness = 1
-                });
+                BackgroundColor = new Color(255, 255, 255, 255),
+                ContentView = imagePencil,
+                CornerRadius = 5,
+                CornerPointCount = 20,
+                OutlineThickness = 1
+            });
+            buttons.Add(new ButtonComponent(new SFML.System.Vector2f(0, 0), new SFML.System.Vector2f(50, 50))
+            {
+                BackgroundColor = new Color(255, 255, 255, 255),
+                ContentView = imageBrush,
+                CornerRadius = 5,
+                CornerPointCount = 20,
+                OutlineThickness = 1
+            });
+            buttons.Add(new ButtonComponent(new SFML.System.Vector2f(0, 0), new SFML.System.Vector2f(50, 50))
+            {
+                BackgroundColor = new Color(255, 255, 255, 255),
+                ContentView = imageCursor,
+                CornerRadius = 5,
+                CornerPointCount = 20,
+                OutlineThickness = 1
+            });
+
+            for (int i = 0; i < 3; i++)
+            {
                 menuComponents.Add(buttons[i]);
             }
 
