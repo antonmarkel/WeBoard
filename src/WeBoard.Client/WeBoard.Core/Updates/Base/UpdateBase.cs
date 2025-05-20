@@ -7,7 +7,7 @@ namespace WeBoard.Core.Updates.Base
     {
         public long TargetId { get;}
         public DateTime Date { get; }
-
+        private Action<ITrackable> UpdateAction => UpdateActionMethod;
         public UpdateBase(long id)
         {
             TargetId = id;
@@ -15,7 +15,13 @@ namespace WeBoard.Core.Updates.Base
 
         }
 
-        public abstract void Apply(ITrackable trackable);
+        public abstract void UpdateActionMethod(ITrackable trackable);
+        public void Apply(ITrackable trackable)
+        {
+            trackable.IsUpdating = true;
+            UpdateAction(trackable);
+            trackable.IsUpdating = false;
+        }
         public abstract IUpdate GetCancelUpdate();
 
     }

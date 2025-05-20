@@ -14,7 +14,7 @@ namespace WeBoard.Core.Updates.Interactive
             _offsetSize = offsetSize;
         }
 
-        public override void Apply(ITrackable trackable)
+        public override void UpdateActionMethod(ITrackable trackable)
         {
             if (trackable is IResizable resizable)
             {

@@ -14,18 +14,17 @@ namespace WeBoard.Core.Updates.Interactive
             _offset = offset;
         }
 
-        public override void Apply(ITrackable trackable)
+        public override IUpdate GetCancelUpdate()
+        {
+            return new DragUpdate(TargetId, -_offset);
+        }
+
+        public override void UpdateActionMethod(ITrackable trackable)
         {
             if (trackable is IDraggable draggable)
             {
                 draggable.Drag(_offset);
             }
-                
-        }
-
-        public override IUpdate GetCancelUpdate()
-        {
-            return new DragUpdate(TargetId, -_offset);
         }
     }
 }

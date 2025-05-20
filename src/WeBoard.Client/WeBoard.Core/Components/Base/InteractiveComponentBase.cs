@@ -38,11 +38,12 @@ namespace WeBoard.Core.Components.Base
         }
 
         public List<IUpdate> Updates { get; set; } = [];
+        public bool IsUpdating { get; set; } = false;
 
         public virtual void SetRotation(float angle)
         {
             Rotation = angle;
-            Updates.Add(new RotateUpdate(Id, angle - Rotation));
+            TrackUpdate(new RotateUpdate(Id, angle - Rotation));
             UpdateHandles();
             UpdateFocusShape();
         }
@@ -50,7 +51,7 @@ namespace WeBoard.Core.Components.Base
         public virtual void Drag(Vector2f offset)
         {
             Position += offset;
-            Updates.Add(new DragUpdate(Id,offset));
+            TrackUpdate(new DragUpdate(Id,offset));
             UpdateHandles();
             UpdateFocusShape();
         }
@@ -80,11 +81,7 @@ namespace WeBoard.Core.Components.Base
                 }
             }
 
-            if (this is IRotatable && this is InteractiveComponentBase component)
-            {
-                rotateHandle = new RotateHandler(component);
-            }
-
+            rotateHandle = new RotateHandler(this);
             UpdateHandles();
         }
 
@@ -148,7 +145,13 @@ namespace WeBoard.Core.Components.Base
 
         public virtual void SetSize(Vector2f size)
         {
-            Updates.Add(new ResizeUpdate(Id, size - GetSize()));
+            TrackUpdate(new ResizeUpdate(Id, size - GetSize()));
+        }
+
+        public void TrackUpdate(IUpdate update)
+        {
+            if(!IsUpdating)
+                Updates.Add(update);
         }
     }
 }
