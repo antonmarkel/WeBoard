@@ -60,7 +60,11 @@ namespace WeBoard.Client.Services.Managers
             HandleMouseOver(currentScreen);
 
             if (!IsDragging)
+            {
+                if(_focusManager.FocusedComponent is IDraggable dragComponent)
+                    dragComponent.OnStopDragging();
                 return;
+            }
 
             if (_focusManager.ActiveHandler is IDraggable draggable)
             {

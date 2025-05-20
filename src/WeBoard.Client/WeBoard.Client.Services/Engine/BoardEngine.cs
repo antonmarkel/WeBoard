@@ -32,6 +32,7 @@ namespace WeBoard.Client.Services.Engine
             FocusManager.GetInstance();
             MouseManager.GetInstance();
             KeyboardManager.GetInstance();
+            UpdateManager.GetInstance();
             var imageContent = new ImageContentView(new Texture("Resources/Handlers/Arrow.png"));
             List<MenuComponentBase> menuComponents = new List<MenuComponentBase>();
             List<ButtonComponent> buttons = new ();
@@ -78,7 +79,7 @@ namespace WeBoard.Client.Services.Engine
                 var currentTime = DateTime.Now;
                 var delta = (currentTime - lastTime).TotalMilliseconds;
                 lastTime = currentTime;
-
+                UpdateManager.GetInstance().CollectUpdates();
                 AnimationManager.GetInstance().OnUpdate((float)delta);
                 OnUpdate?.Invoke();
                 Thread.Sleep(16);

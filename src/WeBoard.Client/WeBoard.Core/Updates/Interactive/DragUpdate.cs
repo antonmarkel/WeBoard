@@ -24,6 +24,7 @@ namespace WeBoard.Core.Updates.Interactive
             if (trackable is IDraggable draggable)
             {
                 draggable.Drag(_offset);
+                draggable.OnStopDragging();
             }
         }
     }

@@ -40,18 +40,45 @@ namespace WeBoard.Core.Components.Base
         public List<IUpdate> Updates { get; set; } = [];
         public bool IsUpdating { get; set; } = false;
 
+        private Vector2f _startDraggingPosition = new();
+        private bool _isDragging = false;
+        private DateTime _lastDragAt = DateTime.UtcNow;
         public virtual void SetRotation(float angle)
         {
             Rotation = angle;
-            TrackUpdate(new RotateUpdate(Id, angle - Rotation));
+            //TrackUpdate(new RotateUpdate(Id, angle - Rotation));
             UpdateHandles();
             UpdateFocusShape();
         }
 
+        public void OnStartDragging()
+        {
+            _isDragging = true;
+            _startDraggingPosition = Position;
+        }
+
+        public void OnStopDragging()
+        {
+            
+            if ((DateTime.UtcNow - _lastDragAt).TotalMilliseconds < 300 && IsInFocus)
+                return;
+
+            var wasDragging = _isDragging;
+            _isDragging = false;
+
+            if (wasDragging && !IsUpdating)
+                TrackUpdate(new DragUpdate(Id, Position - _startDraggingPosition));
+        }
+
         public virtual void Drag(Vector2f offset)
         {
+            if (!_isDragging)
+            {
+                OnStartDragging();
+            }
+            _lastDragAt = DateTime.UtcNow;
             Position += offset;
-            TrackUpdate(new DragUpdate(Id,offset));
+            
             UpdateHandles();
             UpdateFocusShape();
         }
@@ -67,6 +94,12 @@ namespace WeBoard.Core.Components.Base
                     handle.Draw(target, states);
                 rotateHandle?.Draw(target, states);
             }
+        }
+
+        public override void OnLostFocus()
+        {
+            base.OnLostFocus();
+            OnStopDragging();
         }
 
         public override void OnFocus()
@@ -145,7 +178,7 @@ namespace WeBoard.Core.Components.Base
 
         public virtual void SetSize(Vector2f size)
         {
-            TrackUpdate(new ResizeUpdate(Id, size - GetSize()));
+            //TrackUpdate(new ResizeUpdate(Id, size - GetSize()));
         }
 
         public void TrackUpdate(IUpdate update)
