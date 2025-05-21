@@ -41,7 +41,8 @@ namespace WeBoard.Client.Services.Render
                 {
                     lock (menuObject)
                     {
-                        window.Draw(menuObject);
+                        if (menuObject.Parent is null)
+                            window.Draw(menuObject);
                     }
                 }
 

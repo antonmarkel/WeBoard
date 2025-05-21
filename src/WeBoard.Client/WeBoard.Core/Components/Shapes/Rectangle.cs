@@ -9,6 +9,17 @@ namespace WeBoard.Core.Components.Shapes
         private readonly RectangleShape _rectangleShape;
         protected override Shape Shape => _rectangleShape;
 
+        public float OutlineThickness
+        {
+            get => _rectangleShape.OutlineThickness;
+            set => _rectangleShape.OutlineThickness = value;
+        }
+        public Color OutlineColor
+        {
+            get => _rectangleShape.OutlineColor;
+            set => _rectangleShape.OutlineColor = value;
+        }
+
         public Rectangle(Vector2f size, Vector2f position)
         {
             _rectangleShape = new RectangleShape(size)

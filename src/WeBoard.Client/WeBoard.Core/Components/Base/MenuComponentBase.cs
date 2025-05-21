@@ -4,8 +4,11 @@ using WeBoard.Core.Components.Interfaces;
 
 namespace WeBoard.Core.Components.Base
 {
-    public abstract class MenuComponentBase : ComponentBase,IClickable
+    public abstract class MenuComponentBase : ComponentBase, IClickable, IHidden
     {
+        public bool IsHidden { get; set; }
+        private Vector2f _beforeHiddenPosition = new();
+
         public override FloatRect GetGlobalBounds()
         {
             return GetScreenBounds();
@@ -46,6 +49,29 @@ namespace WeBoard.Core.Components.Base
         public override void OnMouseOver()
         {
      
+        }
+
+        public virtual void Show()
+        {
+            if(IsHidden)
+                Position = _beforeHiddenPosition;
+
+            IsHidden = false;
+        }
+        public virtual void Hide()
+        {
+            if (IsHidden)
+                return;
+
+            _beforeHiddenPosition = Position;
+            Position = new Vector2f(-10000, -10000);
+            IsHidden = true;
+        }
+
+        public override void Draw(RenderTarget target, RenderStates states)
+        {
+            if(!IsHidden) 
+                base.Draw(target, states);
         }
     }
 }

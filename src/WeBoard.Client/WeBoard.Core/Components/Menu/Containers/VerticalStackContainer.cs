@@ -116,12 +116,16 @@ namespace WeBoard.Core.Components.Menu.Containers
 
         public override void Draw(RenderTarget target, RenderStates states)
         {
+            if (IsHidden)
+                return;
+            
             _bodyShape.Draw(target, states);
             foreach (var child in _children)
             {
                 child.Draw(target, states);
             }
         }
+
 
         public override void OnClick(Vector2f offset)
         {

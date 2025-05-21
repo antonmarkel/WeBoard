@@ -17,8 +17,8 @@ namespace WeBoard.Core.Components.Base
         public IEnumerable<ResizeHandler> GetResizeHandles() => resizeHandles;
         public RotateHandler? GetRotateHandle() => rotateHandle;
         public override FloatRect GetGlobalBounds() => Shape.GetGlobalBounds();
-        public float MinWidth => 100f;
-        public float MinHeight => 100f;
+        public float MinWidth => 5f;
+        public float MinHeight => 5f;
         public virtual Color FillColor
         {
             get => Shape.FillColor;

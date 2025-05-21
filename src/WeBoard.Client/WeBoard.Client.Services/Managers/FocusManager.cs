@@ -58,7 +58,7 @@ namespace WeBoard.Client.Services.Managers
             }
 
             var clickedComponent = _componentManager.GetByScreenPoint(pointInt, out _);
-
+            
             ActiveHandler = null;
 
             UpdateFocus(clickedComponent);
