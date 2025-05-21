@@ -107,7 +107,7 @@ namespace WeBoard.Core.Components.Handlers
             var wasInFocus = IsInFocus;
             IsInFocus = false;
             if(wasInFocus)
-                _target.OnFinishResizing();
+                _target.OnStopResizing();
         }
 
         public void OnMouseLeave() { }

@@ -44,15 +44,36 @@ namespace WeBoard.Core.Components.Base
         private bool _isDragging = false;
         private DateTime _lastDragAt = DateTime.UtcNow;
 
-
-        private DateTime _lastResizeAt = DateTime.UtcNow;
         private bool _isResizing = false;
         private Vector2f _startSize = new();
 
+        private bool _isRotating = false;
+        private float _startRotation;
+
+        public void OnStartRotating()
+        {
+            if (!IsUpdating)
+            {
+                _isRotating = true;
+                _startRotation = Rotation;
+            }
+        }
+
+        public void OnStopRotating()
+        {
+            var wasRotating = _isRotating;
+            _isRotating = false;
+
+            if (wasRotating && !IsUpdating)
+                TrackUpdate(new RotateUpdate(Id, Rotation - _startRotation));
+        }
+
         public virtual void SetRotation(float angle)
         {
+            if(!_isRotating)
+                OnStartRotating();
+
             Rotation = angle;
-            //TrackUpdate(new RotateUpdate(Id, angle - Rotation));
             UpdateHandles();
             UpdateFocusShape();
         }
@@ -124,7 +145,7 @@ namespace WeBoard.Core.Components.Base
                 }
             }
 
-            rotateHandle = new RotateHandler(this);
+            rotateHandle = rotateHandle ?? new RotateHandler(this);
             UpdateHandles();
         }
 
@@ -195,7 +216,7 @@ namespace WeBoard.Core.Components.Base
             }
         }
 
-        public void OnFinishResizing()
+        public void OnStopResizing()
         {
             var wasResizing = _isResizing;
             _isResizing = false;
