@@ -43,6 +43,12 @@ namespace WeBoard.Core.Components.Base
         private Vector2f _startDraggingPosition = new();
         private bool _isDragging = false;
         private DateTime _lastDragAt = DateTime.UtcNow;
+
+
+        private DateTime _lastResizeAt = DateTime.UtcNow;
+        private bool _isResizing = false;
+        private Vector2f _startSize = new();
+
         public virtual void SetRotation(float angle)
         {
             Rotation = angle;
@@ -53,14 +59,17 @@ namespace WeBoard.Core.Components.Base
 
         public void OnStartDragging()
         {
-            _isDragging = true;
-            _startDraggingPosition = Position;
+            if (!IsUpdating) {
+                _isDragging = true;
+                _startDraggingPosition = Position;
+            }
+           
         }
 
         public void OnStopDragging()
         {
             
-            if ((DateTime.UtcNow - _lastDragAt).TotalMilliseconds < 300 && IsInFocus)
+            if ((DateTime.UtcNow - _lastDragAt).TotalMilliseconds < 200 && IsInFocus)
                 return;
 
             var wasDragging = _isDragging;
@@ -76,6 +85,7 @@ namespace WeBoard.Core.Components.Base
             {
                 OnStartDragging();
             }
+
             _lastDragAt = DateTime.UtcNow;
             Position += offset;
             
@@ -176,9 +186,28 @@ namespace WeBoard.Core.Components.Base
 
         public abstract Vector2f GetSize();
 
+        public void OnStartResizing()
+        {
+            if (!IsUpdating)
+            {
+                _isResizing = true;
+                _startSize = GetSize();
+            }
+        }
+
+        public void OnFinishResizing()
+        {
+            var wasResizing = _isResizing;
+            _isResizing = false;
+
+            if (wasResizing && !IsUpdating)
+                TrackUpdate(new ResizeUpdate(Id, GetSize() - _startSize));
+        }
+
         public virtual void SetSize(Vector2f size)
         {
-            //TrackUpdate(new ResizeUpdate(Id, size - GetSize()));
+            if(!_isResizing)
+                OnStartResizing();
         }
 
         public void TrackUpdate(IUpdate update)
