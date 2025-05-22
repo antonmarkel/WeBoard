@@ -21,9 +21,13 @@ namespace WeBoard.Core.Components.Base
         }
         public event Action<ComponentBase> ZIndexChanged;
         public virtual Vector2f Position { get => Shape.Position; set => Shape.Position = value; }
+        public IComponent? Parent { get; set; } = null;
 
+
+        public long Id { get; }
         public ComponentBase()
         {
+            Id = new Random().NextInt64();
             _focusShape = new RectangleShape()
             {
                 FillColor = Color.Transparent,

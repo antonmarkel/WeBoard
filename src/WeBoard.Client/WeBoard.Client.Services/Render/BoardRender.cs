@@ -30,7 +30,8 @@ namespace WeBoard.Client.Services.Render
                 {
                     lock (renderObject)
                     {
-                        window.Draw(renderObject);
+                        if(renderObject.Parent is null)
+                            window.Draw(renderObject);
                     }
                 }
 
@@ -40,7 +41,8 @@ namespace WeBoard.Client.Services.Render
                 {
                     lock (menuObject)
                     {
-                        window.Draw(menuObject);
+                        if (menuObject.Parent is null)
+                            window.Draw(menuObject);
                     }
                 }
 

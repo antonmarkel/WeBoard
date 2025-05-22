@@ -61,7 +61,11 @@ namespace WeBoard.Client.Services.Managers
             HandleMouseOver(currentScreen);
 
             if (!IsDragging)
+            {
+                if(_focusManager.FocusedComponent is IDraggable dragComponent)
+                    dragComponent.OnStopDragging();
                 return;
+            }
 
             if (_focusManager.ActiveHandler is IDraggable draggable)
             {
@@ -111,7 +115,7 @@ namespace WeBoard.Client.Services.Managers
                     .FirstOrDefault(comp => comp.Intersect(DragStartScreen, out clickOffset));
                 if (menuClickedComponent is IClickable clickable)
                 {
-                    clickable.OnClick(clickOffset);
+                    clickable.OnClick(-clickOffset);
                     return;
                 }
 

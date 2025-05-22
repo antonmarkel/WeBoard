@@ -11,12 +11,12 @@ namespace WeBoard.Core.Components.Menu.Buttons
 {
     public class ButtonComponent : MenuComponentBase, IContainerView, IAnimatible
     {
-        private RoundedRectangle _buttonShape;
-        private RectangleShape _focusRectangle;
-        private ButtonClickAnimation _clickAnimation;
-        private ButtonResizeAnimation _resizeAnimation;
-        private List<IAnimation> _activeAnimations = [];
-        private bool _underMouse = false;
+        protected RoundedRectangle _buttonShape;
+        protected RectangleShape _focusRectangle;
+        protected ButtonClickAnimation _clickAnimation;
+        protected ButtonResizeAnimation _resizeAnimation;
+        protected List<IAnimation> _activeAnimations = [];
+        protected bool _underMouse = false;
 
         public IContentView? ContentView { get; set; }
         public uint Padding { get; set; }
@@ -47,6 +47,19 @@ namespace WeBoard.Core.Components.Menu.Buttons
             get => _buttonShape.FillColor;
             set => _buttonShape.FillColor = value;
         }
+        public uint CornerPointCount
+        {
+            get => _buttonShape.CornerPointCount;
+            set => _buttonShape.CornerPointCount = value;
+            
+        }
+        public float CornerRadius
+        {
+            get => _buttonShape.CornerRadius;
+            set => _buttonShape.CornerRadius = value;
+           
+        }
+
 
         protected override Shape Shape => _focusRectangle;
 
@@ -83,22 +96,23 @@ namespace WeBoard.Core.Components.Menu.Buttons
 
         private void UpdateContentView()
         {
+   
             if (ContentView is not null)
             {
-                ContentView.Size = Size - new Vector2f(Padding, Padding);
-                ContentView.Position = Position + new Vector2f(Padding, Padding);
+                ContentView.Size = new Vector2f(Size.X - Padding*2, Size.Y - Padding*2);
+                ContentView.Position = new Vector2f(Position.X + Padding, Position.Y + Padding);
             }
         }
 
         public override FloatRect GetScreenBounds()
         {
-            return _focusRectangle.GetGlobalBounds();
+            return new FloatRect(Position, Size);
         }
         public override void OnClick(Vector2f offset)
         {
             _activeAnimations.Remove(_clickAnimation);
-            _clickAnimation = new ButtonClickAnimation(Color.White, BackgroundColor, 200);
-            _clickAnimation.Reset();
+            _clickAnimation?.Reset();
+            _clickAnimation = new ButtonClickAnimation(Color.Black, BackgroundColor, 200);
             _clickAnimation.ApplyTo(this);
             _activeAnimations.Add(_clickAnimation);
 
@@ -114,11 +128,12 @@ namespace WeBoard.Core.Components.Menu.Buttons
 
         public override void OnMouseOver()
         {
-            if(!_underMouse);
+            
+            if(!_underMouse)
             {
                 _activeAnimations.Remove(_resizeAnimation);
-                _resizeAnimation = new ButtonResizeAnimation(Size, 1.02f, 100);
-                _resizeAnimation.Reset();
+                _resizeAnimation?.Reset();
+                _resizeAnimation = new ButtonResizeAnimation(Size, 1.1f, 100);
                 _resizeAnimation.ApplyTo(this);
                 _activeAnimations.Add(_resizeAnimation);
             }

@@ -26,6 +26,7 @@ namespace WeBoard.Core.Components.Handlers
             get => _sprite.Position;
             set => _sprite.Position = value;
         }
+        public IComponent? Parent { get; set; }
 
         public RotateHandler(InteractiveComponentBase target)
         {
@@ -107,7 +108,15 @@ namespace WeBoard.Core.Components.Handlers
         }
 
         public void OnFocus() => IsInFocus = true;
-        public void OnLostFocus() => IsInFocus = false;
+
+        public void OnLostFocus()
+        {
+            var wasInFocus = IsInFocus;
+            IsInFocus = false;
+            if (wasInFocus)
+                _target.OnStopRotating();
+        }
+
         public void OnMouseLeave() { }
         public void OnMouseOver() { }
     }

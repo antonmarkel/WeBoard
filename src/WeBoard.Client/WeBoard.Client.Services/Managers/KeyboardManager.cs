@@ -24,10 +24,12 @@ namespace WeBoard.Client.Services.Managers
 
         private void OnKeyPressed(object? sender, KeyEventArgs e)
         {
-            if (e.Code == Keyboard.Key.V &&
-                (Keyboard.IsKeyPressed(Keyboard.Key.LControl) || Keyboard.IsKeyPressed(Keyboard.Key.RControl)))
+            if (Keyboard.IsKeyPressed(Keyboard.Key.LControl) || Keyboard.IsKeyPressed(Keyboard.Key.RControl))
             {
-                PasteImageFromClipboard();
+                if (e.Code == Keyboard.Key.V)
+                    PasteImageFromClipboard();
+                else if(e.Code == Keyboard.Key.Z)
+                    UpdateManager.GetInstance().RemoveLastUpdate();
             }
             if (e.Code == Keyboard.Key.T)
             {

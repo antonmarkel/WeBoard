@@ -34,6 +34,8 @@ namespace WeBoard.Core.Components.Shapes
             UpdateTrianglePoints(_size); 
             UpdateHandles();
             UpdateFocusShape();
+
+            base.SetSize(size);
         }
 
         private void UpdateTrianglePoints(Vector2f size)

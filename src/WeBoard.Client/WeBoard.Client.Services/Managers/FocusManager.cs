@@ -23,27 +23,43 @@ namespace WeBoard.Client.Services.Managers
 
             if (FocusedComponent != null && FocusedComponent is InteractiveComponentBase interactive)
             {
+                ActiveHandler = null;
                 foreach (var handle in interactive.GetResizeHandles())
                 {
                     if (handle.Intersect(pointInt, out _))
                     {
                         ActiveHandler = handle;
+                        handle.OnFocus();
                         interactive.OnFocus();
-                        return;
+                    }
+                    else
+                    {
+                        handle.OnLostFocus();
                     }
                 }
+
+                if (ActiveHandler != null)
+                    return;
 
                 var rotateHandle = interactive.GetRotateHandle();
                 if (rotateHandle != null && rotateHandle.Intersect(pointInt, out _))
                 {
                     ActiveHandler = rotateHandle;
+                    rotateHandle.OnFocus();
                     interactive.OnFocus();
-                    return;
                 }
+                else
+                {
+                    rotateHandle?.OnLostFocus();
+                }
+
+                if (ActiveHandler != null)
+                    return;
+
             }
 
             var clickedComponent = _componentManager.GetByScreenPoint(pointInt, out _);
-
+            
             ActiveHandler = null;
 
             UpdateFocus(clickedComponent);

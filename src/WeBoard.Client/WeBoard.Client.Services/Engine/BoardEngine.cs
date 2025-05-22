@@ -1,9 +1,6 @@
-﻿using SFML.Graphics;
+﻿using WeBoard.Client.Services.Initializers;
 using WeBoard.Client.Services.Interfaces.Base;
 using WeBoard.Client.Services.Managers;
-using WeBoard.Core.Animations;
-using WeBoard.Core.Components.Content;
-using WeBoard.Core.Components.Menu.Buttons;
 
 namespace WeBoard.Client.Services.Engine
 {
@@ -29,13 +26,12 @@ namespace WeBoard.Client.Services.Engine
             FocusManager.GetInstance();
             MouseManager.GetInstance();
             KeyboardManager.GetInstance();
-            var imageContent = new ImageContentView(new Texture("Resources/Handlers/Arrow.png"));
-            var button = new ButtonComponent(new SFML.System.Vector2f(100, 100), new SFML.System.Vector2f(400, 100))
-            {
-                ContentView = imageContent
-            };
+            UpdateManager.GetInstance();
 
-            ComponentManager.GetInstance().InitMenu([button]);
+            var menuInitializer = new MenuInitializer();
+            var menuComponents = menuInitializer.InitializeComponents();
+
+            ComponentManager.GetInstance().InitMenu(menuComponents);
         }
 
         public void Stop()
@@ -52,7 +48,7 @@ namespace WeBoard.Client.Services.Engine
                 var currentTime = DateTime.Now;
                 var delta = (currentTime - lastTime).TotalMilliseconds;
                 lastTime = currentTime;
-
+                UpdateManager.GetInstance().CollectUpdates();
                 AnimationManager.GetInstance().OnUpdate((float)delta);
                 OnUpdate?.Invoke();
                 Thread.Sleep(16);
