@@ -1,6 +1,7 @@
 ﻿using SFML.System;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
+using WeBoard.Core.Components.Visuals;
 
 namespace WeBoard.Client.Services.Managers
 {

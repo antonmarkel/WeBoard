@@ -1,6 +1,7 @@
 ﻿using SFML.System;
 using SFML.Window;
 using WeBoard.Core.Components.Interfaces;
+using WeBoard.Core.Components.Visuals;
 
 namespace WeBoard.Client.Services.Managers
 {
@@ -111,6 +112,17 @@ namespace WeBoard.Client.Services.Managers
                 if (menuClickedComponent is IClickable clickable)
                 {
                     clickable.OnClick(clickOffset);
+                    return;
+                }
+
+                if (KeyboardManager.GetInstance().IsInTextMode())
+                {
+                    var textComponent = new TextComponent(DragStartWorld);
+                    ComponentManager.GetInstance().AddComponent(textComponent);
+                    FocusManager.GetInstance().HandleClick(textComponent.Position);
+
+                    textComponent.StartEditing();
+                    KeyboardManager.GetInstance().ExitTextMode();
                     return;
                 }
 
