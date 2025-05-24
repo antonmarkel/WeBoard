@@ -9,6 +9,7 @@ namespace WeBoard.Client.Services.Managers
         private static readonly MouseManager Instance = new();
         private readonly RenderManager _global = RenderManager.GetInstance();
         private readonly FocusManager _focusManager = FocusManager.GetInstance();
+        private readonly CursorManager _cursorManager = CursorManager.GetInstance();
         public bool IsDragging { get; set; }
         public Vector2i DragStartScreen { get; private set; }
         public Vector2f DragStartWorld { get; private set; }
@@ -53,6 +54,7 @@ namespace WeBoard.Client.Services.Managers
         {
 
             var currentScreen = new Vector2i(e.X, e.Y);
+            _cursorManager.SetPosition(currentScreen);
             var currentWorld = _global.RenderWindow.MapPixelToCoords(currentScreen);
             var offsetScreen = DragStartScreen - currentScreen;
             var offsetWorld = DragStartWorld - currentWorld;

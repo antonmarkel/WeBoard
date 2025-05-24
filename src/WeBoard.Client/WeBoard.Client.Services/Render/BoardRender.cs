@@ -9,6 +9,7 @@ namespace WeBoard.Client.Services.Render
         public bool IsRunning => _isRunning;
         private readonly RenderManager _global = RenderManager.GetInstance();
         private readonly ComponentManager _componentManager = ComponentManager.GetInstance();
+        private readonly CursorManager _cursorManager = CursorManager.GetInstance();
         public BoardRender(RenderWindow window)
         {
             _global.RenderWindow = window;
@@ -45,6 +46,8 @@ namespace WeBoard.Client.Services.Render
                             window.Draw(menuObject);
                     }
                 }
+
+                window.Draw(_cursorManager);
 
                 window.Display();
             }

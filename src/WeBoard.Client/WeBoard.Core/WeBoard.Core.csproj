@@ -10,10 +10,18 @@
     <None Remove="Resources\Handlers\Arrow.png" />
     <None Remove="Resources\Menu\brush.png" />
     <None Remove="Resources\Menu\cursor.png" />
+    <None Remove="Resources\Menu\eraser.png" />
+    <None Remove="Resources\Menu\font.png" />
     <None Remove="Resources\Menu\pencil.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Resources\Menu\eraser.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Menu\font.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Menu\pencil.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

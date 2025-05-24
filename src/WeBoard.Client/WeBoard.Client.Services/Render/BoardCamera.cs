@@ -23,6 +23,7 @@ namespace WeBoard.Client.Services.Render
             _uiView = new View(window.DefaultView);
 
             window.Resized += HandleResize;
+            window.SetMouseCursorVisible(false);
         }
 
         private void HandleResize(object? sender, SizeEventArgs e)
