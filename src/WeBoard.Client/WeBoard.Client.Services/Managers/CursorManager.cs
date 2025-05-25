@@ -19,6 +19,12 @@ namespace WeBoard.Client.Services.Managers
 
         private Sprite _sprite;
         private Texture _texture;
+
+        public Vector2f Origin
+        {
+            get => _sprite.Origin;
+            set => _sprite.Origin = value;
+        }
         public Texture CursorTexture
         {
             get => _texture;

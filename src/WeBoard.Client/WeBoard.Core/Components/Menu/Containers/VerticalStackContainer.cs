@@ -126,6 +126,10 @@ namespace WeBoard.Core.Components.Menu.Containers
             }
         }
 
+        public override void AdjustToResolution(uint width, uint height)
+        {
+            UpdateContainer();
+        }
 
         public override void OnClick(Vector2f offset)
         {

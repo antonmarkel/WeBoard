@@ -4,11 +4,14 @@ using WeBoard.Core.Components.Interfaces;
 
 namespace WeBoard.Core.Components.Base
 {
-    public abstract class MenuComponentBase : ComponentBase, IClickable, IHidden
+    public abstract class MenuComponentBase : ComponentBase, IClickable, IHidden, IResolutionDependent
     {
         public bool IsHidden { get; set; }
         private Vector2f _beforeHiddenPosition = new();
+        protected const uint DefaultResolutionHeight= 1080;
 
+        public virtual Vector2f Size { get; set; }
+        protected float _adjustResizeCf = 1f;
         public override FloatRect GetGlobalBounds()
         {
             return GetScreenBounds();
@@ -72,6 +75,13 @@ namespace WeBoard.Core.Components.Base
         {
             if(!IsHidden) 
                 base.Draw(target, states);
+        }
+
+        public virtual void AdjustToResolution(uint width, uint height)
+        {
+            var newCf = (float)height / DefaultResolutionHeight;
+            Size = new Vector2f(Size.X / _adjustResizeCf * newCf, Size.Y / _adjustResizeCf * newCf); 
+            _adjustResizeCf = (float)height / DefaultResolutionHeight;
         }
     }
 }

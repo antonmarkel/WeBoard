@@ -27,7 +27,7 @@ namespace WeBoard.Core.Components.Menu.Buttons
             get => _buttonShape.Position;
             set => _buttonShape.Position = _focusRectangle.Position = value;
         }
-        public Vector2f Size
+        public override Vector2f Size
         {
             get => _buttonShape.Size;
             set => _buttonShape.Size = _focusRectangle.Size = value;

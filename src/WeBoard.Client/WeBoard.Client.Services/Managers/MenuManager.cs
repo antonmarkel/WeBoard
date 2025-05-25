@@ -1,4 +1,5 @@
-﻿using WeBoard.Core.Enums.Menu;
+﻿using SFML.System;
+using WeBoard.Core.Enums.Menu;
 
 namespace WeBoard.Client.Services.Managers
 {
@@ -31,21 +32,27 @@ namespace WeBoard.Client.Services.Managers
             {
                 case InstrumentOptionsEnum.Cursor:
                     _cursorManager.CursorTexture = _textureManager.MenuCursor;
+                    _cursorManager.Origin = new Vector2f(120, 40);
                     break;
                 case InstrumentOptionsEnum.Brush:
                     _cursorManager.CursorTexture = _textureManager.MenuBrush;
+                    _cursorManager.Origin = new Vector2f(50, 442);
                     break;
                 case InstrumentOptionsEnum.Pencil:
                     _cursorManager.CursorTexture = _textureManager.MenuPencil;
+                    _cursorManager.Origin = new Vector2f(18, 231);
                     break;
                 case InstrumentOptionsEnum.Eraser:
                     _cursorManager.CursorTexture = _textureManager.MenuEraser;
+                    _cursorManager.Origin = new Vector2f(115, 471);
                     break;
                 case InstrumentOptionsEnum.Text:
                     _cursorManager.CursorTexture = _textureManager.MenuFont;
+                    _cursorManager.Origin = new Vector2f(126, 105);
                     break;
                 default:
                     _cursorManager.CursorTexture = _textureManager.MenuCursor;
+                    _cursorManager.Origin = new Vector2f(120, 40);
                     break;
             }
         }
