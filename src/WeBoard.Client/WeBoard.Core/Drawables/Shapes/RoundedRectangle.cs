@@ -3,13 +3,13 @@ using SFML.System;
 
 namespace WeBoard.Core.Drawables.Shapes
 {
-    public class RoundedRectangle : Transformable, Drawable
+    public class RoundedRectangle : Shape, Drawable
     {
         private ConvexShape _shape;
         private Vector2f _size;
         private float _cornerRadius;
         private uint _cornerPointCount;
-
+        private List<Vector2f> _points = new();
         public RoundedRectangle()
         {
             _shape = new ConvexShape();
@@ -41,19 +41,19 @@ namespace WeBoard.Core.Drawables.Shapes
             }
         }
 
-        public Color FillColor
+        public new Color FillColor
         {
             get => _shape.FillColor;
             set => _shape.FillColor = value;
         }
 
-        public Color OutlineColor
+        public new Color OutlineColor
         {
             get => _shape.OutlineColor;
             set => _shape.OutlineColor = value;
         }
 
-        public float OutlineThickness
+        public new float OutlineThickness
         {
             get => _shape.OutlineThickness;
             set => _shape.OutlineThickness = value;
@@ -71,20 +71,20 @@ namespace WeBoard.Core.Drawables.Shapes
 
         private void UpdateShape()
         {
-            List<Vector2f> points = new List<Vector2f>();
+            _points = new List<Vector2f>();
             float width = _size.X;
             float height = _size.Y;
             float radius = Math.Min(_cornerRadius, Math.Min(width / 2, height / 2));
 
-            GenerateCornerPoints(points, new Vector2f(radius, radius), 180f, 270f); // Top-Left
-            GenerateCornerPoints(points, new Vector2f(width - radius, radius), 270f, 360f); // Top-Right
-            GenerateCornerPoints(points, new Vector2f(width - radius, height - radius), 0f, 90f); // Bottom-Right
-            GenerateCornerPoints(points, new Vector2f(radius, height - radius), 90f, 180f); // Bottom-Left
+            GenerateCornerPoints(_points, new Vector2f(radius, radius), 180f, 270f); // Top-Left
+            GenerateCornerPoints(_points, new Vector2f(width - radius, radius), 270f, 360f); // Top-Right
+            GenerateCornerPoints(_points, new Vector2f(width - radius, height - radius), 0f, 90f); // Bottom-Right
+            GenerateCornerPoints(_points, new Vector2f(radius, height - radius), 90f, 180f); // Bottom-Left
 
-            _shape.SetPointCount((uint)points.Count);
-            for (int i = 0; i < points.Count; i++)
+            _shape.SetPointCount((uint)_points.Count);
+            for (int i = 0; i < _points.Count; i++)
             {
-                _shape.SetPoint((uint)i, points[i]);
+                _shape.SetPoint((uint)i, _points[i]);
             }
         }
 
@@ -103,10 +103,20 @@ namespace WeBoard.Core.Drawables.Shapes
             }
         }
 
-        public void Draw(RenderTarget target, RenderStates states)
+        public new void Draw(RenderTarget target, RenderStates states)
         {
             states.Transform *= Transform;
             target.Draw(_shape, states);
+        }
+
+        public override uint GetPointCount()
+        {
+            return (uint)_points.Count;
+        }
+
+        public override Vector2f GetPoint(uint index)
+        {
+            return _points[(int)index];
         }
     }
 }

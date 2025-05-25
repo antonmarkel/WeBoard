@@ -7,6 +7,7 @@ using WeBoard.Core.Components.Content;
 using WeBoard.Core.Components.Menu.Buttons;
 using WeBoard.Core.Components.Menu.Buttons.RadioButtons;
 using WeBoard.Core.Components.Menu.Containers;
+using WeBoard.Core.Components.Menu.Visuals;
 using WeBoard.Core.Components.Shapes;
 using WeBoard.Core.Enums.Menu;
 
@@ -36,6 +37,11 @@ namespace WeBoard.Client.Services.Initializers
 
         private void InitializeShapeSideMenu(RadioButtonComponent shapeRadioButton, List<MenuComponentBase> menuComponents)
         {
+            var testLabel = new LabelComponent("Hello guys!", new Vector2f(500, 500))
+            {
+                BackgroundColor = new Color(0, 0, 0, 120)
+            };
+
             var rectContent = new InteractiveComponentContent(
                 new Rectangle(new Vector2f(40, 40), new Vector2f(0, 0))
                 {
@@ -125,7 +131,7 @@ namespace WeBoard.Client.Services.Initializers
                     shapeStack.Hide();
             };
 
-            menuComponents.AddRange([rectButton,triangleButton,circleButton,shapeStack]);
+            menuComponents.AddRange([testLabel,rectButton, triangleButton,circleButton,shapeStack]);
         }
 
         private void InitializeSideMenu(List<MenuComponentBase> menuComponents)

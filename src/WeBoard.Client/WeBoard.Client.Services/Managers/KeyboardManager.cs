@@ -1,5 +1,5 @@
 ﻿using SFML.Window;
-using WeBoard.Core.Components.Content;
+using WeBoard.Core.Components.Visuals;
 
 namespace WeBoard.Client.Services.Managers
 {
@@ -8,12 +8,18 @@ namespace WeBoard.Client.Services.Managers
         private static readonly KeyboardManager Instance = new();
 
         private readonly RenderManager _global = RenderManager.GetInstance();
+        private bool _isTextMode = false;
+        public bool IsInTextMode() => _isTextMode;
+        public void ExitTextMode() => _isTextMode = false;
+
 
         public static KeyboardManager GetInstance() => Instance;
 
         public KeyboardManager()
         {
             _global.RenderWindow.KeyPressed += OnKeyPressed;
+            _global.RenderWindow.TextEntered += OnTextEntered;
+
         }
 
         private void OnKeyPressed(object? sender, KeyEventArgs e)
@@ -24,6 +30,35 @@ namespace WeBoard.Client.Services.Managers
                     PasteImageFromClipboard();
                 else if(e.Code == Keyboard.Key.Z)
                     UpdateManager.GetInstance().RemoveLastUpdate();
+            }
+            if (e.Code == Keyboard.Key.T)
+            {
+                var focused = FocusManager.GetInstance().FocusedComponent;
+                if (focused is not TextComponent text || !text.IsEditing)
+                {
+                    _isTextMode = true;
+                }
+            }
+        }
+
+        private void OnTextEntered(object? sender, TextEventArgs e)
+        {
+            var focused = FocusManager.GetInstance().FocusedComponent;
+            if (focused is TextComponent textComponent && textComponent.IsEditing)
+            {
+                if (e.Unicode == "\b")
+                {
+                    textComponent.Backspace();
+                }
+                else if (e.Unicode == "\r" || e.Unicode == "\n")
+                {
+                    textComponent.AppendChar("\n");
+                }
+                else
+                {
+                    textComponent.AppendChar(e.Unicode);
+                }
+
             }
         }
 

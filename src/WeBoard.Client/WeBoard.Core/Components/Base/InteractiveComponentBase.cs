@@ -167,7 +167,6 @@ namespace WeBoard.Core.Components.Base
         public virtual void Resize(Vector2f delta, ResizeDirectionEnum direction)
         {
             var originalSize = GetSize();
-
             Vector2f localOffset = direction switch
             {
                 ResizeDirectionEnum.TopLeft => new Vector2f(-1, -1),

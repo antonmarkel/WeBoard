@@ -2,7 +2,7 @@
 using SFML.System;
 using WeBoard.Core.Components.Base;
 
-namespace WeBoard.Core.Components.Content
+namespace WeBoard.Core.Components.Visuals
 {
     public class ImageComponent : InteractiveComponentBase
     {
