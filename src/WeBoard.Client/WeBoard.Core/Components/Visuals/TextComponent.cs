@@ -4,12 +4,16 @@ using SFML.System;
 using WeBoard.Core.Animations.Interfaces;
 using WeBoard.Core.Animations.TextComponent;
 using WeBoard.Core.Components.Base;
+using WeBoard.Core.Components.Handlers;
+using WeBoard.Core.Components.Handlers.WeBoard.Core.Components.Handlers;
 using WeBoard.Core.Components.Interfaces;
 
 namespace WeBoard.Core.Components.Visuals
 {
     public class TextComponent : InteractiveComponentBase, IAnimatible
     {
+        private readonly TextCursorHandler _cursorHandler;
+        private readonly TextLayoutHandler _layoutHandler;
         private readonly RectangleShape _focusRectangle;
         private readonly Text _text;
         private readonly Font _font;
@@ -78,8 +82,9 @@ namespace WeBoard.Core.Components.Visuals
             _focusRectangle.Size = newSize;
             _focusRectangle.Origin = newSize / 2f;
 
-            UpdateFontSizeToFit(newSize);
-            UpdateTextPosition();
+            _layoutHandler.FitFontSizeToBounds(_text, newSize);
+            _layoutHandler.UpdateTextOriginAndPosition(_text, _focusRectangle.Position);
+
             UpdateHandles();
             UpdateFocusShape();
         }
@@ -97,7 +102,10 @@ namespace WeBoard.Core.Components.Visuals
                 FillColor = Color.Transparent
             };
 
-            _currentSize = new Vector2f(250, 60);
+            _cursorHandler = new TextCursorHandler(_font, _padding);
+            _layoutHandler = new TextLayoutHandler(_font, _padding, MinWidth, MinHeight);
+
+            _currentSize = new Vector2f(250, 80);
             SetSize(_currentSize);
             Position = position;
 
@@ -150,114 +158,36 @@ namespace WeBoard.Core.Components.Visuals
             target.Draw(_focusRectangle, states);
 
             if (_isEditing && _cursorVisible)
-            {
-                string displayText = _text.DisplayedString;
-                if (string.IsNullOrWhiteSpace(displayText))
-                {
-                    var cursor = new Text("| ", _font, _text.CharacterSize)
-                    {
-                        FillColor = Color.Black
-                    };
-
-                    var cursorBounds = cursor.GetLocalBounds();
-                    cursor.Origin = new Vector2f(0, cursorBounds.Top);
-                    cursor.Position = new Vector2f(
-                        _focusRectangle.Position.X - _focusRectangle.Size.X / 2f + _padding.X,
-                        _focusRectangle.Position.Y - cursorBounds.Height / 2f);
-
-                    var placeholder = new Text("Type", _font, _text.CharacterSize)
-                    {
-                        FillColor = new Color(150, 150, 150)
-                    };
-
-                    var placeholderBounds = placeholder.GetLocalBounds();
-                    placeholder.Origin = new Vector2f(0, placeholderBounds.Top);
-                    placeholder.Position = new Vector2f(
-                        cursor.Position.X + cursor.GetGlobalBounds().Width,
-                        cursor.Position.Y);
-
-                    target.Draw(cursor, states);
-                    target.Draw(placeholder, states);
-                }
-                else
-                {
-                    var tempText = new Text(_text)
-                    {
-                        DisplayedString = displayText + "|",
-                        FillColor = Color.Black
-                    };
-
-                    var bounds = tempText.GetLocalBounds();
-                    tempText.Origin = new Vector2f(0, bounds.Top);
-                    tempText.Position = new Vector2f(
-                        _focusRectangle.Position.X - _focusRectangle.Size.X / 2f + _padding.X,
-                        _focusRectangle.Position.Y - bounds.Height / 2f);
-
-                    target.Draw(tempText, states);
-                }
-            }
+                _cursorHandler.Draw(target, states, _text, _focusRectangle);
             else
-            {
                 target.Draw(_text, states);
-            }
 
             base.Draw(target, states);
         }
 
-
-
         private void CalculateSizeAndPosition()
         {
-            var bounds = _text.GetLocalBounds();
+            _currentSize = _layoutHandler.CalculateSize(_text.DisplayedString, _text.CharacterSize);
 
-            var calculatedSize = new Vector2f(
-                bounds.Width + _padding.X * 2 + 10,
-                bounds.Height + _padding.Y * 2 + 10
-            );
+            _focusRectangle.Size = _currentSize;
+            _focusRectangle.Origin = _currentSize / 2f;
 
-            _currentSize = new Vector2f(
-                calculatedSize.X,
-                calculatedSize.Y
-            );
+            _layoutHandler.UpdateTextOriginAndPosition(_text, _focusRectangle.Position);
 
-
-            var newSize = new Vector2f(
-                MathF.Max(_currentSize.X, MinWidth),
-                MathF.Max(_currentSize.Y, MinHeight)
-            );
-
-            _focusRectangle.Size = newSize;
-            _focusRectangle.Origin = newSize / 2f;
-
-            _text.Origin = new Vector2f(0, 0);
-
-            UpdateTextPosition();
             UpdateHandles();
             UpdateFocusShape();
-        }
-
-        private void UpdateFontSizeToFit(Vector2f availableSize)
-        {
-            uint fontSize = 72;
-            _text.CharacterSize = fontSize;
-
-            FloatRect bounds;
-            do
-            {
-                _text.CharacterSize = fontSize--;
-                bounds = _text.GetLocalBounds();
-            }
-            while ((bounds.Height + _padding.Y > availableSize.Y ||
-                    bounds.Width + _padding.X > availableSize.X) && fontSize > 8);
         }
 
         private void UpdateTextPosition()
         {
             var bounds = _text.GetLocalBounds();
-            _text.Origin = new Vector2f(0, bounds.Top);
-            _text.Position = new Vector2f(
-                _focusRectangle.Position.X - _focusRectangle.Size.X / 2f + _padding.X,
-                _focusRectangle.Position.Y - bounds.Height / 2f);
+
+            _text.Origin = new Vector2f(
+                bounds.Left + bounds.Width / 2f,
+                bounds.Top + bounds.Height / 2f
+            );
+
+            _text.Position = _focusRectangle.Position;
         }
 
         public void AppendChar(string ch)
