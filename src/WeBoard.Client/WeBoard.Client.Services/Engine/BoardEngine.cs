@@ -1,6 +1,7 @@
 ﻿using WeBoard.Client.Services.Initializers;
 using WeBoard.Client.Services.Interfaces.Base;
 using WeBoard.Client.Services.Managers;
+using WeBoard.Core.Components.Interfaces;
 using WeBoard.Core.Enums.Menu;
 
 namespace WeBoard.Client.Services.Engine
@@ -51,6 +52,17 @@ namespace WeBoard.Client.Services.Engine
                 var currentTime = DateTime.Now;
                 var delta = (currentTime - lastTime).TotalMilliseconds;
                 lastTime = currentTime;
+
+                var components = ComponentManager.GetInstance().GetComponentsForRender();
+                foreach (var comp in components.ToList())
+                {
+                    if (comp is ICleanable cleanable && cleanable.ShouldBeClean)
+                    {
+                        ComponentManager.GetInstance().RemoveComponent(comp);
+                        cleanable.ShouldBeClean = false;
+                    }
+                }
+
                 UpdateManager.GetInstance().CollectUpdates();
                 AnimationManager.GetInstance().OnUpdate((float)delta);
                 OnUpdate?.Invoke();

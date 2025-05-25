@@ -9,7 +9,7 @@ using WeBoard.Core.Components.Interfaces;
 
 namespace WeBoard.Core.Components.Visuals
 {
-    public class TextComponent : InteractiveComponentBase, IAnimatible
+    public class TextComponent : InteractiveComponentBase, IAnimatible, ICleanable
     {
         private readonly TextCursorHandler _cursorHandler;
         private readonly TextLayoutHandler _layoutHandler;
@@ -27,7 +27,7 @@ namespace WeBoard.Core.Components.Visuals
         private BlinkingCursorAnimation? _cursorAnimation;
 
         protected override Shape Shape => _focusRectangle;
-
+        public bool ShouldBeClean { get; set; } = false;
         public bool IsEditing => _isEditing;
 
         public IImmutableList<IAnimation> ActiveAnimations
@@ -151,6 +151,9 @@ namespace WeBoard.Core.Components.Visuals
         {
             base.OnLostFocus();
             StopEditing();
+
+            if (string.IsNullOrWhiteSpace(Content))
+                ShouldBeClean = true;
         }
         public override void Draw(RenderTarget target, RenderStates states)
         {
