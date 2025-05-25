@@ -5,7 +5,6 @@ using WeBoard.Core.Animations.Interfaces;
 using WeBoard.Core.Animations.TextComponent;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Handlers;
-using WeBoard.Core.Components.Handlers.WeBoard.Core.Components.Handlers;
 using WeBoard.Core.Components.Interfaces;
 
 namespace WeBoard.Core.Components.Visuals
