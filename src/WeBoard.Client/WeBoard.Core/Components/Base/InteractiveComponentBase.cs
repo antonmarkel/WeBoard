@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using SFML.Graphics;
+﻿using SFML.Graphics;
 using SFML.System;
 using WeBoard.Core.Components.Handlers;
 using WeBoard.Core.Components.Interfaces;
@@ -70,7 +69,7 @@ namespace WeBoard.Core.Components.Base
 
         public virtual void SetRotation(float angle)
         {
-            if(!_isRotating)
+            if (!_isRotating)
                 OnStartRotating();
 
             Rotation = angle;
@@ -80,16 +79,17 @@ namespace WeBoard.Core.Components.Base
 
         public void OnStartDragging()
         {
-            if (!IsUpdating) {
+            if (!IsUpdating)
+            {
                 _isDragging = true;
                 _startDraggingPosition = Position;
             }
-           
+
         }
 
         public void OnStopDragging()
         {
-            
+
             if ((DateTime.UtcNow - _lastDragAt).TotalMilliseconds < 200 && IsInFocus)
                 return;
 
@@ -109,7 +109,7 @@ namespace WeBoard.Core.Components.Base
 
             _lastDragAt = DateTime.UtcNow;
             Position += offset;
-            
+
             UpdateHandles();
             UpdateFocusShape();
         }
@@ -167,7 +167,7 @@ namespace WeBoard.Core.Components.Base
         public virtual void Resize(Vector2f delta, ResizeDirectionEnum direction)
         {
             var originalSize = GetSize();
-       
+
             Vector2f localOffset = direction switch
             {
                 ResizeDirectionEnum.TopLeft => new Vector2f(-1, -1),
@@ -227,13 +227,13 @@ namespace WeBoard.Core.Components.Base
 
         public virtual void SetSize(Vector2f size)
         {
-            if(!_isResizing)
+            if (!_isResizing)
                 OnStartResizing();
         }
 
         public void TrackUpdate(IUpdate update)
         {
-            if(!IsUpdating)
+            if (!IsUpdating)
                 Updates.Add(update);
         }
     }

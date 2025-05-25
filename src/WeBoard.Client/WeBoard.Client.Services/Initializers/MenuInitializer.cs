@@ -40,16 +40,22 @@ namespace WeBoard.Client.Services.Initializers
                 new Rectangle(new Vector2f(40, 40), new Vector2f(0, 0))
                 {
                     FillColor = Color.Red,
+                    OutlineColor = Color.Black,
+                    OutlineThickness = 1
                 });
             var triangleContent = new InteractiveComponentContent(
                 new Triangle(new Vector2f(40, 40), new Vector2f(0, 0))
                 {
                     FillColor = Color.Blue,
+                    OutlineColor = Color.Black,
+                    OutlineThickness = 1
                 });
             var circleContent = new InteractiveComponentContent(
                 new Ellipse(new Vector2f(40, 40), new Vector2f(0, 0))
                 {
                     FillColor = Color.Green,
+                    OutlineColor = Color.Black,
+                    OutlineThickness = 1
                 });
 
             var rectButton = new RadioButtonComponent(new Vector2f(0, 0), new Vector2f(30, 30))

@@ -1,10 +1,11 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using WeBoard.Core.Components.Base;
+using WeBoard.Core.Components.Shapes.Base;
 
 namespace WeBoard.Core.Components.Shapes
 {
-    public class Ellipse : InteractiveComponentBase
+    public class Ellipse : ShapeBase
     {
         private ConvexShape _ellipseShape;
         protected override Shape Shape => _ellipseShape;
