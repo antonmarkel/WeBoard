@@ -23,7 +23,7 @@ namespace WeBoard.Core.Components.Handlers
             else
                 DrawTextWithCursor(target, states, text, focusRect);
         }
-        private void DrawPlaceholderWithCursor(RenderTarget target, RenderStates states, RectangleShape rect, uint fontSize)
+        public void DrawPlaceholderWithCursor(RenderTarget target, RenderStates states, RectangleShape rect, uint fontSize)
         {
             var baseX = _padding.X;
             var centerY = rect.Size.Y / 2f;
@@ -51,7 +51,7 @@ namespace WeBoard.Core.Components.Handlers
             target.Draw(placeholder, states);
         }
 
-        private void DrawTextWithCursor(RenderTarget target, RenderStates states, Text text, RectangleShape rect)
+        public void DrawTextWithCursor(RenderTarget target, RenderStates states, Text text, RectangleShape rect)
         {
             target.Draw(text, states);
 
@@ -83,6 +83,22 @@ namespace WeBoard.Core.Components.Handlers
 
             target.Draw(cursor, states);
 
+        }
+
+        public void DrawCenteredCursor(RenderTarget target, RenderStates states, RectangleShape rect, uint fontSize)
+        {
+            var cursor = new Text("|", _font, fontSize)
+            {
+                FillColor = Color.Black
+            };
+
+            var cb = cursor.GetLocalBounds();
+            cursor.Origin = new Vector2f(cb.Width / 2f, cb.Top + cb.Height / 2f);
+
+            var center = rect.Position + rect.Size / 2f;
+            cursor.Position = center;
+
+            target.Draw(cursor, states);
         }
     }
 }
