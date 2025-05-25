@@ -23,10 +23,17 @@ namespace WeBoard.Client.Services.Render
             _uiView = new View(window.DefaultView);
 
             window.Resized += HandleResize;
+            window.SetMouseCursorVisible(false);
         }
 
         private void HandleResize(object? sender, SizeEventArgs e)
         {
+            var menuItems = ComponentManager.GetInstance().GetMenuComponents();
+            foreach (var menuItem in menuItems)
+            {
+                menuItem.AdjustToResolution(e.Width,e.Height);
+            }
+
             _cameraView.Size = new Vector2f(e.Width, e.Height);
             _cameraView.Zoom(_zoomLevel);
 

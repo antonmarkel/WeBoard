@@ -1,17 +1,26 @@
 ﻿using System.Collections.Immutable;
 using SFML.Graphics;
 using SFML.System;
+using WeBoard.Client.Services.Managers;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Content;
 using WeBoard.Core.Components.Menu.Buttons;
 using WeBoard.Core.Components.Menu.Buttons.RadioButtons;
 using WeBoard.Core.Components.Menu.Containers;
 using WeBoard.Core.Components.Shapes;
+using WeBoard.Core.Enums.Menu;
 
 namespace WeBoard.Client.Services.Initializers
 {
     public class MenuInitializer
     {
+        private readonly MenuManager _menuManager;
+
+        public MenuInitializer()
+        {
+            _menuManager = MenuManager.GetInstance();
+        }
+
         private static RadioButtonComponent CopyButton(ButtonComponent button)
         {
             return new RadioButtonComponent(button.Position, button.Size)
@@ -25,7 +34,7 @@ namespace WeBoard.Client.Services.Initializers
             };
         }
 
-        private VerticalStackContainer InitializeShapeSideMenu(RadioButtonComponent shapeRadioButton, List<MenuComponentBase> menuComponents)
+        private void InitializeShapeSideMenu(RadioButtonComponent shapeRadioButton, List<MenuComponentBase> menuComponents)
         {
             var rectContent = new InteractiveComponentContent(
                 new Rectangle(new Vector2f(40, 40), new Vector2f(0, 0))
@@ -60,17 +69,26 @@ namespace WeBoard.Client.Services.Initializers
             rectButton.OnGroupUpdate += self =>
             {
                 if (self)
+                {
+                    _menuManager.CurrentInstrument = InstrumentOptionsEnum.ShapeRectangle;
                     shapeRadioButton.ContentView = rectContent;
+                }
             };
             triangleButton.OnGroupUpdate += self =>
             {
                 if (self)
+                {
+                    _menuManager.CurrentInstrument = InstrumentOptionsEnum.ShapeTriangle;
                     shapeRadioButton.ContentView = triangleContent;
+                }
             };
             circleButton.OnGroupUpdate += self =>
             {
                 if (self)
+                {
+                    _menuManager.CurrentInstrument = InstrumentOptionsEnum.ShapeCircle;
                     shapeRadioButton.ContentView = circleContent;
+                }
             };
 
             var shapeRadioGroup = new RadioButtonGroup();
@@ -102,15 +120,15 @@ namespace WeBoard.Client.Services.Initializers
             };
 
             menuComponents.AddRange([rectButton,triangleButton,circleButton,shapeStack]);
-
-            return shapeStack;
         }
 
         private void InitializeSideMenu(List<MenuComponentBase> menuComponents)
         {
             var pencilContent = new ImageContentView(new Texture("Resources/Menu/pencil.png"));
             var brushContent = new ImageContentView(new Texture("Resources/Menu/brush.png"));
+            var eraserContent = new ImageContentView(new Texture("Resources/Menu/eraser.png"));
             var cursorContent = new ImageContentView(new Texture("Resources/Menu/cursor.png"));
+            var fontContent = new ImageContentView(new Texture("Resources/Menu/font.png"));
 
             var pencilButton = new RadioButtonComponent(new Vector2f(0, 0), new Vector2f(50, 50))
             {
@@ -122,15 +140,48 @@ namespace WeBoard.Client.Services.Initializers
             };
             var brushButton = CopyButton(pencilButton);
             brushButton.ContentView = brushContent;
+            var eraserButton = CopyButton(pencilButton);
+            eraserButton.ContentView = eraserContent;
             var cursorButton = CopyButton(pencilButton);
             cursorButton.ContentView = cursorContent;
             var shapeButton = CopyButton(pencilButton);
             shapeButton.Padding = 7;
+            var textButton = CopyButton(pencilButton);
+            textButton.ContentView = fontContent;
+
+            pencilButton.OnGroupUpdate += self =>
+            {
+                if (self)
+                    _menuManager.CurrentInstrument = InstrumentOptionsEnum.Pencil;
+            };
+            brushButton.OnGroupUpdate += self =>
+            {
+                if (self)
+                    _menuManager.CurrentInstrument = InstrumentOptionsEnum.Brush;
+            };
+            eraserButton.OnGroupUpdate += self =>
+            {
+                if (self)
+                    _menuManager.CurrentInstrument = InstrumentOptionsEnum.Eraser;
+            };
+            cursorButton.OnGroupUpdate += self =>
+            {
+                if (self)
+                    _menuManager.CurrentInstrument = InstrumentOptionsEnum.Cursor;
+            };
+            textButton.OnGroupUpdate += self =>
+            {
+                if (self)
+                    _menuManager.CurrentInstrument = InstrumentOptionsEnum.Text;
+            };
+
+
 
             var radioGroup = new RadioButtonGroup();
-            pencilButton.Group = brushButton.Group = cursorButton.Group = shapeButton.Group = radioGroup;
+            pencilButton.Group = brushButton.Group = cursorButton.Group = shapeButton.Group = textButton.Group = eraserButton.Group = radioGroup;
 
-            var verticalStack = new VerticalStackContainer([pencilButton,brushButton,cursorButton,shapeButton])
+            List<MenuComponentBase> sideButtons = [cursorButton, pencilButton, brushButton, eraserButton, textButton, shapeButton];
+            var verticalStack = new VerticalStackContainer(sideButtons)
             {
                 BackgroundColor = new Color(255, 255, 255, 80),
                 OutlineThickness = 1f,
@@ -141,8 +192,9 @@ namespace WeBoard.Client.Services.Initializers
                 CornerRadius = 10,
                 CornerPointCount = 40,
             };
-            menuComponents.AddRange([pencilButton, brushButton, cursorButton, shapeButton,verticalStack]);
-            var shapeStack = InitializeShapeSideMenu(shapeButton,menuComponents);
+            menuComponents.AddRange(sideButtons);
+            menuComponents.Add(verticalStack);
+            InitializeShapeSideMenu(shapeButton,menuComponents);
         }
 
         public IImmutableList<MenuComponentBase> InitializeComponents()

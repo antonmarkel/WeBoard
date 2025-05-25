@@ -1,6 +1,7 @@
 ﻿using WeBoard.Client.Services.Initializers;
 using WeBoard.Client.Services.Interfaces.Base;
 using WeBoard.Client.Services.Managers;
+using WeBoard.Core.Enums.Menu;
 
 namespace WeBoard.Client.Services.Engine
 {
@@ -27,6 +28,8 @@ namespace WeBoard.Client.Services.Engine
             MouseManager.GetInstance();
             KeyboardManager.GetInstance();
             UpdateManager.GetInstance();
+            MenuManager.GetInstance().CurrentInstrument = InstrumentOptionsEnum.Cursor;
+            CursorManager.GetInstance();
 
             var menuInitializer = new MenuInitializer();
             var menuComponents = menuInitializer.InitializeComponents();
