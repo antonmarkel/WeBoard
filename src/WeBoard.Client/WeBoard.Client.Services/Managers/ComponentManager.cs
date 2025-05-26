@@ -36,12 +36,24 @@ namespace WeBoard.Client.Services.Managers
 
         public void InitMenu(IEnumerable<MenuComponentBase> components)
         {
-            _menuComponents = components.ToList().ToImmutableList();
-            foreach (var menuComponent in _menuComponents)
+            var tempList = new List<MenuComponentBase>();
+            foreach (var component in components)
             {
-                if(menuComponent is IAnimatible animatible)
-                    AnimationManager.GetInstance().Add(animatible);
+                AddMenuComponent(component,tempList);
             }
+
+            _menuComponents = tempList.ToImmutableList();
+        }
+
+        private void AddMenuComponent(MenuComponentBase menuComponent,List<MenuComponentBase> tempList)
+        {
+            if(menuComponent is IContainer container)
+                container.Children.ForEach(comp => AddMenuComponent(comp, tempList));
+
+            if (menuComponent is IAnimatible animatible)
+                AnimationManager.GetInstance().Add(animatible);
+
+            tempList.Add(menuComponent);
         }
 
         public void AddComponent(ComponentBase component)

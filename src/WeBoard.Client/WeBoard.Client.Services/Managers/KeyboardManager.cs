@@ -1,4 +1,6 @@
-﻿using SFML.Window;
+﻿using System.Windows.Media;
+using SFML.Window;
+using WeBoard.Core.Components.Menu.Inputs;
 using WeBoard.Core.Components.Visuals;
 
 namespace WeBoard.Client.Services.Managers
@@ -58,7 +60,14 @@ namespace WeBoard.Client.Services.Managers
                 {
                     textComponent.AppendChar(e.Unicode);
                 }
+            }
 
+            if (focused is TextInputComponent textInput && textInput.IsEditing)
+            {
+                if (e.Unicode == "\b") 
+                    textInput.Backspace();
+                else if (e.Unicode != "\r" && e.Unicode != "\n") 
+                    textInput.AppendChar(e.Unicode);
             }
         }
 

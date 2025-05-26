@@ -1,24 +1,14 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using WeBoard.Core.Components.Base;
+using WeBoard.Core.Components.Shapes.Base;
 
 namespace WeBoard.Core.Components.Shapes
 {
-    public class Rectangle : InteractiveComponentBase
+    public class Rectangle : ShapeBase
     {
         private readonly RectangleShape _rectangleShape;
         protected override Shape Shape => _rectangleShape;
-
-        public float OutlineThickness
-        {
-            get => _rectangleShape.OutlineThickness;
-            set => _rectangleShape.OutlineThickness = value;
-        }
-        public Color OutlineColor
-        {
-            get => _rectangleShape.OutlineColor;
-            set => _rectangleShape.OutlineColor = value;
-        }
 
         public Rectangle(Vector2f size, Vector2f position)
         {

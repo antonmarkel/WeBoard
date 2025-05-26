@@ -47,8 +47,6 @@ namespace WeBoard.Client.Services
                 var renderList = componentManager.GetComponentsForLogic().ToList();
                 var toRemoveDrawable = renderList[index];
 
-                componentManager.RemoveComponent(toRemoveDrawable);
-
                 return;
             }
 

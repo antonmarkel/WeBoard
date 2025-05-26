@@ -9,7 +9,7 @@ using WeBoard.Core.Components.Interfaces;
 
 namespace WeBoard.Core.Components.Visuals
 {
-    public class TextComponent : InteractiveComponentBase, IAnimatible, ICleanable
+    public class TextComponent : InteractiveComponentBase, IAnimatible, ICleanable, ITextCursorControllable
     {
         private readonly TextCursorHandler _cursorHandler;
         private readonly TextLayoutHandler _layoutHandler;
@@ -24,7 +24,7 @@ namespace WeBoard.Core.Components.Visuals
         private Vector2f _currentSize;
         private readonly Vector2f _padding = new(20, 5);
         private readonly List<IAnimation> _activeAnimations = new();
-        private BlinkingCursorAnimation? _cursorAnimation;
+        private BlinkingTextCursorAnimation? _cursorAnimation;
 
         protected override Shape Shape => _focusRectangle;
         public bool ShouldBeClean { get; set; } = false;
@@ -114,9 +114,9 @@ namespace WeBoard.Core.Components.Visuals
         public void StartEditing()
         {
             _isEditing = true;
-            _activeAnimations.RemoveAll(anim => anim is BlinkingCursorAnimation);
+            _activeAnimations.RemoveAll(anim => anim is BlinkingTextCursorAnimation);
 
-            _cursorAnimation = new BlinkingCursorAnimation(1000);
+            _cursorAnimation = new BlinkingTextCursorAnimation(1000);
             _cursorAnimation.Reset();
             _cursorAnimation.ApplyTo(this);
             _activeAnimations.Add(_cursorAnimation);
@@ -126,7 +126,7 @@ namespace WeBoard.Core.Components.Visuals
         {
             _isEditing = false;
             _cursorVisible = false;
-            _activeAnimations.RemoveAll(anim => anim is BlinkingCursorAnimation);
+            _activeAnimations.RemoveAll(anim => anim is BlinkingTextCursorAnimation);
             _cursorAnimation = null;
         }
 

@@ -1,24 +1,26 @@
 ﻿using WeBoard.Core.Animations.Base;
+using WeBoard.Core.Components.Interfaces;
 
 namespace WeBoard.Core.Animations.TextComponent
 {
-    public class BlinkingCursorAnimation : AnimationBase
+    public class BlinkingTextCursorAnimation : AnimationBase
     {
-        public BlinkingCursorAnimation(float duration)
+        public BlinkingTextCursorAnimation(float duration)
             : base(duration) { }
 
         protected override void ApplyAnimation(float progress)
         {
-            if (_target is Components.Visuals.TextComponent text && text.IsEditing)
+            if (_target is ITextCursorControllable cursor && cursor.IsEditing)
             {
-                text.SetCursorVisible(progress < 0.5f);
+                cursor.SetCursorVisible(progress < 0.5f);
             }
         }
 
         public override void Reset()
         {
-            if (_target is Components.Visuals.TextComponent text)
-                text.SetCursorVisible(true);
+            if (_target is ITextCursorControllable cursor)
+                cursor.SetCursorVisible(true);
+
             base.Reset();
         }
 
