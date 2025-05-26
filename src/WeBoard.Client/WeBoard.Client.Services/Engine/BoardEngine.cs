@@ -52,17 +52,6 @@ namespace WeBoard.Client.Services.Engine
                 var currentTime = DateTime.Now;
                 var delta = (currentTime - lastTime).TotalMilliseconds;
                 lastTime = currentTime;
-
-                var components = ComponentManager.GetInstance().GetComponentsForRender();
-                foreach (var comp in components.ToList())
-                {
-                    if (comp is ICleanable cleanable && cleanable.ShouldBeClean)
-                    {
-                        ComponentManager.GetInstance().RemoveComponent(comp);
-                        cleanable.ShouldBeClean = false;
-                    }
-                }
-
                 UpdateManager.GetInstance().CollectUpdates();
                 AnimationManager.GetInstance().OnUpdate((float)delta);
                 OnUpdate?.Invoke();
