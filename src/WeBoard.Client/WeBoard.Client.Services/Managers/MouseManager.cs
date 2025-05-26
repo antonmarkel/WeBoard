@@ -1,6 +1,8 @@
-﻿using SFML.System;
+﻿using SFML.Graphics;
+using SFML.System;
 using SFML.Window;
 using WeBoard.Core.Components.Interfaces;
+using WeBoard.Core.Components.Shapes;
 using WeBoard.Core.Components.Tools;
 using WeBoard.Core.Components.Visuals;
 using WeBoard.Core.Enums.Menu;
@@ -14,7 +16,8 @@ namespace WeBoard.Client.Services.Managers
         private readonly FocusManager _focusManager = FocusManager.GetInstance();
         private readonly CursorManager _cursorManager = CursorManager.GetInstance();
         private readonly ToolManager _toolManager = ToolManager.GetInstance();
-        
+        private readonly ShapeManager _shapeManager = ShapeManager.GetInstance();
+
         public bool IsDragging { get; set; }
         public Vector2i DragStartScreen { get; private set; }
         public Vector2f DragStartWorld { get; private set; }
@@ -38,7 +41,7 @@ namespace WeBoard.Client.Services.Managers
             var underMouse = ComponentManager.GetInstance().GetByScreenPoint(currentScreen, out _);
             if (underMouse is null)
             {
-                if(_focusManager.UnderMouse != null)
+                if (_focusManager.UnderMouse != null)
                     _focusManager.UnderMouse.OnMouseLeave();
                 _focusManager.UnderMouse = underMouse;
 
@@ -71,7 +74,7 @@ namespace WeBoard.Client.Services.Managers
 
             if (!IsDragging)
             {
-                if(_focusManager.FocusedComponent is IDraggable dragComponent)
+                if (_focusManager.FocusedComponent is IDraggable dragComponent)
                     dragComponent.OnStopDragging();
                 return;
             }
@@ -107,7 +110,11 @@ namespace WeBoard.Client.Services.Managers
         {
             if (e.Button == Mouse.Button.Left)
             {
-                if (IsDrawingToolActive())
+                var currentInstrument = MenuManager.GetInstance().CurrentInstrument;
+                
+                if (currentInstrument is InstrumentOptionsEnum.Brush
+                    or InstrumentOptionsEnum.Pencil
+                    or InstrumentOptionsEnum.Eraser)
                 {
                     ToolManager.GetInstance().OnMouseReleased(_global.RenderWindow.MapPixelToCoords(new Vector2i(e.X, e.Y)));
                 }
@@ -132,22 +139,39 @@ namespace WeBoard.Client.Services.Managers
                     clickable.OnClick(-clickOffset);
                     FocusManager.GetInstance().UpdateFocus(menuClickedComponent);
                     menuClickedComponent.OnFocus();
-
                     return;
                 }
 
-                if (KeyboardManager.GetInstance().IsInTextMode())
+                var currentInstrument = MenuManager.GetInstance().CurrentInstrument;
+
+                if (currentInstrument == InstrumentOptionsEnum.Text)
                 {
                     var textComponent = new TextComponent(DragStartWorld);
                     ComponentManager.GetInstance().AddComponent(textComponent);
-                    FocusManager.GetInstance().HandleClick(textComponent.Position);
-
+                    _focusManager.HandleClick(textComponent.Position);
                     textComponent.StartEditing();
                     KeyboardManager.GetInstance().ExitTextMode();
+                    MenuManager.GetInstance().CurrentInstrument = InstrumentOptionsEnum.Cursor;
                     return;
                 }
 
-                if (IsDrawingToolActive())
+                if (currentInstrument is InstrumentOptionsEnum.ShapeRectangle
+                    or InstrumentOptionsEnum.ShapeCircle
+                    or InstrumentOptionsEnum.ShapeTriangle)
+                {
+                    var shape = _shapeManager.CreateShape(currentInstrument, DragStartWorld);
+                    if (shape != null)
+                    {
+                        ComponentManager.GetInstance().AddComponent(shape);
+                        _focusManager.UpdateFocus(shape);
+                        MenuManager.GetInstance().CurrentInstrument = InstrumentOptionsEnum.Cursor;
+                    }
+                    return;
+                }
+
+                if (currentInstrument is InstrumentOptionsEnum.Brush
+                    or InstrumentOptionsEnum.Pencil
+                    or InstrumentOptionsEnum.Eraser)
                 {
                     _toolManager.OnMousePressed(DragStartWorld);
 
@@ -169,15 +193,12 @@ namespace WeBoard.Client.Services.Managers
                             ComponentManager.GetInstance().AddComponent(created);
                         }
                     }
-
                     return;
                 }
 
-                FocusManager.GetInstance().HandleClick(DragStartWorld);
-                if (FocusManager.GetInstance().FocusedComponent != null)
-                    return;
-
+                _focusManager.HandleClick(DragStartWorld);
             }
+
             if (e.Button == Mouse.Button.Right)
             {
                 EditManager.GetInstance().CurrentEditContainer?.Hide();
@@ -194,14 +215,5 @@ namespace WeBoard.Client.Services.Managers
         {
             return Instance;
         }
-
-        private bool IsDrawingToolActive()
-        {
-            var tool = MenuManager.GetInstance().CurrentInstrument;
-            return tool is InstrumentOptionsEnum.Brush
-                or InstrumentOptionsEnum.Pencil
-                or InstrumentOptionsEnum.Eraser;
-        }
-
     }
 }
