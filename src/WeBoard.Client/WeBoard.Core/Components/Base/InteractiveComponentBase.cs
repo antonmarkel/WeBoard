@@ -149,7 +149,7 @@ namespace WeBoard.Core.Components.Base
             UpdateHandles();
         }
 
-        protected void UpdateHandles()
+        protected virtual void UpdateHandles()
         {
             rotateHandle?.UpdatePosition(GetGlobalBounds());
 

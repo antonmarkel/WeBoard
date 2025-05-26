@@ -10,6 +10,7 @@ namespace WeBoard.Client.Services
     public class TestService : IService
     {
         private readonly ComponentManager componentManager = ComponentManager.GetInstance();
+        private readonly ToolManager _toolManager = ToolManager.GetInstance();
         private DateTime _lastUpdatedAt = DateTime.Now;
         private DateTime _lastCleanUpAt = DateTime.Now;
         private double _afterLastShift = 0;
@@ -32,6 +33,8 @@ namespace WeBoard.Client.Services
                 CleanUp();
                 _lastCleanUpAt = DateTime.Now;
             }
+
+            _toolManager.UpdateToolFromMenu();
         }
 
         private void ShiftShapes()

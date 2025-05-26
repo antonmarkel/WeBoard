@@ -29,6 +29,7 @@ namespace WeBoard.Client.Services.Engine
             MouseManager.GetInstance();
             KeyboardManager.GetInstance();
             UpdateManager.GetInstance();
+            ToolManager.GetInstance();
             MenuManager.GetInstance().CurrentInstrument = InstrumentOptionsEnum.Cursor;
             CursorManager.GetInstance();
 

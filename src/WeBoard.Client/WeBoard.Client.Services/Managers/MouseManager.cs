@@ -2,6 +2,7 @@
 using SFML.Window;
 using WeBoard.Core.Components.Interfaces;
 using WeBoard.Core.Components.Visuals;
+using WeBoard.Core.Enums.Menu;
 
 namespace WeBoard.Client.Services.Managers
 {
@@ -101,30 +102,19 @@ namespace WeBoard.Client.Services.Managers
 
         private void HandleMouseButtonReleased(object? sender, MouseButtonEventArgs e)
         {
-            if (e.Button == Mouse.Button.Left && Keyboard.IsKeyPressed(Keyboard.Key.LControl))
-            {
-                ToolManager.GetInstance().OnMouseReleased(_global.RenderWindow.MapPixelToCoords(new Vector2i(e.X, e.Y)));
-                return;
-            }
-
             if (e.Button == Mouse.Button.Left)
             {
-                IsDragging = false;   
+                if (IsDrawingToolActive())
+                {
+                    ToolManager.GetInstance().OnMouseReleased(_global.RenderWindow.MapPixelToCoords(new Vector2i(e.X, e.Y)));
+                }
+
+                IsDragging = false;
             }
         }
 
         private void HandleMouseButtonPress(object? sender, MouseButtonEventArgs e)
         {
-            if (e.Button == Mouse.Button.Left && Keyboard.IsKeyPressed(Keyboard.Key.LControl))
-            {
-                DragStartScreen = new Vector2i(e.X, e.Y);
-                DragStartWorld = _global.RenderWindow.MapPixelToCoords(DragStartScreen);
-
-                ToolManager.GetInstance().OnMousePressed(DragStartWorld);
-                return;
-            }
-
-
             if (e.Button == Mouse.Button.Left)
             {
                 IsDragging = true;
@@ -154,6 +144,19 @@ namespace WeBoard.Client.Services.Managers
                     return;
                 }
 
+                if (IsDrawingToolActive())
+                {
+                    ToolManager.GetInstance().OnMousePressed(DragStartWorld);
+
+                    var created = ToolManager.GetInstance().ActiveTool?.CreatedComponent;
+                    if (created != null)
+                    {
+                        ComponentManager.GetInstance().AddComponent(created);
+                    }
+                    
+                    return;
+                }
+
                 FocusManager.GetInstance().HandleClick(DragStartWorld);
                 if (FocusManager.GetInstance().FocusedComponent != null)
                     return;
@@ -165,5 +168,13 @@ namespace WeBoard.Client.Services.Managers
         {
             return Instance;
         }
+
+        private bool IsDrawingToolActive()
+        {
+            var tool = MenuManager.GetInstance().CurrentInstrument;
+            return tool is InstrumentOptionsEnum.Brush
+                or InstrumentOptionsEnum.Pencil;
+        }
+
     }
 }
