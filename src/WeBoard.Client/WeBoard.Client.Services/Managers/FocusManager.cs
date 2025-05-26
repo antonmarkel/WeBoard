@@ -65,7 +65,7 @@ namespace WeBoard.Client.Services.Managers
             UpdateFocus(clickedComponent);
         }
 
-        private void UpdateFocus(ComponentBase? clickedComponent)
+        public void UpdateFocus(ComponentBase? clickedComponent)
         {
             if (clickedComponent is null)
             {

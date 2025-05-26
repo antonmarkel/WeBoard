@@ -8,7 +8,7 @@ namespace WeBoard.Core.Components.Base
     {
         public bool IsHidden { get; set; }
         private Vector2f _beforeHiddenPosition = new();
-        protected const uint DefaultResolutionHeight= 1080;
+        protected const uint DefaultResolutionValue= 1080;
 
         public virtual Vector2f Size { get; set; }
         protected float _adjustResizeCf = 1f;
@@ -79,9 +79,10 @@ namespace WeBoard.Core.Components.Base
 
         public virtual void AdjustToResolution(uint width, uint height)
         {
-            var newCf = (float)height / DefaultResolutionHeight;
+            var newResolutionValue = Math.Min(width, height);
+            var newCf = (float)newResolutionValue / DefaultResolutionValue;
             Size = new Vector2f(Size.X / _adjustResizeCf * newCf, Size.Y / _adjustResizeCf * newCf); 
-            _adjustResizeCf = (float)height / DefaultResolutionHeight;
+            _adjustResizeCf = (float)newResolutionValue / DefaultResolutionValue;
         }
     }
 }

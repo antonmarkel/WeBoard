@@ -118,9 +118,9 @@ namespace WeBoard.Client.Services.Managers
                 if (menuClickedComponent is IClickable clickable)
                 {
                     clickable.OnClick(-clickOffset);
-                    if (menuClickedComponent is IFocusable focusable)
-                        FocusManager.GetInstance().FocusedComponent = focusable;
-
+                    FocusManager.GetInstance().UpdateFocus(menuClickedComponent);
+                    menuClickedComponent.OnFocus();
+                    
                     return;
                 }
 

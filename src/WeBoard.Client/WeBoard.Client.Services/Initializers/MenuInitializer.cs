@@ -40,9 +40,12 @@ namespace WeBoard.Client.Services.Initializers
 
         private void InitializeShapeSideMenu(RadioButtonComponent shapeRadioButton, List<MenuComponentBase> menuComponents)
         {
-            var testEdit = new NumberEdit(new EditProperty<int>("Test", _ => { }, () => 1))
+            var button = new ButtonComponent(new(), new());
+            button.BackgroundColor = Color.Red;
+            var testColor = new ColorEdit(new EditProperty<Color>("Color", val => button.BackgroundColor = val,
+                () => button.BackgroundColor))
             {
-                Position = new Vector2f(600, 600)
+                Position = new(500, 500)
             };
 
             var testInput = new TextInputComponent(new Vector2f(700,700), new Vector2f(50 * 3, 50));
@@ -136,7 +139,7 @@ namespace WeBoard.Client.Services.Initializers
                     shapeStack.Hide();
             };
 
-            menuComponents.AddRange([testEdit, testInput,shapeStack]);
+            menuComponents.AddRange([testColor, testInput,shapeStack]);
         }
 
         private void InitializeSideMenu(List<MenuComponentBase> menuComponents)
