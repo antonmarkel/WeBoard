@@ -127,8 +127,8 @@ namespace WeBoard.Client.Services.Managers
                 if (menuClickedComponent is IClickable clickable)
                 {
                     clickable.OnClick(-clickOffset);
-                    if (menuClickedComponent is IFocusable focusable)
-                        FocusManager.GetInstance().FocusedComponent = focusable;
+                    FocusManager.GetInstance().UpdateFocus(menuClickedComponent);
+                    menuClickedComponent.OnFocus();
 
                     return;
                 }
@@ -161,6 +161,16 @@ namespace WeBoard.Client.Services.Managers
                 if (FocusManager.GetInstance().FocusedComponent != null)
                     return;
 
+            }
+            if (e.Button == Mouse.Button.Right)
+            {
+                EditManager.GetInstance().CurrentEditContainer?.Hide();
+                ComponentManager.GetInstance().RemoveMenuComponent(EditManager.GetInstance().CurrentEditContainer!);
+                if (_focusManager.FocusedComponent is IEditable editable)
+                {
+                    EditManager.GetInstance().UpdateEditPanel(editable, new Vector2f(e.X, e.Y));
+                    ComponentManager.GetInstance().AddMenuComponent(EditManager.GetInstance().CurrentEditContainer!);
+                }
             }
         }
 

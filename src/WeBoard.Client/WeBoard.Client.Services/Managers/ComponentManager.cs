@@ -16,7 +16,7 @@ namespace WeBoard.Client.Services.Managers
         }
         public int Count { get => _componentSet.Count; }
         private ZIndexComponentSortedSet _componentSet { get; set; } = new();
-        private IImmutableList<MenuComponentBase> _menuComponents { get; set; } = [];
+        private List<MenuComponentBase> _menuComponents { get; set; } = [];
 
         public ComponentBase? GetByScreenPoint(Vector2i point, out Vector2f offset)
         {
@@ -39,21 +39,27 @@ namespace WeBoard.Client.Services.Managers
             var tempList = new List<MenuComponentBase>();
             foreach (var component in components)
             {
-                AddMenuComponent(component,tempList);
+                AddMenuComponent(component);
             }
-
-            _menuComponents = tempList.ToImmutableList();
         }
 
-        private void AddMenuComponent(MenuComponentBase menuComponent,List<MenuComponentBase> tempList)
+        public void AddMenuComponent(MenuComponentBase menuComponent)
         {
-            if(menuComponent is IContainer container)
-                container.Children.ForEach(comp => AddMenuComponent(comp, tempList));
+            lock (_menuComponents)
+            {
+                if (menuComponent is IContainer container)
+                    container.Children.ForEach(comp => AddMenuComponent(comp));
 
-            if (menuComponent is IAnimatible animatible)
-                AnimationManager.GetInstance().Add(animatible);
+                if (menuComponent is IAnimatible animatible)
+                    AnimationManager.GetInstance().Add(animatible);
 
-            tempList.Add(menuComponent);
+                _menuComponents.Add(menuComponent);
+            }
+          
+        }
+        public void RemoveMenuComponent(MenuComponentBase menuComponent)
+        {
+            _menuComponents.Remove(menuComponent);
         }
 
         public void AddComponent(ComponentBase component)

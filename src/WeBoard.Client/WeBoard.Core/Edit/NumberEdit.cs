@@ -11,15 +11,15 @@ using WeBoard.Core.Edit.Properties.Base;
 
 namespace WeBoard.Core.Edit
 {
-    public class NumberEdit : EditBase<int>, IContainer
+    public class NumberEdit : Edit<int>, IContainer
     {
         private HorizontalStackContainer _container;
         private LabelComponent _label;
         private TextInputComponent _input;
-        public NumberEdit(EditProperty<int> property) : base(property)
+        public NumberEdit(EditProperty<int> property, int minValue = 0, int maxValue = 255) : base(property)
         {
             _label = new LabelComponent($"{property.Name}:", new Vector2f());
-            _input = new TextInputComponent(new Vector2f(), new Vector2f(_label.Size.Y*3, _label.Size.Y*1.5f),fontSize:19);
+            _input = new TextInputComponent(new Vector2f(), new Vector2f(_label.Size.Y * 3, _label.Size.Y * 1.5f), fontSize: 19);
             _input.Content = property.GetValue().ToString();
             _input.OnInputKey += ch =>
             {
@@ -31,14 +31,15 @@ namespace WeBoard.Core.Edit
                 int value;
                 if (!int.TryParse(str, out value))
                 {
-                    value = 1;
+                    value = minValue;
                     _input.Content = value.ToString();
                 }
 
+                value = Math.Min(value, maxValue);
                 property.UpdateValue(value);
             };
 
-            _container = new([_label,_input]);
+            _container = new([_label, _input]);
 
             _container.Padding = new Vector2f(5, 5);
             _container.SpaceBetween = 10;
@@ -51,7 +52,6 @@ namespace WeBoard.Core.Edit
             get => _container.Position;
             set => _container.Position = value;
         }
-
         protected override Shape Shape => _container.FocusShape;
 
         public ImmutableList<MenuComponentBase> Children => _container.Children;
@@ -68,7 +68,7 @@ namespace WeBoard.Core.Edit
 
         public override void Draw(RenderTarget target, RenderStates states)
         {
-            _container.Draw(target, states);    
+            _container.Draw(target, states);
         }
     }
 }

@@ -24,6 +24,12 @@ namespace WeBoard.Core.Components.Menu.Visuals
             set => _text.DisplayedString = value;
         }
 
+        public uint FontSize
+        {
+            get => _text.CharacterSize;
+            set => _text.CharacterSize = value;
+        }
+
         public override Vector2f Position
         {
             get => _shape.Position;
@@ -36,8 +42,16 @@ namespace WeBoard.Core.Components.Menu.Visuals
 
         public override Vector2f Size
         {
-            get => _text.GetGlobalBounds().Size;
-            set => _text.CharacterSize = (uint)Math.Min(value.X, value.Y); 
+            get => new (_text.CharacterSize*Content.Length,_text.CharacterSize);
+            set
+            {
+                var newVal = Math.Min(value.X, value.Y);
+                if (Size.Y > newVal)
+                {
+                    _text.CharacterSize = (uint)Math.Floor(Math.Min(value.X, value.Y));
+                }else
+                    _text.CharacterSize = (uint)Math.Ceiling(Math.Min(value.X, value.Y));
+            }
         }
 
         public override FloatRect GetGlobalBounds() => _text.GetGlobalBounds();

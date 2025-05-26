@@ -47,6 +47,26 @@ namespace WeBoard.Core.Components.Menu.Inputs
             }
         }
 
+        public uint FontSize
+        {
+            get => _text.CharacterSize;
+            set
+            {
+                _text.CharacterSize = value;
+                UpdateLayout();
+            }
+        }
+
+        public override Vector2f Size
+        {
+            get => _background.Size;
+            set
+            {
+                _background.Size = value;
+                UpdateLayout();
+            }
+        }
+
         public override Vector2f Position
         {
             get => _background.Position;
