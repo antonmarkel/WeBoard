@@ -26,12 +26,18 @@ namespace WeBoard.Core.Components.Menu.Visuals
 
         public override Vector2f Position
         {
-            get => _text.Position;
+            get => _shape.Position;
             set
             {
-                _text.Position = value;
+                _text.Position = _shape.Position = value;
                 base.Position = value;
             }
+        }
+
+        public override Vector2f Size
+        {
+            get => _text.GetGlobalBounds().Size;
+            set => _text.CharacterSize = (uint)Math.Min(value.X, value.Y); 
         }
 
         public override FloatRect GetGlobalBounds() => _text.GetGlobalBounds();

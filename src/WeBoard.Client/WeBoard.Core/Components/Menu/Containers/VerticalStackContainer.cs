@@ -34,7 +34,7 @@ namespace WeBoard.Core.Components.Menu.Containers
             width += 2 * _padding.X;
             height += _padding.Y - SpaceBetween;
 
-            _focusShape.Size = _bodyShape.Size = new Vector2f(width, height);
+            FocusShape.Size = _bodyShape.Size = new Vector2f(width, height);
         }
     }
 }

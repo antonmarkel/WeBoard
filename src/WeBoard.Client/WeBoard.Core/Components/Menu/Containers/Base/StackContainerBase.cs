@@ -2,14 +2,15 @@
 using SFML.Graphics;
 using SFML.System;
 using WeBoard.Core.Components.Base;
+using WeBoard.Core.Components.Interfaces;
 using WeBoard.Core.Drawables.Shapes;
 
 namespace WeBoard.Core.Components.Menu.Containers.Base
 {
-    public abstract class StackContainerBase : MenuComponentBase
+    public abstract class StackContainerBase : MenuComponentBase, IContainer
     {
         protected RoundedRectangle _bodyShape;
-        protected RectangleShape _focusShape;
+        public RectangleShape FocusShape { get; private set; }
         protected ImmutableList<MenuComponentBase> _children;
         protected Vector2f _padding;
         protected float _spaceBetween;
@@ -23,7 +24,7 @@ namespace WeBoard.Core.Components.Menu.Containers.Base
                 child.ZIndex = ZIndex + 1;
             });
 
-            _focusShape = new RectangleShape();
+            FocusShape = new RectangleShape();
             _bodyShape = new RoundedRectangle();
 
             _padding = new Vector2f(0, 0);
@@ -84,16 +85,19 @@ namespace WeBoard.Core.Components.Menu.Containers.Base
             get => _bodyShape.Position;
             set
             {
-                _bodyShape.Position = _focusShape.Position = value;
+                _bodyShape.Position = FocusShape.Position = value;
                 UpdateContainer();
             }
         }
 
 
-        protected override Shape Shape => _focusShape;
+        protected override Shape Shape => FocusShape;
+
+        public ImmutableList<MenuComponentBase> Children => _children;
+
         public override FloatRect GetScreenBounds()
         {
-            return _focusShape.GetGlobalBounds();
+            return FocusShape.GetGlobalBounds();
         }
 
         protected abstract void UpdateContainer();

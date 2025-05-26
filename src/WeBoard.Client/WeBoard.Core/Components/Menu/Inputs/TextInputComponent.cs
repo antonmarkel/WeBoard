@@ -24,6 +24,8 @@ namespace WeBoard.Core.Components.Menu.Inputs
         public bool IsEditing => _isEditing;
         private bool _cursorVisible = true;
 
+        public event Action<string> OnInput;
+        public event Action<char> OnInputKey;
         protected override Shape Shape => _background;
 
         public string Content
@@ -132,6 +134,7 @@ namespace WeBoard.Core.Components.Menu.Inputs
                 return; 
 
             _text.DisplayedString = proposedText;
+            OnInputKey?.Invoke(ch[0]);
             UpdateLayout();
             _cursorAnimation?.Reset();
         }
@@ -165,6 +168,7 @@ namespace WeBoard.Core.Components.Menu.Inputs
 
             _cursorAnimation = null;
             _activeAnimations.RemoveAll(a => a is BlinkingTextCursorAnimation);
+            OnInput?.Invoke(Content);
         }
         public void PlayAnimation(IAnimation animation)
         {
@@ -178,7 +182,10 @@ namespace WeBoard.Core.Components.Menu.Inputs
         }
         public override void OnClick(Vector2f offset)
         {
-            StartEditing();
+            if(!_isEditing)
+                StartEditing();
+            else 
+                StopEditing();
         }
 
         public override void OnFocus()

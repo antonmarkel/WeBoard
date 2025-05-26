@@ -10,6 +10,8 @@ using WeBoard.Core.Components.Menu.Containers;
 using WeBoard.Core.Components.Menu.Inputs;
 using WeBoard.Core.Components.Menu.Visuals;
 using WeBoard.Core.Components.Shapes;
+using WeBoard.Core.Edit;
+using WeBoard.Core.Edit.Properties.Base;
 using WeBoard.Core.Enums.Menu;
 
 namespace WeBoard.Client.Services.Initializers
@@ -38,15 +40,13 @@ namespace WeBoard.Client.Services.Initializers
 
         private void InitializeShapeSideMenu(RadioButtonComponent shapeRadioButton, List<MenuComponentBase> menuComponents)
         {
-            var testLabel = new LabelComponent("Hello guys!", new Vector2f(500, 500))
+            var testEdit = new NumberEdit(new EditProperty<int>("Test", _ => { }, () => 1))
             {
-                BackgroundColor = new Color(0, 0, 0, 120)
+                Position = new Vector2f(600, 600)
             };
 
-            var testInput = new TextInputComponent(position: new Vector2f(500, 600),
-                size: new Vector2f(50, 50),
-                fontSize: 24);
-
+            var testInput = new TextInputComponent(new Vector2f(700,700), new Vector2f(50 * 3, 50));
+            testInput.Content = "1";
             var rectContent = new InteractiveComponentContent(
                 new Rectangle(new Vector2f(40, 40), new Vector2f(0, 0))
                 {
@@ -136,7 +136,7 @@ namespace WeBoard.Client.Services.Initializers
                     shapeStack.Hide();
             };
 
-            menuComponents.AddRange([testLabel, testInput, rectButton, triangleButton,circleButton,shapeStack]);
+            menuComponents.AddRange([testEdit, testInput,shapeStack]);
         }
 
         private void InitializeSideMenu(List<MenuComponentBase> menuComponents)
@@ -209,7 +209,6 @@ namespace WeBoard.Client.Services.Initializers
                 CornerRadius = 10,
                 CornerPointCount = 40,
             };
-            menuComponents.AddRange(sideButtons);
             menuComponents.Add(verticalStack);
             InitializeShapeSideMenu(shapeButton,menuComponents);
         }
