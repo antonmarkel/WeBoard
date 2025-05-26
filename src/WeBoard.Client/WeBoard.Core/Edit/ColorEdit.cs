@@ -1,19 +1,16 @@
 ﻿using System.Collections.Immutable;
-using System.Net.Http.Headers;
 using SFML.Graphics;
 using SFML.System;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
 using WeBoard.Core.Components.Menu.Buttons;
 using WeBoard.Core.Components.Menu.Containers;
-using WeBoard.Core.Components.Shapes;
-using WeBoard.Core.Drawables.Shapes;
 using WeBoard.Core.Edit.Base;
 using WeBoard.Core.Edit.Properties.Base;
 
 namespace WeBoard.Core.Edit
 {
-    public class ColorEdit : EditBase<Color>, IContainer
+    public class ColorEdit : Edit<Color>, IContainer
     {
         private NumberEdit _Redit;
         private NumberEdit _Gedit;
@@ -30,7 +27,7 @@ namespace WeBoard.Core.Edit
             _colorButton.BackgroundColor = property.GetValue();
             SetColorEdits(property);
 
-            _container = new VerticalStackContainer([_Redit!, _Gedit!, _Bedit!, _Aedit!,_colorButton]);
+            _container = new VerticalStackContainer([_Redit!, _Gedit!, _Bedit!, _Aedit!, _colorButton]);
             _container.Padding = new Vector2f(5, 5);
             _container.SpaceBetween = 10;
 

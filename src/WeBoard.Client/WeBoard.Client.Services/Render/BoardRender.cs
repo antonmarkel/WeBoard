@@ -47,6 +47,7 @@ namespace WeBoard.Client.Services.Render
                     }
                 }
 
+                if(EditManager.GetInstance().CurrentEditContainer != null){}
                 window.Draw(_cursorManager);
 
                 window.Display();

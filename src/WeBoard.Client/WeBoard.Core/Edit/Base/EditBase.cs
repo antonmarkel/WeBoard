@@ -1,16 +1,14 @@
 ﻿using WeBoard.Core.Components.Base;
-using WeBoard.Core.Components.Interfaces;
-using WeBoard.Core.Edit.Properties.Base;
 
 namespace WeBoard.Core.Edit.Base
 {
-    public abstract class EditBase<T> : MenuComponentBase
+    public abstract class EditBase : MenuComponentBase
     {
-        protected EditProperty<T> _property;
-
-        public EditBase(EditProperty<T> property)
+        public EditBase(Type editType)
         {
-            _property = property;
+            EditType = editType;
         }
+
+        public Type EditType { get; }
     }
 }

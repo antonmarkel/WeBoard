@@ -11,7 +11,7 @@ using WeBoard.Core.Edit.Properties.Base;
 
 namespace WeBoard.Core.Edit
 {
-    public class NumberEdit : EditBase<int>, IContainer
+    public class NumberEdit : Edit<int>, IContainer
     {
         private HorizontalStackContainer _container;
         private LabelComponent _label;

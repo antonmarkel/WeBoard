@@ -26,10 +26,10 @@ namespace WeBoard.Core.Components.Shapes.Base
                 "Fill color",
                 setter: value => FillColor = value,
                 getter: () => FillColor);
-            var outlineThicknessEditProperty = new EditProperty<float>(
+            var outlineThicknessEditProperty = new EditProperty<int>(
                 "Outline thickness",
                 setter: value => OutlineThickness = value,
-                getter: () => OutlineThickness);
+                getter: () => (int)OutlineThickness);
             var outlineColor = new EditProperty<Color>(
                 "Outline color",
                 setter: value => OutlineColor = value,

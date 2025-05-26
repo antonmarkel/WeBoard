@@ -31,6 +31,7 @@ namespace WeBoard.Client.Services.Engine
             UpdateManager.GetInstance();
             MenuManager.GetInstance().CurrentInstrument = InstrumentOptionsEnum.Cursor;
             CursorManager.GetInstance();
+            EditManager.GetInstance();
 
             var menuInitializer = new MenuInitializer();
             var menuComponents = menuInitializer.InitializeComponents();
