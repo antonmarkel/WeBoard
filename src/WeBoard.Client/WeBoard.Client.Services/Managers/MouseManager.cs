@@ -1,6 +1,7 @@
 ﻿using SFML.System;
 using SFML.Window;
 using WeBoard.Core.Components.Interfaces;
+using WeBoard.Core.Components.Tools;
 using WeBoard.Core.Components.Visuals;
 using WeBoard.Core.Enums.Menu;
 
@@ -12,6 +13,8 @@ namespace WeBoard.Client.Services.Managers
         private readonly RenderManager _global = RenderManager.GetInstance();
         private readonly FocusManager _focusManager = FocusManager.GetInstance();
         private readonly CursorManager _cursorManager = CursorManager.GetInstance();
+        private readonly ToolManager _toolManager = ToolManager.GetInstance();
+        
         public bool IsDragging { get; set; }
         public Vector2i DragStartScreen { get; private set; }
         public Vector2f DragStartWorld { get; private set; }
@@ -146,14 +149,27 @@ namespace WeBoard.Client.Services.Managers
 
                 if (IsDrawingToolActive())
                 {
-                    ToolManager.GetInstance().OnMousePressed(DragStartWorld);
+                    _toolManager.OnMousePressed(DragStartWorld);
 
-                    var created = ToolManager.GetInstance().ActiveTool?.CreatedComponent;
-                    if (created != null)
+                    if (_toolManager.ActiveTool is EraserTool eraser)
                     {
-                        ComponentManager.GetInstance().AddComponent(created);
+                        var components = ComponentManager.GetInstance().GetComponentsForLogic();
+                        eraser.ProcessEraseCandidates(components);
+
+                        foreach (var c in eraser.EraseCandidates)
+                        {
+                            ComponentManager.GetInstance().RemoveComponent(c);
+                        }
                     }
-                    
+                    else
+                    {
+                        var created = _toolManager.ActiveTool?.CreatedComponent;
+                        if (created != null)
+                        {
+                            ComponentManager.GetInstance().AddComponent(created);
+                        }
+                    }
+
                     return;
                 }
 
@@ -183,7 +199,8 @@ namespace WeBoard.Client.Services.Managers
         {
             var tool = MenuManager.GetInstance().CurrentInstrument;
             return tool is InstrumentOptionsEnum.Brush
-                or InstrumentOptionsEnum.Pencil;
+                or InstrumentOptionsEnum.Pencil
+                or InstrumentOptionsEnum.Eraser;
         }
 
     }

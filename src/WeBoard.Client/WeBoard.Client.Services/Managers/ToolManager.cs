@@ -33,6 +33,7 @@ namespace WeBoard.Client.Services.Managers
                     ToolColor = new Color(255, 0, 0, 80),
                     ToolSize = 20f
                 },
+                InstrumentOptionsEnum.Eraser => new EraserTool(),
                 _ => null
             };
 
