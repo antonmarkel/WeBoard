@@ -4,7 +4,7 @@ using WeBoard.Core.Components.Tools.Base;
 
 namespace WeBoard.Core.Components.Tools
 {
-    public class BrushTool : ToolBase
+    public class PencilTool : ToolBase
     {
         private readonly List<List<Vertex>> _lines = new();
         private List<Vertex> _currentLine = new();
@@ -13,8 +13,10 @@ namespace WeBoard.Core.Components.Tools
         public override void OnMousePressed(Vector2f worldPos)
         {
             _isDrawing = true;
-            _currentLine = new List<Vertex>();
-            _currentLine.Add(new Vertex(worldPos, Color.Black));
+            _currentLine = new List<Vertex>
+            {
+                new(worldPos, BrushColor)
+            };
             _lines.Add(_currentLine);
         }
 

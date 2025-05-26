@@ -19,7 +19,10 @@ var boardRender = new BoardRender(renderManager.RenderWindow);
 
 BoardEngine engine = new BoardEngine();
 engine.AddService(new TestService());
-ToolManager.GetInstance().ActiveTool = new BrushTool();
+var marker = new MarkerTool();
+ToolManager.GetInstance().ActiveTool = marker;
+marker.SetBrushSize(14f);
+marker.SetBrushColor(new Color(255, 0, 255, 100));
 
 engine.Start();
 boardRender.Start();
