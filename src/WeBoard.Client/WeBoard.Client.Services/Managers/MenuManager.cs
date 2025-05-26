@@ -15,7 +15,7 @@ namespace WeBoard.Client.Services.Managers
             return Instance ?? (Instance = new());
         }
 
-        private InstrumentOptionsEnum _currentInstrument;
+        private InstrumentOptionsEnum _currentInstrument = InstrumentOptionsEnum.Cursor;
         public InstrumentOptionsEnum CurrentInstrument
         {
             get => _currentInstrument;

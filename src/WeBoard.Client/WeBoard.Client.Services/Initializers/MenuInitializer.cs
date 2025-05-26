@@ -104,7 +104,7 @@ namespace WeBoard.Client.Services.Initializers
             var shapeRadioGroup = new RadioButtonGroup();
             rectButton.Group = triangleButton.Group = circleButton.Group = shapeRadioGroup;
 
-            shapeRadioGroup.SetOption(rectButton);
+            shapeRadioButton.ContentView = rectContent;
             var shapeStack = new HorizontalStackContainer([rectButton, triangleButton, circleButton])
             {
                 BackgroundColor = new Color(255, 255, 255, 255),
