@@ -4,6 +4,7 @@ using SFML.Graphics;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
 using WeBoard.Core.Edit.Properties.Base;
+using WeBoard.Core.Updates.Edit;
 
 namespace WeBoard.Core.Components.Shapes.Base
 {
@@ -22,17 +23,35 @@ namespace WeBoard.Core.Components.Shapes.Base
 
         private void InitializeEditProperties()
         {
+            var editColorEditName = "Fill color";
+            var editOutlineThicknessEditName = "Outline thickness";
+            var editOutlineColorEditName = "Outline color";
             var fillColorEditProperty = new EditProperty<Color>(
-                "Fill color",
-                setter: value => FillColor = value,
+                editColorEditName,
+                setter: value =>
+                {
+                    if(FillColor != value)
+                        TrackUpdate(new EditUpdate(Id, editColorEditName, value, FillColor));
+                    FillColor = value;
+                },
                 getter: () => FillColor);
             var outlineThicknessEditProperty = new EditProperty<int>(
-                "Outline thickness",
-                setter: value => OutlineThickness = value,
+                editOutlineThicknessEditName,
+                setter: value =>
+                {
+                    if(Math.Abs(value - OutlineThickness) > 0.01f)
+                        TrackUpdate(new EditUpdate(Id, editOutlineThicknessEditName, value, OutlineThickness));
+                    OutlineThickness = value;
+                },
                 getter: () => (int)OutlineThickness);
             var outlineColor = new EditProperty<Color>(
-                "Outline color",
-                setter: value => OutlineColor = value,
+                editOutlineColorEditName,
+                setter: value =>
+                {
+                    if(OutlineColor != value)
+                        TrackUpdate(new EditUpdate(Id, editOutlineColorEditName, value, OutlineColor));
+                    OutlineColor = value;
+                },
                 getter: () => OutlineColor);
 
             _editProperties = [fillColorEditProperty,outlineThicknessEditProperty, outlineColor];

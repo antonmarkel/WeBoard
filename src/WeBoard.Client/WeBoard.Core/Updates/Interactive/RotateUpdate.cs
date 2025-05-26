@@ -1,4 +1,6 @@
-﻿using WeBoard.Core.Components.Interfaces;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using WeBoard.Core.Components.Interfaces;
 using WeBoard.Core.Updates.Base;
 using WeBoard.Core.Updates.Interfaces;
 
