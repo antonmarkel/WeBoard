@@ -1,6 +1,8 @@
-﻿using WeBoard.Client.Services.Interfaces.Base;
+﻿using WeBoard.Client.Services.Initializers;
+using WeBoard.Client.Services.Interfaces.Base;
 using WeBoard.Client.Services.Managers;
-using WeBoard.Core.Components.Menu.Buttons;
+using WeBoard.Core.Components.Interfaces;
+using WeBoard.Core.Enums.Menu;
 
 namespace WeBoard.Client.Services.Engine
 {
@@ -25,7 +27,15 @@ namespace WeBoard.Client.Services.Engine
 
             FocusManager.GetInstance();
             MouseManager.GetInstance();
-            ComponentManager.GetInstance().InitMenu([new ButtonComponent(new SFML.System.Vector2f(100, 100), new SFML.System.Vector2f(400, 100))]);
+            KeyboardManager.GetInstance();
+            UpdateManager.GetInstance();
+            MenuManager.GetInstance().CurrentInstrument = InstrumentOptionsEnum.Cursor;
+            CursorManager.GetInstance();
+
+            var menuInitializer = new MenuInitializer();
+            var menuComponents = menuInitializer.InitializeComponents();
+
+            ComponentManager.GetInstance().InitMenu(menuComponents);
         }
 
         public void Stop()
@@ -36,8 +46,14 @@ namespace WeBoard.Client.Services.Engine
 
         private void LogicLoop()
         {
+            var lastTime = DateTime.Now;
             while (_isRunning)
             {
+                var currentTime = DateTime.Now;
+                var delta = (currentTime - lastTime).TotalMilliseconds;
+                lastTime = currentTime;
+                UpdateManager.GetInstance().CollectUpdates();
+                AnimationManager.GetInstance().OnUpdate((float)delta);
                 OnUpdate?.Invoke();
                 Thread.Sleep(16);
             }

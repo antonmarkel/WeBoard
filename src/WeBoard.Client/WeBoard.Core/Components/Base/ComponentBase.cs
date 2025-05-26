@@ -21,9 +21,13 @@ namespace WeBoard.Core.Components.Base
         }
         public event Action<ComponentBase> ZIndexChanged;
         public virtual Vector2f Position { get => Shape.Position; set => Shape.Position = value; }
+        public IComponent? Parent { get; set; } = null;
 
+
+        public long Id { get; }
         public ComponentBase()
         {
+            Id = new Random().NextInt64();
             _focusShape = new RectangleShape()
             {
                 FillColor = Color.Transparent,
@@ -53,7 +57,7 @@ namespace WeBoard.Core.Components.Base
         public virtual void OnFocus()
         {
             IsInFocus = true;
-            ZIndex = 0;
+            //ZIndex = 0;
             //Console.WriteLine(GetTotalArea());
             UpdateFocusShape();
         }

@@ -1,25 +1,36 @@
-﻿using SFML.Graphics;
+﻿using System.Collections.Immutable;
+using SFML.Graphics;
 using SFML.System;
+using WeBoard.Core.Animations.Button;
+using WeBoard.Core.Animations.Interfaces;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
+using WeBoard.Core.Drawables.Shapes;
 
 namespace WeBoard.Core.Components.Menu.Buttons
 {
-    public class ButtonComponent : MenuComponentBase, IContainerView
+    public class ButtonComponent : MenuComponentBase, IContainerView, IAnimatible
     {
-        private RectangleShape _buttonShape;
+        protected RoundedRectangle _buttonShape;
+        protected RectangleShape _focusRectangle;
+        protected ButtonClickAnimation _clickAnimation;
+        protected ButtonResizeAnimation _resizeAnimation;
+        protected List<IAnimation> _activeAnimations = [];
+        protected bool _underMouse = false;
+
         public IContentView? ContentView { get; set; }
         public uint Padding { get; set; }
+        public event Action<Vector2f> OnClickEvent;
 
         public override Vector2f Position
         {
             get => _buttonShape.Position;
-            set => _buttonShape.Position = value;
+            set => _buttonShape.Position = _focusRectangle.Position = value;
         }
-        public Vector2f Size
+        public override Vector2f Size
         {
             get => _buttonShape.Size;
-            set => _buttonShape.Size = value;
+            set => _buttonShape.Size = _focusRectangle.Size = value;
         }
         public Color OutlineColor
         {
@@ -36,12 +47,37 @@ namespace WeBoard.Core.Components.Menu.Buttons
             get => _buttonShape.FillColor;
             set => _buttonShape.FillColor = value;
         }
+        public uint CornerPointCount
+        {
+            get => _buttonShape.CornerPointCount;
+            set => _buttonShape.CornerPointCount = value;
+            
+        }
+        public float CornerRadius
+        {
+            get => _buttonShape.CornerRadius;
+            set => _buttonShape.CornerRadius = value;
+           
+        }
 
-        protected override Shape Shape => _buttonShape;
+
+        protected override Shape Shape => _focusRectangle;
+
+        public IImmutableList<IAnimation> ActiveAnimations
+        {
+            get
+            {
+                _activeAnimations = _activeAnimations.Where(anim => !anim.IsCompleted).ToList();
+
+                return _activeAnimations.ToImmutableList();
+            }
+        }
+
 
         public ButtonComponent(Vector2f position, Vector2f size)
         {
-            _buttonShape = new RectangleShape();
+            _buttonShape = new RoundedRectangle();
+            _focusRectangle = new RectangleShape();
 
             Position = position;
             Size = size;
@@ -52,7 +88,7 @@ namespace WeBoard.Core.Components.Menu.Buttons
 
         public override void Draw(RenderTarget target, RenderStates states)
         {
-
+            UpdateContentView();
 
             _buttonShape.Draw(target, states);
             ContentView?.Draw(target, states);
@@ -60,39 +96,58 @@ namespace WeBoard.Core.Components.Menu.Buttons
 
         private void UpdateContentView()
         {
+   
             if (ContentView is not null)
             {
-                ContentView.Size = Size - new Vector2f(Padding, Padding);
-                Position += new Vector2f(Padding, Padding);
+                ContentView.Size = new Vector2f(Size.X - Padding*2, Size.Y - Padding*2);
+                ContentView.Position = new Vector2f(Position.X + Padding, Position.Y + Padding);
             }
         }
 
         public override FloatRect GetScreenBounds()
         {
-            return _buttonShape.GetLocalBounds();
+            return new FloatRect(Position, Size);
+        }
+        public override void OnClick(Vector2f offset)
+        {
+            _activeAnimations.Remove(_clickAnimation);
+            _clickAnimation?.Reset();
+            _clickAnimation = new ButtonClickAnimation(Color.Black, BackgroundColor, 200);
+            _clickAnimation.ApplyTo(this);
+            _activeAnimations.Add(_clickAnimation);
+
+            OnClickEvent?.Invoke(offset);
+            OnFocus();
         }
 
-        public override void OnLostFocus()
+        public void PlayAnimation(IAnimation animation)
         {
-            if (IsInFocus)
+            animation.ApplyTo(this);
+            _activeAnimations.Add(animation);
+        }
+
+        public override void OnMouseOver()
+        {
+            
+            if(!_underMouse)
             {
-                OutlineThickness -= 2;
+                _activeAnimations.Remove(_resizeAnimation);
+                _resizeAnimation?.Reset();
+                _resizeAnimation = new ButtonResizeAnimation(Size, 1.1f, 100);
+                _resizeAnimation.ApplyTo(this);
+                _activeAnimations.Add(_resizeAnimation);
             }
-            base.OnLostFocus();
+            _underMouse = true;
+            base.OnMouseOver();
         }
 
-        public override void OnFocus()
+        public override void OnMouseLeave()
         {
-            if (!IsInFocus)
-            {
-                OutlineThickness += 2;
-            }
-            base.OnLostFocus();
-        }
-
-        public override void OnClick()
-        {
-            Console.WriteLine("Clicked");
+            _underMouse = false;
+            _activeAnimations.Remove(_resizeAnimation);
+            _resizeAnimation.Reset();
+         
+            base.OnMouseLeave();
         }
     }
 }

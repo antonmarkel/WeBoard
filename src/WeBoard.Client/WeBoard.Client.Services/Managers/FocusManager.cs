@@ -1,6 +1,7 @@
 ﻿using SFML.System;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
+using WeBoard.Core.Components.Visuals;
 
 namespace WeBoard.Client.Services.Managers
 {
@@ -8,6 +9,7 @@ namespace WeBoard.Client.Services.Managers
     {
         private static readonly FocusManager Instance = new();
         public IFocusable? FocusedComponent { get; set; }
+        public IFocusable? UnderMouse { get; set; }
         private ComponentManager _componentManager = ComponentManager.GetInstance();
         public IComponent? ActiveHandler { get; set; }
         public FocusManager()
@@ -21,27 +23,43 @@ namespace WeBoard.Client.Services.Managers
 
             if (FocusedComponent != null && FocusedComponent is InteractiveComponentBase interactive)
             {
+                ActiveHandler = null;
                 foreach (var handle in interactive.GetResizeHandles())
                 {
                     if (handle.Intersect(pointInt, out _))
                     {
                         ActiveHandler = handle;
+                        handle.OnFocus();
                         interactive.OnFocus();
-                        return;
+                    }
+                    else
+                    {
+                        handle.OnLostFocus();
                     }
                 }
+
+                if (ActiveHandler != null)
+                    return;
 
                 var rotateHandle = interactive.GetRotateHandle();
                 if (rotateHandle != null && rotateHandle.Intersect(pointInt, out _))
                 {
                     ActiveHandler = rotateHandle;
+                    rotateHandle.OnFocus();
                     interactive.OnFocus();
-                    return;
                 }
+                else
+                {
+                    rotateHandle?.OnLostFocus();
+                }
+
+                if (ActiveHandler != null)
+                    return;
+
             }
 
             var clickedComponent = _componentManager.GetByScreenPoint(pointInt, out _);
-
+            
             ActiveHandler = null;
 
             UpdateFocus(clickedComponent);

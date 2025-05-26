@@ -1,6 +1,7 @@
 ﻿using SFML.System;
 using SFML.Window;
 using WeBoard.Core.Components.Interfaces;
+using WeBoard.Core.Components.Visuals;
 
 namespace WeBoard.Client.Services.Managers
 {
@@ -9,6 +10,7 @@ namespace WeBoard.Client.Services.Managers
         private static readonly MouseManager Instance = new();
         private readonly RenderManager _global = RenderManager.GetInstance();
         private readonly FocusManager _focusManager = FocusManager.GetInstance();
+        private readonly CursorManager _cursorManager = CursorManager.GetInstance();
         public bool IsDragging { get; set; }
         public Vector2i DragStartScreen { get; private set; }
         public Vector2f DragStartWorld { get; private set; }
@@ -27,9 +29,32 @@ namespace WeBoard.Client.Services.Managers
 
         }
 
+        private void HandleMouseOver(Vector2i currentScreen)
+        {
+            var underMouse = ComponentManager.GetInstance().GetByScreenPoint(currentScreen, out _);
+            if (underMouse is null)
+            {
+                if(_focusManager.UnderMouse != null)
+                    _focusManager.UnderMouse.OnMouseLeave();
+                _focusManager.UnderMouse = underMouse;
+
+                return;
+            }
+
+            if (underMouse != _focusManager.UnderMouse)
+            {
+                _focusManager.UnderMouse?.OnMouseLeave();
+
+                _focusManager.UnderMouse = underMouse;
+                underMouse.OnMouseOver();
+            }
+
+        }
+
         private void HandleMouseMove(object? sender, MouseMoveEventArgs e)
         {
             var currentScreen = new Vector2i(e.X, e.Y);
+            _cursorManager.SetPosition(currentScreen);
             var currentWorld = _global.RenderWindow.MapPixelToCoords(currentScreen);
             var offsetScreen = DragStartScreen - currentScreen;
             var offsetWorld = DragStartWorld - currentWorld;
@@ -38,8 +63,14 @@ namespace WeBoard.Client.Services.Managers
 
             if (!IsDragging)
                 return;
+            HandleMouseOver(currentScreen);
 
-          
+            if (!IsDragging)
+            {
+                if(_focusManager.FocusedComponent is IDraggable dragComponent)
+                    dragComponent.OnStopDragging();
+                return;
+            }
 
             if (_focusManager.ActiveHandler is IDraggable draggable)
             {
@@ -100,11 +131,24 @@ namespace WeBoard.Client.Services.Managers
                 DragStartScreen = new Vector2i(e.X, e.Y);
                 DragStartWorld = _global.RenderWindow.MapPixelToCoords(DragStartScreen);
 
+                Vector2f clickOffset = new Vector2f(0, 0);
                 var menuClickedComponent = ComponentManager.GetInstance().GetMenuComponents()
-                    .FirstOrDefault(comp => comp.Intersect(DragStartScreen, out _));
+                    .FirstOrDefault(comp => comp.Intersect(DragStartScreen, out clickOffset));
                 if (menuClickedComponent is IClickable clickable)
                 {
-                    clickable.OnClick();
+                    clickable.OnClick(-clickOffset);
+                    return;
+                }
+
+                if (KeyboardManager.GetInstance().IsInTextMode())
+                {
+                    var textComponent = new TextComponent(DragStartWorld);
+                    ComponentManager.GetInstance().AddComponent(textComponent);
+                    FocusManager.GetInstance().HandleClick(textComponent.Position);
+
+                    textComponent.StartEditing();
+                    KeyboardManager.GetInstance().ExitTextMode();
+                    return;
                 }
 
                 FocusManager.GetInstance().HandleClick(DragStartWorld);
