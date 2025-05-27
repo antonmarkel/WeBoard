@@ -9,24 +9,28 @@ namespace WeBoard.Core.Drawables.Strokes
         private readonly List<CircleShape> _dots = new();
         private Vector2f _size = new(1, 1);
         private readonly RectangleShape _focusShape = new();
-
+        private readonly Color _color;
+        private float _radius;
         protected override Shape Shape => _focusShape;
 
-        public BrushStroke()
+        public BrushStroke(Color color, float radius)
         {
+            _color = color;
+            _radius = radius;
+
             _focusShape.FillColor = Color.Transparent;
             _focusShape.OutlineThickness = 0;
             _focusShape.OutlineColor = new Color(0, 0, 0, 0);
         }
 
-        public void AddPoint(Vector2f position, Color color, float radius)
+        public void AddPoint(Vector2f position)
         {
-            var circle = new CircleShape(radius / 2f)
+            var circle = new CircleShape(_radius / 2f)
             {
-                FillColor = color,
-                Position = position - new Vector2f(radius / 2f, radius / 2f),
-                OutlineThickness = radius / 3f,
-                OutlineColor = new Color(color.R, color.G, color.B, (byte)(color.A / 3))
+                FillColor = _color,
+                Position = position - new Vector2f(_radius / 2f, _radius / 2f),
+                OutlineThickness = _radius / 3f,
+                OutlineColor = new Color(_color.R, _color.G, _color.B, (byte)(_color.A / 3))
             };
 
             _dots.Add(circle);

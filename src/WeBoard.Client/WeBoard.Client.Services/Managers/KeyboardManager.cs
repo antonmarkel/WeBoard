@@ -33,15 +33,6 @@ namespace WeBoard.Client.Services.Managers
                     PasteImageFromClipboard();
                 else if(e.Code == Keyboard.Key.Z)
                     UpdateManager.GetInstance().RemoveLastUpdate();
-                else if (e.Code == Keyboard.Key.K)
-                {
-                    var focused = FocusManager.GetInstance().FocusedComponent;
-                    if (focused is ISavable savable)
-                    {
-                        var data = savable.ToSerializable();
-                    }
-                  
-                }
             }
             if (e.Code == Keyboard.Key.T)
             {

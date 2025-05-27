@@ -10,7 +10,7 @@ namespace WeBoard.Core.Updates.Interactive
     {
         private readonly float _offsetRotate;
 
-        public RotateUpdate(long targetId, float offsetRotate) : base(targetId)
+        public RotateUpdate(int targetId, float offsetRotate) : base(targetId)
         {
             _offsetRotate = offsetRotate;
         }

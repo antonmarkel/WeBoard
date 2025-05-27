@@ -57,7 +57,7 @@ namespace WeBoard.Core.Components.Shapes.Base
             _editProperties = [fillColorEditProperty, outlineThicknessEditProperty, outlineColor];
         }
 
-        public virtual IBinarySerializable ToSerializable()
+        public override IBinarySerializable ToSerializable()
         {
             return new SerializableShape()
             {
@@ -71,7 +71,7 @@ namespace WeBoard.Core.Components.Shapes.Base
                 OutlineThickness = OutlineThickness
             };
         }
-        public virtual void FromSerializable(IBinarySerializable serializable)
+        public override void FromSerializable(IBinarySerializable serializable)
         {
             if (serializable is SerializableShape serializableShape)
             {

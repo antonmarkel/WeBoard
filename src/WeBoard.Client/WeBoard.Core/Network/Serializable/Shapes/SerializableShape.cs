@@ -31,10 +31,10 @@ public class SerializableShape : IBinarySerializable
     public Color FillColor { get; set; }
     public Type SerializableType { get; }
 
-    public byte TypeId { get; }
-    public byte Version { get; }
+    public virtual byte TypeId { get; }
+    public virtual byte Version { get; }
 
-    public ReadOnlySpan<byte> Serialize()
+    public string Serialize()
     {
         // Calculate byte size:
         // 1 byte TypeID + 1 byte Version
@@ -45,9 +45,7 @@ public class SerializableShape : IBinarySerializable
         // 4 (OutlineThickness)
         // 4 (OutlineColor bytes)
         // 4 (FillColor bytes)
-        // 2 (TexturePath length)
-        // variable bytes for TexturePath UTF8
-        int totalLength = 1 + 1 + 4 + 4 + (4 * 2) + (4 * 2) + 4 + 4 + 4 + 4 + 2;
+        int totalLength = 1 + 1 + 4 + 4 + (4 * 2) + (4 * 2) + 4 + 4 + 4 + 4;
 
         Span<byte> span = stackalloc byte[totalLength];
 
@@ -90,11 +88,14 @@ public class SerializableShape : IBinarySerializable
         span[offset++] = FillColor.B;
         span[offset] = FillColor.A;
 
-        return span.ToArray();
+        return Convert.ToBase64String(span.ToArray());
     }
 
-    public void Deserialize(ReadOnlySpan<byte> data)
+    public void Deserialize(string dataString)
     {
+        byte[] bytes = Convert.FromBase64String(dataString);
+        ReadOnlySpan<byte> data = bytes.AsSpan();
+
         int offset = 0;
 
         byte typeId = data[offset++];

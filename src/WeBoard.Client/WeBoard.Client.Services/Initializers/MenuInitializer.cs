@@ -19,10 +19,12 @@ namespace WeBoard.Client.Services.Initializers
     public class MenuInitializer
     {
         private readonly MenuManager _menuManager;
+        private readonly ToolManager _toolManager;
 
         public MenuInitializer()
         {
             _menuManager = MenuManager.GetInstance();
+            _toolManager = ToolManager.GetInstance();
         }
 
         private static RadioButtonComponent CopyButton(ButtonComponent button)
@@ -103,7 +105,7 @@ namespace WeBoard.Client.Services.Initializers
 
             var shapeRadioGroup = new RadioButtonGroup();
             rectButton.Group = triangleButton.Group = circleButton.Group = shapeRadioGroup;
-
+            shapeRadioGroup.OnGroupUpdateHandler += _ => _toolManager.UpdateToolFromMenu();
             shapeRadioButton.ContentView = rectContent;
             var shapeStack = new HorizontalStackContainer([rectButton, triangleButton, circleButton])
             {

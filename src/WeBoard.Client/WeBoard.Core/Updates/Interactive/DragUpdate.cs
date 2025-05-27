@@ -9,7 +9,7 @@ namespace WeBoard.Core.Updates.Interactive
     {
         private readonly Vector2f _offset;
 
-        public DragUpdate(long targetId,Vector2f offset) : base(targetId)
+        public DragUpdate(int targetId,Vector2f offset) : base(targetId)
         {
             _offset = offset;
         }

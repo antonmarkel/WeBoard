@@ -76,6 +76,17 @@ namespace WeBoard.Client.Services.Managers
                 AnimationManager.GetInstance().Remove(animatible);
         }
 
+        public void RemoveComponent(int componentId)
+        {
+            var component = _componentSet.GetById(componentId);
+            if (component is null)
+                return;
+
+            _componentSet.Remove(component);
+            if (component is IAnimatible animatible)
+                AnimationManager.GetInstance().Remove(animatible);
+        }
+
         public IEnumerable<ComponentBase> GetComponentsForLogic()
         {
             

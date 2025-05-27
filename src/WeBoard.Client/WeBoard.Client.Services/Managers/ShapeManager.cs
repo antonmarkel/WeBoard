@@ -2,6 +2,7 @@
 using SFML.System;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Shapes;
+using WeBoard.Core.Components.Shapes.Base;
 using WeBoard.Core.Enums.Menu;
 
 namespace WeBoard.Client.Services.Managers
@@ -11,7 +12,7 @@ namespace WeBoard.Client.Services.Managers
         private static readonly ShapeManager _instance = new();
         public static ShapeManager GetInstance() => _instance;
 
-        public ComponentBase? CreateShape(InstrumentOptionsEnum type, Vector2f position)
+        public ShapeBase? CreateShape(InstrumentOptionsEnum type, Vector2f position)
         {
             return type switch
             {

@@ -5,10 +5,10 @@ namespace WeBoard.Core.Updates.Base
 {
     public abstract class UpdateBase : IUpdate
     {
-        public long TargetId { get;}
+        public int TargetId { get;}
         public DateTime Date { get; }
         private Action<ITrackable> UpdateAction => UpdateActionMethod;
-        public UpdateBase(long id)
+        public UpdateBase(int id)
         {
             TargetId = id;
             Date = DateTime.UtcNow;

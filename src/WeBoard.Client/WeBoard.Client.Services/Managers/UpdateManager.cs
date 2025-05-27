@@ -1,4 +1,5 @@
 ﻿using WeBoard.Core.Components.Interfaces;
+using WeBoard.Core.Updates.Creation;
 using WeBoard.Core.Updates.Interfaces;
 
 namespace WeBoard.Client.Services.Managers
@@ -27,6 +28,10 @@ namespace WeBoard.Client.Services.Managers
                 trackable.Updates = [];
             }
         }
+        public void TrackUpdate(IUpdate update)
+        {
+            _updates.Add(update);
+        }
 
         public void RemoveLastUpdate()
         {
@@ -37,6 +42,19 @@ namespace WeBoard.Client.Services.Managers
             _updates.Remove(update);
 
             var cancelUpdate = update.GetCancelUpdate();
+
+            if (cancelUpdate is CreateUpdate createUpdate)
+            {
+                _componentManager.AddComponent(createUpdate.GetComponent());
+                return;
+            }
+
+            if (cancelUpdate is RemoveUpdate removeUpdate)
+            {
+                _componentManager.RemoveComponent(removeUpdate.TargetId);
+                return;
+            }
+
             var component = _componentManager.GetComponentsForLogic()
                 .FirstOrDefault(comp => comp.Id == cancelUpdate.TargetId);
 

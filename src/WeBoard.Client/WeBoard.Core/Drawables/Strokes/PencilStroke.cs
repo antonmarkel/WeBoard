@@ -7,25 +7,26 @@ namespace WeBoard.Core.Drawables.Strokes
     public class PencilStroke : InteractiveComponentBase
     {
         private readonly List<Vector2f> _points = new();
-        private readonly List<Color> _colors = new();
+        private readonly Color _color;
         private readonly VertexArray _vertexArray = new(PrimitiveType.LineStrip);
         private Vector2f _size = new(1, 1);
         private readonly RectangleShape _focusShape = new();
 
         protected override Shape Shape => _focusShape;
 
-        public PencilStroke()
+        public PencilStroke(Color color)
         {
             _focusShape.FillColor = Color.Transparent;
             _focusShape.OutlineThickness = 0;
             _focusShape.OutlineColor = new Color(0, 0, 0, 0);
+
+            _color = color;
         }
 
-        public void AddPoint(Vector2f position, Color color)
+        public void AddPoint(Vector2f position)
         {
             _points.Add(position);
-            _colors.Add(color);
-            _vertexArray.Append(new Vertex(position, color));
+            _vertexArray.Append(new Vertex(position, _color));
             UpdateBounds();
         }
 
@@ -61,14 +62,12 @@ namespace WeBoard.Core.Drawables.Strokes
         public override void Drag(Vector2f offset)
         {
             base.Drag(offset);
+            _vertexArray.Clear();
             for (int i = 0; i < _points.Count; i++)
             {
                 _points[i] += offset;
+                _vertexArray.Append(new Vertex(_points[i], _color));
             }
-
-            _vertexArray.Clear();
-            for (int i = 0; i < _points.Count; i++)
-                _vertexArray.Append(new Vertex(_points[i], _colors[i]));
 
             UpdateBounds();
         }

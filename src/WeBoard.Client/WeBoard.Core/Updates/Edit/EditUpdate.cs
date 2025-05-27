@@ -12,14 +12,14 @@ namespace WeBoard.Core.Updates.Edit
         private string _jsonLastValue;
         private string _editPropertyName;
 
-        private EditUpdate(long targetId, string editPropertyName, string jsonValue, string jsonLastValue) : base(targetId)
+        private EditUpdate(int targetId, string editPropertyName, string jsonValue, string jsonLastValue) : base(targetId)
         {
             _editPropertyName = editPropertyName;
             _jsonLastValue = jsonLastValue;
             _jsonValue = jsonValue;
         }
 
-        public EditUpdate(long targetId, string editPropertyName, object newValue, object lastValue) : base(targetId)
+        public EditUpdate(int targetId, string editPropertyName, object newValue, object lastValue) : base(targetId)
         {
             _editPropertyName = editPropertyName;
             if (newValue is Color newColor)

@@ -3,13 +3,14 @@ using SFML.System;
 using WeBoard.Core.Components.Handlers;
 using WeBoard.Core.Components.Interfaces;
 using WeBoard.Core.Enums;
+using WeBoard.Core.Network.Serializable.Interfaces;
 using WeBoard.Core.Updates.Interactive;
 using WeBoard.Core.Updates.Interfaces;
 using Color = SFML.Graphics.Color;
 
 namespace WeBoard.Core.Components.Base
 {
-    public abstract class InteractiveComponentBase : ComponentBase, IDraggable, IResizable, IRotatable, ITrackable
+    public abstract class InteractiveComponentBase : ComponentBase, IDraggable, IResizable, IRotatable, ITrackable, ISavable
     {
         protected List<ResizeHandler> resizeHandles = new();
         private RotateHandler? rotateHandle;
@@ -234,5 +235,13 @@ namespace WeBoard.Core.Components.Base
             if (!IsUpdating)
                 Updates.Add(update);
         }
+
+        public virtual IBinarySerializable ToSerializable()
+        {
+            return null;
+        }
+
+        public virtual void FromSerializable(IBinarySerializable serializable){}
+
     }
 }

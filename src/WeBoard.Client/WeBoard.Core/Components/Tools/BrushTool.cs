@@ -12,8 +12,8 @@ namespace WeBoard.Core.Components.Tools
 
         public override void OnMousePressed(Vector2f worldPos)
         {
-            _currentStroke = new BrushStroke();
-            _currentStroke.AddPoint(worldPos, ToolColor, ToolSize);
+            _currentStroke = new BrushStroke(ToolColor, ToolSize);
+            _currentStroke.AddPoint(worldPos);
             CreatedComponent = _currentStroke;
             _isDrawing = true;
         }
@@ -21,7 +21,7 @@ namespace WeBoard.Core.Components.Tools
         public override void OnMouseMoved(Vector2f worldPos)
         {
             if (_isDrawing && _currentStroke != null)
-                _currentStroke.AddPoint(worldPos, ToolColor, ToolSize);
+                _currentStroke.AddPoint(worldPos);
         }
 
         public override void OnMouseReleased(Vector2f worldPos)

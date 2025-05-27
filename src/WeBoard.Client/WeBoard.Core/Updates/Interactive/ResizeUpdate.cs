@@ -9,7 +9,7 @@ namespace WeBoard.Core.Updates.Interactive
     {
         private readonly Vector2f _offsetSize;
 
-        public ResizeUpdate(long targetId, Vector2f offsetSize) : base(targetId)
+        public ResizeUpdate(int targetId, Vector2f offsetSize) : base(targetId)
         {
             _offsetSize = offsetSize;
         }

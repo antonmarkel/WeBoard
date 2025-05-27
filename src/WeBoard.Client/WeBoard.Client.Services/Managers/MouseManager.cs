@@ -1,11 +1,14 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
+using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
 using WeBoard.Core.Components.Shapes;
 using WeBoard.Core.Components.Tools;
 using WeBoard.Core.Components.Visuals;
 using WeBoard.Core.Enums.Menu;
+using WeBoard.Core.Network.Serializable.Tools;
+using WeBoard.Core.Updates.Creation;
 
 namespace WeBoard.Client.Services.Managers
 {
@@ -143,7 +146,7 @@ namespace WeBoard.Client.Services.Managers
                 }
 
                 var currentInstrument = MenuManager.GetInstance().CurrentInstrument;
-
+                _toolManager.UpdateToolFromMenu();
                 if (currentInstrument == InstrumentOptionsEnum.Text)
                 {
                     var textComponent = new TextComponent(DragStartWorld);
@@ -164,6 +167,8 @@ namespace WeBoard.Client.Services.Managers
                     {
                         ComponentManager.GetInstance().AddComponent(shape);
                         _focusManager.UpdateFocus(shape);
+                        UpdateManager.GetInstance().TrackUpdate(
+                            new CreateUpdate(shape.Id,ComponentSerializer.Serialize(shape)));
                         MenuManager.GetInstance().CurrentInstrument = InstrumentOptionsEnum.Cursor;
                     }
                     return;
@@ -174,7 +179,6 @@ namespace WeBoard.Client.Services.Managers
                     or InstrumentOptionsEnum.Eraser)
                 {
                     _toolManager.OnMousePressed(DragStartWorld);
-
                     if (_toolManager.ActiveTool is EraserTool eraser)
                     {
                         var components = ComponentManager.GetInstance().GetComponentsForLogic();
@@ -183,6 +187,11 @@ namespace WeBoard.Client.Services.Managers
                         foreach (var c in eraser.EraseCandidates)
                         {
                             ComponentManager.GetInstance().RemoveComponent(c);
+                            if (c is InteractiveComponentBase interactive)
+                            {
+                                UpdateManager.GetInstance().TrackUpdate(
+                                    new RemoveUpdate(c.Id, ComponentSerializer.Serialize(interactive)));
+                            }
                         }
                     }
                     else

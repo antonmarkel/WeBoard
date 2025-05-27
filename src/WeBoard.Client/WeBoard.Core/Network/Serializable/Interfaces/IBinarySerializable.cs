@@ -5,7 +5,7 @@
         byte TypeId { get; }
         byte Version { get; }
         Type SerializableType { get; }
-        ReadOnlySpan<byte> Serialize();
-        void Deserialize(ReadOnlySpan<byte> data);
+        string Serialize();
+        void Deserialize(string data);
     }
 }
