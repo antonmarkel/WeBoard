@@ -1,5 +1,6 @@
 ﻿using System.Windows.Media;
 using SFML.Window;
+using WeBoard.Core.Components.Interfaces;
 using WeBoard.Core.Components.Menu.Inputs;
 using WeBoard.Core.Components.Visuals;
 
@@ -32,6 +33,15 @@ namespace WeBoard.Client.Services.Managers
                     PasteImageFromClipboard();
                 else if(e.Code == Keyboard.Key.Z)
                     UpdateManager.GetInstance().RemoveLastUpdate();
+                else if (e.Code == Keyboard.Key.K)
+                {
+                    var focused = FocusManager.GetInstance().FocusedComponent;
+                    if (focused is ISavable savable)
+                    {
+                        var data = savable.ToSerializable();
+                    }
+                  
+                }
             }
             if (e.Code == Keyboard.Key.T)
             {

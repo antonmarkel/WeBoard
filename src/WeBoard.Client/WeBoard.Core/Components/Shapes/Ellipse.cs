@@ -2,6 +2,8 @@
 using SFML.System;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Shapes.Base;
+using WeBoard.Core.Network.Serializable.Interfaces;
+using WeBoard.Core.Network.Serializable.Shapes;
 
 namespace WeBoard.Core.Components.Shapes
 {
@@ -50,6 +52,13 @@ namespace WeBoard.Core.Components.Shapes
                 float y = MathF.Sin(angle) * b;
                 _ellipseShape.SetPoint(i, new Vector2f(x + a, y + b));
             }
+        }
+
+        public override IBinarySerializable ToSerializable()
+        {
+            var shapeSerializable = (SerializableShape)base.ToSerializable();
+
+            return new SerializableEllipse(shapeSerializable);
         }
     }
 }

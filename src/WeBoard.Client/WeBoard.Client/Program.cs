@@ -17,8 +17,8 @@ renderManager.RenderWindow = mainWindow;
 var componentManager = ComponentManager.GetInstance();
 var boardRender = new BoardRender(renderManager.RenderWindow);
 
-BoardEngine engine = new BoardEngine();
-engine.AddService(new TestService());
+BoardEngine engine = new BoardEngine(); 
+//engine.AddService(new TestService());
 
 engine.Start();
 boardRender.Start();

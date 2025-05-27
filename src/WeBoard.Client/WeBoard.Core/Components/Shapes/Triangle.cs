@@ -1,6 +1,8 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using WeBoard.Core.Components.Shapes.Base;
+using WeBoard.Core.Network.Serializable.Interfaces;
+using WeBoard.Core.Network.Serializable.Shapes;
 
 namespace WeBoard.Core.Components.Shapes
 {
@@ -43,6 +45,13 @@ namespace WeBoard.Core.Components.Shapes
             _triangleShape.SetPoint(0, new Vector2f(size.X / 2f, 0));
             _triangleShape.SetPoint(1, new Vector2f(size.X, size.Y));
             _triangleShape.SetPoint(2, new Vector2f(0, size.Y));
+        }
+
+        public override IBinarySerializable ToSerializable()
+        {
+            var shapeSerializable = (SerializableShape)base.ToSerializable();
+
+            return new SerializableTriangle(shapeSerializable);
         }
     }
 }

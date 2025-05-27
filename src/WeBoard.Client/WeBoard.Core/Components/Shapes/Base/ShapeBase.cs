@@ -1,14 +1,14 @@
 ﻿using System.Collections.Immutable;
-using System.Data;
-using SFML.Graphics;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
 using WeBoard.Core.Edit.Properties.Base;
+using WeBoard.Core.Network.Serializable.Interfaces;
 using WeBoard.Core.Updates.Edit;
+using Color = SFML.Graphics.Color;
 
 namespace WeBoard.Core.Components.Shapes.Base
 {
-    public abstract class ShapeBase : InteractiveComponentBase, IEditable
+    public abstract class ShapeBase : InteractiveComponentBase, IEditable, ISavable
     {
         public virtual float OutlineThickness
         {
@@ -30,7 +30,7 @@ namespace WeBoard.Core.Components.Shapes.Base
                 editColorEditName,
                 setter: value =>
                 {
-                    if(FillColor != value)
+                    if (FillColor != value)
                         TrackUpdate(new EditUpdate(Id, editColorEditName, value, FillColor));
                     FillColor = value;
                 },
@@ -39,7 +39,7 @@ namespace WeBoard.Core.Components.Shapes.Base
                 editOutlineThicknessEditName,
                 setter: value =>
                 {
-                    if(Math.Abs(value - OutlineThickness) > 0.01f)
+                    if (Math.Abs(value - OutlineThickness) > 0.01f)
                         TrackUpdate(new EditUpdate(Id, editOutlineThicknessEditName, value, OutlineThickness));
                     OutlineThickness = value;
                 },
@@ -48,13 +48,42 @@ namespace WeBoard.Core.Components.Shapes.Base
                 editOutlineColorEditName,
                 setter: value =>
                 {
-                    if(OutlineColor != value)
+                    if (OutlineColor != value)
                         TrackUpdate(new EditUpdate(Id, editOutlineColorEditName, value, OutlineColor));
                     OutlineColor = value;
                 },
                 getter: () => OutlineColor);
 
-            _editProperties = [fillColorEditProperty,outlineThicknessEditProperty, outlineColor];
+            _editProperties = [fillColorEditProperty, outlineThicknessEditProperty, outlineColor];
+        }
+
+        public virtual IBinarySerializable ToSerializable()
+        {
+            return new SerializableShape()
+            {
+                ZIndex = ZIndex,
+                Id = Id,
+                Position = Position,
+                Size = GetSize(),
+                Rotation = Rotation,
+                FillColor = FillColor,
+                OutlineColor = OutlineColor,
+                OutlineThickness = OutlineThickness
+            };
+        }
+        public virtual void FromSerializable(IBinarySerializable serializable)
+        {
+            if (serializable is SerializableShape serializableShape)
+            {
+                ZIndex = serializableShape.ZIndex;
+                Id = serializableShape.Id;
+                Position = serializableShape.Position;
+                SetSize(serializableShape.Size);
+                Rotation = serializableShape.Rotation;
+                FillColor = serializableShape.FillColor;
+                OutlineColor = serializableShape.OutlineColor;
+                OutlineThickness = serializableShape.OutlineThickness;
+            }
         }
 
         private IImmutableList<EditPropertyBase>? _editProperties;
@@ -62,7 +91,7 @@ namespace WeBoard.Core.Components.Shapes.Base
         {
             get
             {
-                if(_editProperties is null)
+                if (_editProperties is null)
                     InitializeEditProperties();
                 return _editProperties!;
             }

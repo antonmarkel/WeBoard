@@ -24,10 +24,10 @@ namespace WeBoard.Core.Components.Base
         public IComponent? Parent { get; set; } = null;
 
 
-        public long Id { get; }
+        public int Id { get; protected set; }
         public ComponentBase()
         {
-            Id = new Random().NextInt64();
+            Id = new Random().Next();
             _focusShape = new RectangleShape()
             {
                 FillColor = Color.Transparent,

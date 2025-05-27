@@ -1,0 +1,9 @@
+﻿namespace WeBoard.Core.Network.Serializable.Enums
+{
+    public enum SerializableTypeIdEnum : byte
+    {
+        Rectangle = 0x01,
+        Ellipse = 0x02,
+        Triangle = 0x03
+    }
+}
