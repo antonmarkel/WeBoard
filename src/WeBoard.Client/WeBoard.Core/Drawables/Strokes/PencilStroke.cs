@@ -1,14 +1,17 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using WeBoard.Core.Components.Base;
+using WeBoard.Core.Network.Serializable.Enums;
+using WeBoard.Core.Network.Serializable.Interfaces;
+using WeBoard.Core.Network.Serializable.Strokes;
 
 namespace WeBoard.Core.Drawables.Strokes
 {
     public class PencilStroke : InteractiveComponentBase
     {
-        private readonly List<Vector2f> _points = new();
-        private readonly Color _color;
-        private readonly VertexArray _vertexArray = new(PrimitiveType.LineStrip);
+        private List<Vector2f> _points = new();
+        private Color _color;
+        private VertexArray _vertexArray = new(PrimitiveType.LineStrip);
         private Vector2f _size = new(1, 1);
         private readonly RectangleShape _focusShape = new();
 
@@ -82,6 +85,38 @@ namespace WeBoard.Core.Drawables.Strokes
         protected override void UpdateHandles() { }
         public override void SetSize(Vector2f size) { }
         public override void SetRotation(float angle) { }
+
+        public override void FromSerializable(IBinarySerializable serializable)
+        {
+            if (serializable is StrokeSerializable strokeSerializable)
+            {
+                ZIndex = strokeSerializable.ZIndex;
+                Id = strokeSerializable.Id;
+                Position = strokeSerializable.Position;
+                _color = strokeSerializable.Color;
+                _points = strokeSerializable.Dots.ToList();
+                _vertexArray = new(PrimitiveType.LineStrip);
+                for (int i = 0; i < strokeSerializable.Dots.Length;i++)
+                {
+                    AddPoint(strokeSerializable.Dots[i]);
+                }
+
+            }
+        }
+
+        public override IBinarySerializable ToSerializable()
+        {
+            return new StrokeSerializable((byte)SerializableTypeIdEnum.Pencil)
+            {
+                ZIndex = ZIndex,
+                Id = Id,
+                Position = Position,
+                Size = GetSize(),
+                Color = _color,
+                Dots = _points.ToArray(),
+                Radius = 0
+            };
+        }
     }
 }
 

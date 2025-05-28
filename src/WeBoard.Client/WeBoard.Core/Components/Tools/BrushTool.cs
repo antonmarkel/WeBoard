@@ -2,6 +2,7 @@
 using SFML.System;
 using WeBoard.Core.Components.Tools.Base;
 using WeBoard.Core.Drawables.Strokes;
+using WeBoard.Core.Updates.Creation;
 
 namespace WeBoard.Core.Components.Tools
 {
@@ -27,6 +28,11 @@ namespace WeBoard.Core.Components.Tools
         public override void OnMouseReleased(Vector2f worldPos)
         {
             _isDrawing = false;
+            if (_currentStroke == null)
+                return;
+
+            var createUpdate = new CreateUpdate(_currentStroke.Id,_currentStroke.ToSerializable());
+            _currentStroke.Updates.Add(createUpdate);
             _currentStroke = null;
         }
 

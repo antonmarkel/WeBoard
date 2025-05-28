@@ -1,15 +1,18 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using WeBoard.Core.Components.Base;
+using WeBoard.Core.Network.Serializable.Enums;
+using WeBoard.Core.Network.Serializable.Interfaces;
+using WeBoard.Core.Network.Serializable.Strokes;
 
 namespace WeBoard.Core.Drawables.Strokes
 {
     public class BrushStroke : InteractiveComponentBase
     {
-        private readonly List<CircleShape> _dots = new();
+        private List<CircleShape> _dots = new();
         private Vector2f _size = new(1, 1);
         private readonly RectangleShape _focusShape = new();
-        private readonly Color _color;
+        private Color _color;
         private float _radius;
         protected override Shape Shape => _focusShape;
 
@@ -92,6 +95,37 @@ namespace WeBoard.Core.Drawables.Strokes
         }
 
         public override Vector2f GetSize() => _size;
+        public override void SetSize(Vector2f size) => _size = size;
+    
         protected override void UpdateHandles() { }
+        public override void FromSerializable(IBinarySerializable serializable)
+        {
+            if (serializable is StrokeSerializable strokeSerializable)
+            {
+                ZIndex = strokeSerializable.ZIndex;
+                Id = strokeSerializable.Id;
+                Position = strokeSerializable.Position;
+                SetSize(strokeSerializable.Size);
+                _color = strokeSerializable.Color;
+                foreach (var dot in strokeSerializable.Dots)
+                {
+                    AddPoint(dot);
+                }
+            }
+        }
+
+        public override IBinarySerializable ToSerializable()
+        {
+            return new StrokeSerializable((byte)SerializableTypeIdEnum.Brush)
+            {
+                ZIndex = ZIndex,
+                Id = Id,
+                Position = Position,
+                Size = GetSize(),
+                Color = _color,
+                Dots = _dots.Select(circ => circ.Position).ToArray(),
+                Radius = _radius
+            };
+        }
     }
 }

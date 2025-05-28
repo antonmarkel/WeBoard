@@ -1,9 +1,12 @@
-﻿using WeBoard.Core.Components.Base;
+﻿using SFML.Graphics;
+using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
 using WeBoard.Core.Components.Shapes;
+using WeBoard.Core.Drawables.Strokes;
 using WeBoard.Core.Network.Serializable.Enums;
 using WeBoard.Core.Network.Serializable.Interfaces;
 using WeBoard.Core.Network.Serializable.Shapes;
+using WeBoard.Core.Network.Serializable.Strokes;
 
 namespace WeBoard.Core.Network.Serializable.Tools
 {
@@ -40,6 +43,14 @@ namespace WeBoard.Core.Network.Serializable.Tools
                 case SerializableTypeIdEnum.Triangle:
                     binarySerializable = new SerializableTriangle();
                     component = new Triangle(new(), new());
+                    break;
+                case SerializableTypeIdEnum.Brush:
+                    binarySerializable = new StrokeSerializable((byte)SerializableTypeIdEnum.Brush);
+                    component = new BrushStroke(Color.Black, 0);
+                    break;
+                case SerializableTypeIdEnum.Pencil:
+                    binarySerializable = new StrokeSerializable((byte)SerializableTypeIdEnum.Pencil);
+                    component = new PencilStroke(Color.Black);
                     break;
                 default:
                     binarySerializable = null;
