@@ -1,4 +1,5 @@
-﻿using SFML.Graphics;
+﻿using System.Collections.Immutable;
+using SFML.Graphics;
 using SFML.System;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Network.Serializable.Enums;
@@ -9,7 +10,8 @@ namespace WeBoard.Core.Drawables.Strokes
 {
     public class BrushStroke : InteractiveComponentBase
     {
-        private List<CircleShape> _dots = new();
+        private CircleShape _circleShape;
+        private List<Vector2f> _points = new();
         private Vector2f _size = new(1, 1);
         private readonly RectangleShape _focusShape = new();
         private Color _color;
@@ -24,43 +26,39 @@ namespace WeBoard.Core.Drawables.Strokes
             _focusShape.FillColor = Color.Transparent;
             _focusShape.OutlineThickness = 0;
             _focusShape.OutlineColor = new Color(0, 0, 0, 0);
+            _circleShape = new CircleShape(_radius / 2f)
+            {
+                FillColor = _color,
+                OutlineThickness = _radius / 3f,
+                OutlineColor = new Color(_color.R, _color.G, _color.B, (byte)(_color.A / 3))
+            };
         }
 
         public void AddPoint(Vector2f position)
         {
-            var circle = new CircleShape(_radius / 2f)
-            {
-                FillColor = _color,
-                Position = position - new Vector2f(_radius / 2f, _radius / 2f),
-                OutlineThickness = _radius / 3f,
-                OutlineColor = new Color(_color.R, _color.G, _color.B, (byte)(_color.A / 3))
-            };
-
-            _dots.Add(circle);
+            _points.Add(position);
             UpdateBounds();
         }
 
         private void UpdateBounds()
         {
-            if (_dots.Count == 0)
+            if (_points.Count == 0)
                 return;
 
-            var bounds = _dots[0].GetGlobalBounds();
-            float left = bounds.Left;
-            float top = bounds.Top;
-            float right = bounds.Left + bounds.Width;
-            float bottom = bounds.Top + bounds.Height;
+            float left = float.MaxValue;
+            float top = float.MaxValue;
+            float right = float.MinValue;
+            float bottom = float.MinValue;
 
-            for (int i = 1; i < _dots.Count; i++)
+            for (int i = 0; i < _points.Count; i++)
             {
-                var b = _dots[i].GetGlobalBounds();
-                left = MathF.Min(left, b.Left);
-                top = MathF.Min(top, b.Top);
-                right = MathF.Max(right, b.Left + b.Width);
-                bottom = MathF.Max(bottom, b.Top + b.Height);
+                left = MathF.Min(left, _points[i].X);
+                top = MathF.Min(top, _points[i].Y);
+                right = MathF.Max(right, _points[i].X);
+                bottom = MathF.Max(bottom, _points[i].Y);
             }
 
-            _size = new Vector2f(right - left, bottom - top);
+            _size = new Vector2f(right - left + 2*_radius, bottom - top + 2 * _radius);
             Position = new Vector2f((left + right) / 2f, (top + bottom) / 2f);
 
             _focusShape.Size = _size;
@@ -70,8 +68,11 @@ namespace WeBoard.Core.Drawables.Strokes
 
         public override void Draw(RenderTarget target, RenderStates states)
         {
-            foreach (var dot in _dots)
-                target.Draw(dot, states);
+            foreach (var dot in _points)
+            {
+                _circleShape.Position = dot;
+                target.Draw(_circleShape, states);
+            }
 
             base.Draw(target, states);
         }
@@ -80,9 +81,9 @@ namespace WeBoard.Core.Drawables.Strokes
         {
             base.Drag(offset);
 
-            foreach (var dot in _dots)
+            for(int i = 0;i < _points.Count;i++) 
             {
-                dot.Position += offset;
+                _points[i] += offset;
             }
 
             UpdateBounds();
@@ -107,6 +108,15 @@ namespace WeBoard.Core.Drawables.Strokes
                 Position = strokeSerializable.Position;
                 SetSize(strokeSerializable.Size);
                 _color = strokeSerializable.Color;
+                _radius = strokeSerializable.Radius;
+
+                _circleShape = new CircleShape(_radius / 2f)
+                {
+                    FillColor = _color,
+                    OutlineThickness = _radius / 3f,
+                    OutlineColor = new Color(_color.R, _color.G, _color.B, (byte)(_color.A / 3))
+                };
+
                 foreach (var dot in strokeSerializable.Dots)
                 {
                     AddPoint(dot);
@@ -123,7 +133,7 @@ namespace WeBoard.Core.Drawables.Strokes
                 Position = Position,
                 Size = GetSize(),
                 Color = _color,
-                Dots = _dots.Select(circ => circ.Position).ToArray(),
+                Dots = _points.ToImmutableList(),
                 Radius = _radius
             };
         }

@@ -1,4 +1,5 @@
 ﻿using System.Buffers.Binary;
+using System.Collections.Immutable;
 using SFML.Graphics;
 using SFML.System;
 using WeBoard.Core.Drawables.Strokes;
@@ -18,7 +19,7 @@ namespace WeBoard.Core.Network.Serializable.Strokes
         public Vector2f Size { get; set; }
         public Color Color { get; set; }
         public float Radius { get;set; }
-        public Vector2f[] Dots { get; set; } = [];
+        public ImmutableList<Vector2f> Dots { get; set; } = [];
 
         public StrokeSerializable(byte typeId)
         {
@@ -39,11 +40,9 @@ namespace WeBoard.Core.Network.Serializable.Strokes
             // Calculate total length:
             // Header: 2 bytes
             // Properties: 4+4 + 4*2 + 4*2 + 4 + 4 (dots count) + 8 * dots.Length
-            int totalLength = 2 + 4 + 4 + (4 * 2) + (4 * 2) + 4 + 4 + 4 + (Dots.Length * 8);
+            int totalLength = 2 + 4 + 4 + (4 * 2) + (4 * 2) + 4 + 4 + 4 + (Dots.Count * 8);
 
-            Span<byte> span = totalLength <= 1024 ?
-                stackalloc byte[totalLength] :
-                new byte[totalLength];
+            Span<byte> span = new byte[totalLength];
 
             int offset = 0;
 
@@ -74,7 +73,7 @@ namespace WeBoard.Core.Network.Serializable.Strokes
             WriteFloat(span.Slice(offset, 4), Radius);
             offset += 4;
 
-            BinaryPrimitives.WriteInt32LittleEndian(span.Slice(offset, 4), Dots.Length);
+            BinaryPrimitives.WriteInt32LittleEndian(span.Slice(offset, 4), Dots.Count);
             offset += 4;
 
             foreach (var dot in Dots)
@@ -127,15 +126,17 @@ namespace WeBoard.Core.Network.Serializable.Strokes
             int dotsCount = BinaryPrimitives.ReadInt32LittleEndian(data.Slice(offset, 4));
             offset += 4;
 
-            Dots = new Vector2f[dotsCount];
+            var temp = new Vector2f[dotsCount];
             for (int i = 0; i < dotsCount; i++)
             {
                 float x = ReadFloat(data.Slice(offset, 4));
                 offset += 4;
                 float y = ReadFloat(data.Slice(offset, 4));
                 offset += 4;
-                Dots[i] = new Vector2f(x, y);
+                temp[i] = new Vector2f(x, y);
             }
+
+            Dots = temp.ToImmutableList();
         }
 
         private static void WriteFloat(Span<byte> destination, float value)

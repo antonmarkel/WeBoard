@@ -1,4 +1,5 @@
-﻿using SFML.Graphics;
+﻿using System.Collections.Immutable;
+using SFML.Graphics;
 using SFML.System;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Network.Serializable.Enums;
@@ -94,9 +95,8 @@ namespace WeBoard.Core.Drawables.Strokes
                 Id = strokeSerializable.Id;
                 Position = strokeSerializable.Position;
                 _color = strokeSerializable.Color;
-                _points = strokeSerializable.Dots.ToList();
                 _vertexArray = new(PrimitiveType.LineStrip);
-                for (int i = 0; i < strokeSerializable.Dots.Length;i++)
+                for (int i = 0; i < strokeSerializable.Dots.Count;i++)
                 {
                     AddPoint(strokeSerializable.Dots[i]);
                 }
@@ -113,7 +113,7 @@ namespace WeBoard.Core.Drawables.Strokes
                 Position = Position,
                 Size = GetSize(),
                 Color = _color,
-                Dots = _points.ToArray(),
+                Dots = _points.ToImmutableList(),
                 Radius = 0
             };
         }
