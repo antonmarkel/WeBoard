@@ -46,7 +46,7 @@ public class BoardHub : Hub
         await Groups.AddToGroupAsync(Context.ConnectionId, boardId.ToString());
 
         var updatesToSend =
-            room.Updates.Where(u => u.DateId > updateDateId).ToList();
+            room.Updates.Where(u => u.Id > updateDateId).ToList();
 
         await Clients.Caller.SendAsync("InitialSync", updatesToSend);
     }
@@ -56,7 +56,7 @@ public class BoardHub : Hub
     {
         if (!_activeRooms.TryGetValue(boardId, out var room)) return;
 
-        update.DateId = DateTime.UtcNow.Ticks;
+        update.Id = DateTime.UtcNow.Ticks;
         room.Updates.Add(update);
 
         await Clients.All.SendAsync("ReceiveUpdate", update);

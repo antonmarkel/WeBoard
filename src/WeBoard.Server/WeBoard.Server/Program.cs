@@ -20,10 +20,9 @@ builder.Services.AddControllers();
 var app = builder.Build();
 app.MapHub<BoardHub>("/boardHub");
 app.UseCors(policy => policy
+    .AllowAnyOrigin()     
     .AllowAnyHeader()
-    .AllowAnyMethod()
-    .AllowCredentials()
-    .WithOrigins("http://localhost:8080"));
+    .AllowAnyMethod());
 
 if (app.Environment.IsDevelopment())
 {
