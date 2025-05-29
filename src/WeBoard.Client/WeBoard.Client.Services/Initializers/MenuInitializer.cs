@@ -124,6 +124,7 @@ namespace WeBoard.Client.Services.Initializers
                 {
                     shapeStack.Show();
                     shapeStack.Position = new Vector2f(shapeRadioButton.Position.X + 70, shapeRadioButton.Position.Y);
+                    _editManager.HideEditPanel();
                 }
                 else
                     shapeStack.Hide();
