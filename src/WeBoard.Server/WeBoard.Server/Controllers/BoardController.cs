@@ -34,14 +34,8 @@ namespace WeBoard.Server.Controllers
             if (userEntity is null)
                 return BadRequest("Not authorized");
 
-            var boardDataEntity = new BoardDataEntity
-            {
-                Id = new Random().NextInt64()
-            };
-
             var boardEntity = new BoardEntity
             {
-                BoardDataId = boardDataEntity.Id,
                 Id = Guid.NewGuid(),
                 LastOpenedAtUtc = DateTime.UtcNow,
                 LastUpdatedAtUtc = DateTime.UtcNow,
@@ -54,7 +48,6 @@ namespace WeBoard.Server.Controllers
                 Id = Guid.NewGuid()
             };
 
-            await _context.BoardsData.AddAsync(boardDataEntity);
             await _context.Boards.AddAsync(boardEntity);
             await _context.UserBoards.AddAsync(userBoard);
             await _context.SaveChangesAsync();

@@ -13,7 +13,6 @@ namespace WeBoard.Server.Persistence.Data
 
         public DbSet<UserEntity> Users { get; set; }
         public DbSet<BoardEntity> Boards { get; set; }
-        public DbSet<BoardDataEntity> BoardsData { get; set; }
         public DbSet<BoardUpdateEntity> BoardUpdates { get; set; }
        
         public DbSet<TokenEntity> Tokens { get; set; }
