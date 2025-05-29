@@ -16,7 +16,7 @@ namespace WeBoard.Client.Services.Managers
         }
         public int Count { get => _componentSet.Count; }
         private ZIndexComponentSortedSet _componentSet { get; set; } = new();
-        private IImmutableList<MenuComponentBase> _menuComponents { get; set; } = [];
+        private List<MenuComponentBase> _menuComponents { get; set; } = [];
 
         public ComponentBase? GetByScreenPoint(Vector2i point, out Vector2f offset)
         {
@@ -36,12 +36,30 @@ namespace WeBoard.Client.Services.Managers
 
         public void InitMenu(IEnumerable<MenuComponentBase> components)
         {
-            _menuComponents = components.ToList().ToImmutableList();
-            foreach (var menuComponent in _menuComponents)
+            var tempList = new List<MenuComponentBase>();
+            foreach (var component in components)
             {
-                if(menuComponent is IAnimatible animatible)
-                    AnimationManager.GetInstance().Add(animatible);
+                AddMenuComponent(component);
             }
+        }
+
+        public void AddMenuComponent(MenuComponentBase menuComponent)
+        {
+            lock (_menuComponents)
+            {
+                if (menuComponent is IContainer container)
+                    container.Children.ForEach(comp => AddMenuComponent(comp));
+
+                if (menuComponent is IAnimatible animatible)
+                    AnimationManager.GetInstance().Add(animatible);
+
+                _menuComponents.Add(menuComponent);
+            }
+          
+        }
+        public void RemoveMenuComponent(MenuComponentBase menuComponent)
+        {
+            _menuComponents.Remove(menuComponent);
         }
 
         public void AddComponent(ComponentBase component)
@@ -53,6 +71,17 @@ namespace WeBoard.Client.Services.Managers
         }
         public void RemoveComponent(ComponentBase component)
         {
+            _componentSet.Remove(component);
+            if (component is IAnimatible animatible)
+                AnimationManager.GetInstance().Remove(animatible);
+        }
+
+        public void RemoveComponent(int componentId)
+        {
+            var component = _componentSet.GetById(componentId);
+            if (component is null)
+                return;
+
             _componentSet.Remove(component);
             if (component is IAnimatible animatible)
                 AnimationManager.GetInstance().Remove(animatible);

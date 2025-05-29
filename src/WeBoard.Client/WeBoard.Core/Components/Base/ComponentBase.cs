@@ -23,8 +23,11 @@ namespace WeBoard.Core.Components.Base
         public virtual Vector2f Position { get => Shape.Position; set => Shape.Position = value; }
         public IComponent? Parent { get; set; } = null;
 
+
+        public int Id { get; protected set; }
         public ComponentBase()
         {
+            Id = new Random().Next();
             _focusShape = new RectangleShape()
             {
                 FillColor = Color.Transparent,

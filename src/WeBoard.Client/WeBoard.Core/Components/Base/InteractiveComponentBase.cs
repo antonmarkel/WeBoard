@@ -3,18 +3,22 @@ using SFML.System;
 using WeBoard.Core.Components.Handlers;
 using WeBoard.Core.Components.Interfaces;
 using WeBoard.Core.Enums;
+using WeBoard.Core.Network.Serializable.Interfaces;
+using WeBoard.Core.Updates.Interactive;
+using WeBoard.Core.Updates.Interfaces;
+using Color = SFML.Graphics.Color;
 
 namespace WeBoard.Core.Components.Base
 {
-    public abstract class InteractiveComponentBase : ComponentBase, IDraggable, IResizable, IRotatable
+    public abstract class InteractiveComponentBase : ComponentBase, IDraggable, IResizable, IRotatable, ITrackable, ISavable
     {
         protected List<ResizeHandler> resizeHandles = new();
         private RotateHandler? rotateHandle;
         public IEnumerable<ResizeHandler> GetResizeHandles() => resizeHandles;
         public RotateHandler? GetRotateHandle() => rotateHandle;
         public override FloatRect GetGlobalBounds() => Shape.GetGlobalBounds();
-        public float MinWidth => 100f;
-        public float MinHeight => 100f;
+        public float MinWidth => 5f;
+        public float MinHeight => 5f;
         public virtual Color FillColor
         {
             get => Shape.FillColor;
@@ -32,16 +36,81 @@ namespace WeBoard.Core.Components.Base
             get => Shape.Rotation;
             set => Shape.Rotation = value;
         }
+
+        public List<IUpdate> Updates { get; set; } = [];
+        public bool IsUpdating { get; set; } = false;
+
+        private Vector2f _startDraggingPosition = new();
+        private bool _isDragging = false;
+        private DateTime _lastDragAt = DateTime.UtcNow;
+
+        private bool _isResizing = false;
+        private Vector2f _startSize = new();
+
+        private bool _isRotating = false;
+        private float _startRotation;
+
+        public void OnStartRotating()
+        {
+            if (!IsUpdating)
+            {
+                _isRotating = true;
+                _startRotation = Rotation;
+            }
+        }
+
+        public void OnStopRotating()
+        {
+            var wasRotating = _isRotating;
+            _isRotating = false;
+
+            if (wasRotating && !IsUpdating)
+                TrackUpdate(new RotateUpdate(Id, Rotation - _startRotation));
+        }
+
         public virtual void SetRotation(float angle)
         {
+            if (!_isRotating)
+                OnStartRotating();
+
             Rotation = angle;
             UpdateHandles();
             UpdateFocusShape();
         }
 
+        public void OnStartDragging()
+        {
+            if (!IsUpdating)
+            {
+                _isDragging = true;
+                _startDraggingPosition = Position;
+            }
+
+        }
+
+        public void OnStopDragging()
+        {
+
+            if ((DateTime.UtcNow - _lastDragAt).TotalMilliseconds < 200 && IsInFocus)
+                return;
+
+            var wasDragging = _isDragging;
+            _isDragging = false;
+
+            if (wasDragging && !IsUpdating)
+                TrackUpdate(new DragUpdate(Id, Position - _startDraggingPosition));
+        }
+
         public virtual void Drag(Vector2f offset)
         {
+            if (!_isDragging)
+            {
+                OnStartDragging();
+            }
+
+            _lastDragAt = DateTime.UtcNow;
             Position += offset;
+
             UpdateHandles();
             UpdateFocusShape();
         }
@@ -59,6 +128,12 @@ namespace WeBoard.Core.Components.Base
             }
         }
 
+        public override void OnLostFocus()
+        {
+            base.OnLostFocus();
+            OnStopDragging();
+        }
+
         public override void OnFocus()
         {
             base.OnFocus();
@@ -71,15 +146,11 @@ namespace WeBoard.Core.Components.Base
                 }
             }
 
-            if (this is IRotatable && this is InteractiveComponentBase component)
-            {
-                rotateHandle = new RotateHandler(component);
-            }
-
+            rotateHandle = rotateHandle ?? new RotateHandler(this);
             UpdateHandles();
         }
 
-        protected void UpdateHandles()
+        protected virtual void UpdateHandles()
         {
             rotateHandle?.UpdatePosition(GetGlobalBounds());
 
@@ -97,9 +168,6 @@ namespace WeBoard.Core.Components.Base
         public virtual void Resize(Vector2f delta, ResizeDirectionEnum direction)
         {
             var originalSize = GetSize();
-            var originalPos = Position;
-
-            // Определяем направление смещения (локальные единицы от центра)
             Vector2f localOffset = direction switch
             {
                 ResizeDirectionEnum.TopLeft => new Vector2f(-1, -1),
@@ -109,20 +177,17 @@ namespace WeBoard.Core.Components.Base
                 _ => new Vector2f(0, 0)
             };
 
-            // Вычисляем новое значение размера
             Vector2f newSize = new Vector2f(
                 MathF.Max(MinWidth, originalSize.X + delta.X * localOffset.X),
                 MathF.Max(MinHeight, originalSize.Y + delta.Y * localOffset.Y)
             );
 
-            // Сдвигаем центр в зависимости от того, какая ручка тянется
             Vector2f sizeDiff = newSize - originalSize;
             Vector2f centerShift = new Vector2f(
                 (sizeDiff.X / 2f) * localOffset.X,
                 (sizeDiff.Y / 2f) * localOffset.Y
             );
 
-            // Учитываем поворот при смещении центра
             float angleRad = Rotation * MathF.PI / 180f;
             float cos = MathF.Cos(angleRad);
             float sin = MathF.Sin(angleRad);
@@ -132,7 +197,6 @@ namespace WeBoard.Core.Components.Base
                 centerShift.X * sin + centerShift.Y * cos
             );
 
-            // Применяем изменения
             SetSize(newSize);
             Position += rotatedShift;
 
@@ -140,8 +204,44 @@ namespace WeBoard.Core.Components.Base
             UpdateFocusShape();
         }
 
-
         public abstract Vector2f GetSize();
-        public abstract void SetSize(Vector2f size);
+
+        public void OnStartResizing()
+        {
+            if (!IsUpdating)
+            {
+                _isResizing = true;
+                _startSize = GetSize();
+            }
+        }
+
+        public void OnStopResizing()
+        {
+            var wasResizing = _isResizing;
+            _isResizing = false;
+
+            if (wasResizing && !IsUpdating)
+                TrackUpdate(new ResizeUpdate(Id, GetSize() - _startSize));
+        }
+
+        public virtual void SetSize(Vector2f size)
+        {
+            if (!_isResizing)
+                OnStartResizing();
+        }
+
+        public void TrackUpdate(IUpdate update)
+        {
+            if (!IsUpdating)
+                Updates.Add(update);
+        }
+
+        public virtual IBinarySerializable ToSerializable()
+        {
+            return null;
+        }
+
+        public virtual void FromSerializable(IBinarySerializable serializable){}
+
     }
 }

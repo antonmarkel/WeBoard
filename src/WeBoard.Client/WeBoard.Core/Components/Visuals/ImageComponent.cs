@@ -2,7 +2,7 @@
 using SFML.System;
 using WeBoard.Core.Components.Base;
 
-namespace WeBoard.Core.Components.Content
+namespace WeBoard.Core.Components.Visuals
 {
     public class ImageComponent : InteractiveComponentBase
     {
@@ -63,7 +63,9 @@ namespace WeBoard.Core.Components.Content
             UpdateSpriteScale();
 
             UpdateHandles();       
-            UpdateFocusShape();   
+            UpdateFocusShape();
+
+            base.SetSize(size);
         }
 
         public override void Draw(RenderTarget target, RenderStates states)

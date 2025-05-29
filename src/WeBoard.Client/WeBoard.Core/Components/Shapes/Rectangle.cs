@@ -1,10 +1,13 @@
 ﻿using SFML.Graphics;
 using SFML.System;
 using WeBoard.Core.Components.Base;
+using WeBoard.Core.Components.Shapes.Base;
+using WeBoard.Core.Network.Serializable.Interfaces;
+using WeBoard.Core.Network.Serializable.Shapes;
 
 namespace WeBoard.Core.Components.Shapes
 {
-    public class Rectangle : InteractiveComponentBase
+    public class Rectangle : ShapeBase
     {
         private readonly RectangleShape _rectangleShape;
         protected override Shape Shape => _rectangleShape;
@@ -29,6 +32,15 @@ namespace WeBoard.Core.Components.Shapes
             _rectangleShape.Origin = _rectangleShape.Size / 2f;
             UpdateHandles();
             UpdateFocusShape();
+
+            base.SetSize(size);
+        }
+
+        public override IBinarySerializable ToSerializable()
+        {
+            var shapeSerializable = (SerializableShape)base.ToSerializable();
+
+            return new SerializableRectangle(shapeSerializable);
         }
     }
 }

@@ -65,6 +65,10 @@ namespace WeBoard.Core.Collections
             }
         }
 
+        public ComponentBase? GetById(int id)
+        {
+            return _sortedSet.FirstOrDefault(comp => comp.Id == id);
+        }
         public IEnumerable<ComponentBase> GetComponentsAscending()
         {
             _lock.EnterReadLock();

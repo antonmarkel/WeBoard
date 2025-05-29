@@ -11,12 +11,12 @@ namespace WeBoard.Core.Components.Menu.Buttons
 {
     public class ButtonComponent : MenuComponentBase, IContainerView, IAnimatible
     {
-        private RoundedRectangle _buttonShape;
-        private RectangleShape _focusRectangle;
-        private ButtonClickAnimation _clickAnimation;
-        private ButtonResizeAnimation _resizeAnimation;
-        private List<IAnimation> _activeAnimations = [];
-        private bool _underMouse = false;
+        protected RoundedRectangle _buttonShape;
+        protected RectangleShape _focusRectangle;
+        protected ButtonClickAnimation _clickAnimation;
+        protected ButtonResizeAnimation _resizeAnimation;
+        protected List<IAnimation> _activeAnimations = [];
+        protected bool _underMouse = false;
 
         public IContentView? ContentView { get; set; }
         public uint Padding { get; set; }
@@ -27,7 +27,7 @@ namespace WeBoard.Core.Components.Menu.Buttons
             get => _buttonShape.Position;
             set => _buttonShape.Position = _focusRectangle.Position = value;
         }
-        public Vector2f Size
+        public override Vector2f Size
         {
             get => _buttonShape.Size;
             set => _buttonShape.Size = _focusRectangle.Size = value;
@@ -96,10 +96,11 @@ namespace WeBoard.Core.Components.Menu.Buttons
 
         private void UpdateContentView()
         {
+   
             if (ContentView is not null)
             {
-                ContentView.Size = Size - new Vector2f(Padding, Padding);
-                ContentView.Position = Position + new Vector2f(Padding, Padding);
+                ContentView.Size = new Vector2f(Size.X - Padding*2, Size.Y - Padding*2);
+                ContentView.Position = new Vector2f(Position.X + Padding, Position.Y + Padding);
             }
         }
 
@@ -132,7 +133,7 @@ namespace WeBoard.Core.Components.Menu.Buttons
             {
                 _activeAnimations.Remove(_resizeAnimation);
                 _resizeAnimation?.Reset();
-                _resizeAnimation = new ButtonResizeAnimation(Size, 1.3f, 100);
+                _resizeAnimation = new ButtonResizeAnimation(Size, 1.1f, 100);
                 _resizeAnimation.ApplyTo(this);
                 _activeAnimations.Add(_resizeAnimation);
             }

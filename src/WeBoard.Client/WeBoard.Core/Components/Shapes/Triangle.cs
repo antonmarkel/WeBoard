@@ -1,10 +1,12 @@
 ﻿using SFML.Graphics;
 using SFML.System;
-using WeBoard.Core.Components.Base;
+using WeBoard.Core.Components.Shapes.Base;
+using WeBoard.Core.Network.Serializable.Interfaces;
+using WeBoard.Core.Network.Serializable.Shapes;
 
 namespace WeBoard.Core.Components.Shapes
 {
-    public class Triangle : InteractiveComponentBase
+    public class Triangle : ShapeBase
     {
         private ConvexShape _triangleShape;
         private Vector2f _size;
@@ -15,7 +17,7 @@ namespace WeBoard.Core.Components.Shapes
         {
             _triangleShape = new ConvexShape(3)
             {
-                Origin = size / 2f 
+                Origin = size / 2f
             };
             _size = size;
             UpdateTrianglePoints(size);
@@ -31,9 +33,11 @@ namespace WeBoard.Core.Components.Shapes
                 Math.Max(size.Y, MinHeight)
             );
             _triangleShape.Origin = _size / 2f;
-            UpdateTrianglePoints(_size); 
+            UpdateTrianglePoints(_size);
             UpdateHandles();
             UpdateFocusShape();
+
+            base.SetSize(size);
         }
 
         private void UpdateTrianglePoints(Vector2f size)
@@ -41,6 +45,13 @@ namespace WeBoard.Core.Components.Shapes
             _triangleShape.SetPoint(0, new Vector2f(size.X / 2f, 0));
             _triangleShape.SetPoint(1, new Vector2f(size.X, size.Y));
             _triangleShape.SetPoint(2, new Vector2f(0, size.Y));
+        }
+
+        public override IBinarySerializable ToSerializable()
+        {
+            var shapeSerializable = (SerializableShape)base.ToSerializable();
+
+            return new SerializableTriangle(shapeSerializable);
         }
     }
 }

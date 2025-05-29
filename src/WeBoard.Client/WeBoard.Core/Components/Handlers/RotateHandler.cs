@@ -108,7 +108,15 @@ namespace WeBoard.Core.Components.Handlers
         }
 
         public void OnFocus() => IsInFocus = true;
-        public void OnLostFocus() => IsInFocus = false;
+
+        public void OnLostFocus()
+        {
+            var wasInFocus = IsInFocus;
+            IsInFocus = false;
+            if (wasInFocus)
+                _target.OnStopRotating();
+        }
+
         public void OnMouseLeave() { }
         public void OnMouseOver() { }
     }

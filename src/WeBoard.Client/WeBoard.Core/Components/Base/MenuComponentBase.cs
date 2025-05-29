@@ -4,8 +4,14 @@ using WeBoard.Core.Components.Interfaces;
 
 namespace WeBoard.Core.Components.Base
 {
-    public abstract class MenuComponentBase : ComponentBase,IClickable
+    public abstract class MenuComponentBase : ComponentBase, IClickable, IHidden, IResolutionDependent
     {
+        public bool IsHidden { get; set; }
+        private Vector2f _beforeHiddenPosition = new();
+        protected const uint DefaultResolutionValue= 1080;
+
+        public virtual Vector2f Size { get; set; }
+        protected float _adjustResizeCf = 1f;
         public override FloatRect GetGlobalBounds()
         {
             return GetScreenBounds();
@@ -46,6 +52,37 @@ namespace WeBoard.Core.Components.Base
         public override void OnMouseOver()
         {
      
+        }
+
+        public virtual void Show()
+        {
+            if(IsHidden)
+                Position = _beforeHiddenPosition;
+
+            IsHidden = false;
+        }
+        public virtual void Hide()
+        {
+            if (IsHidden)
+                return;
+
+            _beforeHiddenPosition = Position;
+            Position = new Vector2f(-10000, -10000);
+            IsHidden = true;
+        }
+
+        public override void Draw(RenderTarget target, RenderStates states)
+        {
+            if(!IsHidden) 
+                base.Draw(target, states);
+        }
+
+        public virtual void AdjustToResolution(uint width, uint height)
+        {
+            var newResolutionValue = Math.Min(width, height);
+            var newCf = (float)newResolutionValue / DefaultResolutionValue;
+            Size = new Vector2f(Size.X / _adjustResizeCf * newCf, Size.Y / _adjustResizeCf * newCf); 
+            _adjustResizeCf = (float)newResolutionValue / DefaultResolutionValue;
         }
     }
 }

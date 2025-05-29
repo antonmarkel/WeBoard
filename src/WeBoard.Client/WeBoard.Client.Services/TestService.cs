@@ -2,6 +2,7 @@
 using SFML.System;
 using WeBoard.Client.Services.Interfaces.Base;
 using WeBoard.Client.Services.Managers;
+using WeBoard.Core.Components.Interfaces;
 using WeBoard.Core.Components.Shapes;
 
 namespace WeBoard.Client.Services
@@ -9,9 +10,12 @@ namespace WeBoard.Client.Services
     public class TestService : IService
     {
         private readonly ComponentManager componentManager = ComponentManager.GetInstance();
+        private readonly ToolManager _toolManager = ToolManager.GetInstance();
         private DateTime _lastUpdatedAt = DateTime.Now;
+        private DateTime _lastCleanUpAt = DateTime.Now;
         private double _afterLastShift = 0;
         private const int StepMs = 1000;
+        private const int CleanUpIntervalMs = 5000;
 
         public void OnUpdate()
         {
@@ -23,6 +27,14 @@ namespace WeBoard.Client.Services
                 _afterLastShift -= StepMs;
                 ShiftShapes();
             }
+
+            if ((DateTime.Now - _lastCleanUpAt).TotalMilliseconds >= CleanUpIntervalMs)
+            {
+                CleanUp();
+                _lastCleanUpAt = DateTime.Now;
+            }
+
+            _toolManager.UpdateToolFromMenu();
         }
 
         private void ShiftShapes()
@@ -37,8 +49,6 @@ namespace WeBoard.Client.Services
                 var index = random.Next(0, count);
                 var renderList = componentManager.GetComponentsForLogic().ToList();
                 var toRemoveDrawable = renderList[index];
-
-                componentManager.RemoveComponent(toRemoveDrawable);
 
                 return;
             }
@@ -75,6 +85,19 @@ namespace WeBoard.Client.Services
                 )
             };
             componentManager.AddComponent(circle);
+        }
+
+        private void CleanUp()
+        {
+            var components = componentManager.GetComponentsForRender().ToList();
+            foreach (var comp in components)
+            {
+                if (comp is ICleanable cleanable && cleanable.ShouldBeClean)
+                {
+                    componentManager.RemoveComponent(comp);
+                    cleanable.ShouldBeClean = false;
+                }
+            }
         }
     }
 }

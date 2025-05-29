@@ -9,6 +9,7 @@ namespace WeBoard.Client.Services.Render
         public bool IsRunning => _isRunning;
         private readonly RenderManager _global = RenderManager.GetInstance();
         private readonly ComponentManager _componentManager = ComponentManager.GetInstance();
+        private readonly CursorManager _cursorManager = CursorManager.GetInstance();
         public BoardRender(RenderWindow window)
         {
             _global.RenderWindow = window;
@@ -35,16 +36,22 @@ namespace WeBoard.Client.Services.Render
                     }
                 }
 
+                ToolManager.GetInstance().Draw(window, RenderStates.Default);
+
                 window.SetView(_global.Camera.UiView);
                 var menuObjects = _componentManager.GetMenuComponents();
                 foreach (var menuObject in menuObjects)
                 {
                     lock (menuObject)
                     {
-                        window.Draw(menuObject);
+                        if (menuObject.Parent is null)
+                            window.Draw(menuObject);
                     }
                 }
-
+                
+                if(EditManager.GetInstance().CurrentEditContainer != null){}
+                window.Draw(_cursorManager);
+                
                 window.Display();
             }
         }

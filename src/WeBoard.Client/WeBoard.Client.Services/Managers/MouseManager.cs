@@ -1,6 +1,14 @@
-﻿using SFML.System;
+﻿using SFML.Graphics;
+using SFML.System;
 using SFML.Window;
+using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
+using WeBoard.Core.Components.Shapes;
+using WeBoard.Core.Components.Tools;
+using WeBoard.Core.Components.Visuals;
+using WeBoard.Core.Enums.Menu;
+using WeBoard.Core.Network.Serializable.Tools;
+using WeBoard.Core.Updates.Creation;
 
 namespace WeBoard.Client.Services.Managers
 {
@@ -9,6 +17,10 @@ namespace WeBoard.Client.Services.Managers
         private static readonly MouseManager Instance = new();
         private readonly RenderManager _global = RenderManager.GetInstance();
         private readonly FocusManager _focusManager = FocusManager.GetInstance();
+        private readonly CursorManager _cursorManager = CursorManager.GetInstance();
+        private readonly ToolManager _toolManager = ToolManager.GetInstance();
+        private readonly ShapeManager _shapeManager = ShapeManager.GetInstance();
+
         public bool IsDragging { get; set; }
         public Vector2i DragStartScreen { get; private set; }
         public Vector2f DragStartWorld { get; private set; }
@@ -32,7 +44,7 @@ namespace WeBoard.Client.Services.Managers
             var underMouse = ComponentManager.GetInstance().GetByScreenPoint(currentScreen, out _);
             if (underMouse is null)
             {
-                if(_focusManager.UnderMouse != null)
+                if (_focusManager.UnderMouse != null)
                     _focusManager.UnderMouse.OnMouseLeave();
                 _focusManager.UnderMouse = underMouse;
 
@@ -51,16 +63,24 @@ namespace WeBoard.Client.Services.Managers
 
         private void HandleMouseMove(object? sender, MouseMoveEventArgs e)
         {
-
             var currentScreen = new Vector2i(e.X, e.Y);
+            _cursorManager.SetPosition(currentScreen);
             var currentWorld = _global.RenderWindow.MapPixelToCoords(currentScreen);
             var offsetScreen = DragStartScreen - currentScreen;
             var offsetWorld = DragStartWorld - currentWorld;
 
-            HandleMouseOver(currentScreen);
+            ToolManager.GetInstance().OnMouseMoved(currentWorld);
 
             if (!IsDragging)
                 return;
+            HandleMouseOver(currentScreen);
+
+            if (!IsDragging)
+            {
+                if (_focusManager.FocusedComponent is IDraggable dragComponent)
+                    dragComponent.OnStopDragging();
+                return;
+            }
 
             if (_focusManager.ActiveHandler is IDraggable draggable)
             {
@@ -93,7 +113,16 @@ namespace WeBoard.Client.Services.Managers
         {
             if (e.Button == Mouse.Button.Left)
             {
-                IsDragging = false;   
+                var currentInstrument = MenuManager.GetInstance().CurrentInstrument;
+                
+                if (currentInstrument is InstrumentOptionsEnum.Brush
+                    or InstrumentOptionsEnum.Pencil
+                    or InstrumentOptionsEnum.Eraser)
+                {
+                    ToolManager.GetInstance().OnMouseReleased(_global.RenderWindow.MapPixelToCoords(new Vector2i(e.X, e.Y)));
+                }
+
+                IsDragging = false;
             }
         }
 
@@ -111,13 +140,83 @@ namespace WeBoard.Client.Services.Managers
                 if (menuClickedComponent is IClickable clickable)
                 {
                     clickable.OnClick(-clickOffset);
+                    FocusManager.GetInstance().UpdateFocus(menuClickedComponent);
+                    menuClickedComponent.OnFocus();
                     return;
                 }
 
-                FocusManager.GetInstance().HandleClick(DragStartWorld);
-                if (FocusManager.GetInstance().FocusedComponent != null)
+                var currentInstrument = MenuManager.GetInstance().CurrentInstrument;
+                _toolManager.UpdateToolFromMenu();
+                if (currentInstrument == InstrumentOptionsEnum.Text)
+                {
+                    var textComponent = new TextComponent(DragStartWorld);
+                    ComponentManager.GetInstance().AddComponent(textComponent);
+                    _focusManager.HandleClick(textComponent.Position);
+                    textComponent.StartEditing();
+                    KeyboardManager.GetInstance().ExitTextMode();
+                    MenuManager.GetInstance().CurrentInstrument = InstrumentOptionsEnum.Cursor;
                     return;
+                }
 
+                if (currentInstrument is InstrumentOptionsEnum.ShapeRectangle
+                    or InstrumentOptionsEnum.ShapeCircle
+                    or InstrumentOptionsEnum.ShapeTriangle)
+                {
+                    var shape = _shapeManager.CreateShape(currentInstrument, DragStartWorld);
+                    if (shape != null)
+                    {
+                        ComponentManager.GetInstance().AddComponent(shape);
+                        _focusManager.UpdateFocus(shape);
+                        UpdateManager.GetInstance().TrackUpdate(
+                            new CreateUpdate(shape.Id,ComponentSerializer.Serialize(shape)));
+                        MenuManager.GetInstance().CurrentInstrument = InstrumentOptionsEnum.Cursor;
+                    }
+                    return;
+                }
+
+                if (currentInstrument is InstrumentOptionsEnum.Brush
+                    or InstrumentOptionsEnum.Pencil
+                    or InstrumentOptionsEnum.Eraser)
+                {
+                    _toolManager.OnMousePressed(DragStartWorld);
+                    if (_toolManager.ActiveTool is EraserTool eraser)
+                    {
+                        var components = ComponentManager.GetInstance().GetComponentsForLogic();
+                        eraser.ProcessEraseCandidates(components);
+
+                        foreach (var c in eraser.EraseCandidates)
+                        {
+                            ComponentManager.GetInstance().RemoveComponent(c);
+                            if (c is InteractiveComponentBase interactive)
+                            {
+                                UpdateManager.GetInstance().TrackUpdate(
+                                    new RemoveUpdate(c.Id, ComponentSerializer.Serialize(interactive)));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var created = _toolManager.ActiveTool?.CreatedComponent;
+                        if (created != null)
+                        {
+                            ComponentManager.GetInstance().AddComponent(created);
+                        }
+                    }
+                    return;
+                }
+
+                _focusManager.HandleClick(DragStartWorld);
+            }
+
+            if (e.Button == Mouse.Button.Right)
+            {
+                EditManager.GetInstance().CurrentEditContainer?.Hide();
+                ComponentManager.GetInstance().RemoveMenuComponent(EditManager.GetInstance().CurrentEditContainer!);
+                if (_focusManager.FocusedComponent is IEditable editable)
+                {
+                    EditManager.GetInstance().UpdateEditPanel(editable, new Vector2f(e.X, e.Y));
+                    ComponentManager.GetInstance().AddMenuComponent(EditManager.GetInstance().CurrentEditContainer!);
+                }
             }
         }
 
