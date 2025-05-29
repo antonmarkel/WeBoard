@@ -5,6 +5,7 @@ using WeBoard.Core.Components.Menu.Containers;
 using WeBoard.Core.Edit;
 using WeBoard.Core.Edit.Base;
 using WeBoard.Core.Edit.Properties.Base;
+using WeBoard.Core.Enums.Menu;
 
 namespace WeBoard.Client.Services.Managers
 {
@@ -32,7 +33,7 @@ namespace WeBoard.Client.Services.Managers
                 if (editProperty.ValueType == typeof(Color))
                     editList.Add(new ColorEdit((EditProperty<Color>)editProperty));
             }
-            CurrentEditContainer?.Hide();
+            HideEditPanel();
             CurrentEditContainer = new VerticalStackContainer(editList)
             {
                 BackgroundColor = new Color(255, 255, 255, 120),
@@ -42,5 +43,22 @@ namespace WeBoard.Client.Services.Managers
             };
         }
 
+        public void ShowEditPanelForInstrument(InstrumentOptionsEnum instrument)
+        {
+            var activeTool = ToolManager.GetInstance().ActiveTool;
+            if (activeTool != null)
+            {
+                GetInstance().UpdateEditPanel(activeTool, new Vector2f(70, 200));
+                if (CurrentEditContainer != null)
+                {
+                    ComponentManager.GetInstance().AddMenuComponent(CurrentEditContainer);
+                }
+            }
+        }
+
+        public void HideEditPanel()
+        {
+            CurrentEditContainer?.Hide();
+        }
     }
 }

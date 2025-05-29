@@ -12,7 +12,7 @@ namespace WeBoard.Core.Drawables.Strokes
     {
         private List<Vector2f> _points = new();
         private Color _color;
-        private VertexArray _vertexArray = new(PrimitiveType.LineStrip);
+        private VertexArray _vertexArray = new(PrimitiveType.TriangleStrip);
         private Vector2f _size = new(1, 1);
         private readonly RectangleShape _focusShape = new();
 

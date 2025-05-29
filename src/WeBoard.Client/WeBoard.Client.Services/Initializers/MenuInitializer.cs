@@ -7,11 +7,7 @@ using WeBoard.Core.Components.Content;
 using WeBoard.Core.Components.Menu.Buttons;
 using WeBoard.Core.Components.Menu.Buttons.RadioButtons;
 using WeBoard.Core.Components.Menu.Containers;
-using WeBoard.Core.Components.Menu.Inputs;
-using WeBoard.Core.Components.Menu.Visuals;
 using WeBoard.Core.Components.Shapes;
-using WeBoard.Core.Edit;
-using WeBoard.Core.Edit.Properties.Base;
 using WeBoard.Core.Enums.Menu;
 
 namespace WeBoard.Client.Services.Initializers
@@ -20,11 +16,13 @@ namespace WeBoard.Client.Services.Initializers
     {
         private readonly MenuManager _menuManager;
         private readonly ToolManager _toolManager;
+        private readonly EditManager _editManager;
 
         public MenuInitializer()
         {
             _menuManager = MenuManager.GetInstance();
             _toolManager = ToolManager.GetInstance();
+            _editManager = EditManager.GetInstance(); 
         }
 
         private static RadioButtonComponent CopyButton(ButtonComponent button)
@@ -164,27 +162,43 @@ namespace WeBoard.Client.Services.Initializers
             pencilButton.OnGroupUpdate += self =>
             {
                 if (self)
+                {
                     _menuManager.CurrentInstrument = InstrumentOptionsEnum.Pencil;
-            };
+                    _editManager.HideEditPanel();
+                }
+            }
+                ;
             brushButton.OnGroupUpdate += self =>
             {
                 if (self)
+                {
                     _menuManager.CurrentInstrument = InstrumentOptionsEnum.Brush;
+                    _editManager.ShowEditPanelForInstrument(InstrumentOptionsEnum.Brush);
+                }
             };
             eraserButton.OnGroupUpdate += self =>
             {
                 if (self)
+                {
                     _menuManager.CurrentInstrument = InstrumentOptionsEnum.Eraser;
+                    _editManager.HideEditPanel();
+                }
             };
             cursorButton.OnGroupUpdate += self =>
             {
                 if (self)
+                {
                     _menuManager.CurrentInstrument = InstrumentOptionsEnum.Cursor;
+                    _editManager.HideEditPanel();
+                }
             };
             textButton.OnGroupUpdate += self =>
             {
                 if (self)
+                {
                     _menuManager.CurrentInstrument = InstrumentOptionsEnum.Text;
+                    _editManager.HideEditPanel();
+                }
             };
 
 
@@ -205,7 +219,7 @@ namespace WeBoard.Client.Services.Initializers
                 CornerPointCount = 40,
             };
             menuComponents.Add(verticalStack);
-            InitializeShapeSideMenu(shapeButton,menuComponents);
+            InitializeShapeSideMenu(shapeButton, menuComponents);
         }
 
         public IImmutableList<MenuComponentBase> InitializeComponents()

@@ -30,7 +30,7 @@ namespace WeBoard.Client.Services.Managers
                 },
                 InstrumentOptionsEnum.Brush => new BrushTool
                 {
-                    ToolColor = new Color(255, 0, 0, 80),
+                    ToolColor = Color.Black,
                     ToolSize = 20f
                 },
                 InstrumentOptionsEnum.Eraser => new EraserTool(),
