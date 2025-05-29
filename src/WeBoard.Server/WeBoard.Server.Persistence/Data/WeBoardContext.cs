@@ -7,6 +7,7 @@ namespace WeBoard.Server.Persistence.Data
     {
         public WeBoardContext(DbContextOptions<WeBoardContext> options) : base(options)
         {
+            Database.AutoTransactionBehavior = AutoTransactionBehavior.Never;
             Database.EnsureCreated();
         }
 
@@ -16,6 +17,7 @@ namespace WeBoard.Server.Persistence.Data
         public DbSet<BoardUpdateEntity> BoardUpdates { get; set; }
        
         public DbSet<TokenEntity> Tokens { get; set; }
+        public DbSet<UserBoardEntity> UserBoards { get; set; }
         
     }
 }

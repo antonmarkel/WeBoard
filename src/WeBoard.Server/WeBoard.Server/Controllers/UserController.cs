@@ -28,6 +28,10 @@ namespace WeBoard.Server.Controllers
                 EncryptedPassword = PasswordHelper.HashPassword(request.Password)
             };
 
+            var old = await _context.Users.AnyAsync(us => us.UserName == request.Name);
+            if (old)
+                return BadRequest("Username is already in use!");
+
             await _context.Users.AddAsync(entity);
             await _context.SaveChangesAsync();
 
@@ -49,6 +53,7 @@ namespace WeBoard.Server.Controllers
             {
                 Id = Guid.NewGuid(),
                 ValidTillUtc = DateTime.UtcNow.AddHours(3),
+                UserId = userEntity.Id
             };
             
             await _context.Tokens.AddAsync(tokenEntity);
