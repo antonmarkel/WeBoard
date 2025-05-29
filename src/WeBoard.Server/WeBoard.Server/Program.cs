@@ -19,6 +19,12 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 app.MapHub<BoardHub>("/boardHub");
+app.UseCors(policy => policy
+    .AllowAnyHeader()
+    .AllowAnyMethod()
+    .AllowCredentials()
+    .WithOrigins("http://localhost:8080"));
+
 if (app.Environment.IsDevelopment())
 {
     app.MapScalarApiReference("scalar");
