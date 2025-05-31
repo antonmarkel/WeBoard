@@ -58,7 +58,7 @@ namespace WeBoard.Client.Services.Managers
             var component = _componentManager.GetComponentsForLogic()
                 .FirstOrDefault(comp => comp.Id == cancelUpdate.TargetId);
 
-            if(component is ITrackable trackable)
+            if (component is ITrackable trackable)
                 cancelUpdate.Apply(trackable);
         }
     }

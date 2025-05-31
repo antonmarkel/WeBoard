@@ -31,7 +31,7 @@ namespace WeBoard.Core.Components.Tools
             if (_currentStroke == null)
                 return;
 
-            var createUpdate = new CreateUpdate(_currentStroke.Id,_currentStroke.ToSerializable());
+            var createUpdate = new CreateUpdate(_currentStroke.Id, _currentStroke.ToSerializable());
             _currentStroke.Updates.Add(createUpdate);
             _currentStroke = null;
         }

@@ -1,8 +1,6 @@
 ﻿using SFML.Graphics;
 using SFML.System;
-using System.Drawing;
 using WeBoard.Core.Components.Content.Base;
-using WeBoard.Core.Components.Interfaces;
 
 namespace WeBoard.Core.Components.Content
 {

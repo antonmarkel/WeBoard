@@ -96,7 +96,7 @@ namespace WeBoard.Core.Drawables.Strokes
                 Position = strokeSerializable.Position;
                 _color = strokeSerializable.Color;
                 _vertexArray = new(PrimitiveType.LineStrip);
-                for (int i = 0; i < strokeSerializable.Dots.Count;i++)
+                for (int i = 0; i < strokeSerializable.Dots.Count; i++)
                 {
                     AddPoint(strokeSerializable.Dots[i]);
                 }

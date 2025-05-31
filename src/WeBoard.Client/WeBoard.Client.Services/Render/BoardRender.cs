@@ -31,7 +31,7 @@ namespace WeBoard.Client.Services.Render
                 {
                     lock (renderObject)
                     {
-                        if(renderObject.Parent is null)
+                        if (renderObject.Parent is null)
                             window.Draw(renderObject);
                     }
                 }
@@ -48,10 +48,10 @@ namespace WeBoard.Client.Services.Render
                             window.Draw(menuObject);
                     }
                 }
-                
-                if(EditManager.GetInstance().CurrentEditContainer != null){}
+
+                if (EditManager.GetInstance().CurrentEditContainer != null) { }
                 window.Draw(_cursorManager);
-                
+
                 window.Display();
             }
         }

@@ -13,17 +13,17 @@ namespace WeBoard.Client.Services.Managers
     {
         private static EditManager? Instance;
         public VerticalStackContainer? CurrentEditContainer { get; private set; }
- 
+
         public EditManager()
         {
-          
+
         }
         public static EditManager GetInstance()
         {
             return Instance ?? (Instance = new());
         }
 
-        public void UpdateEditPanel(IEditable editable,Vector2f position)
+        public void UpdateEditPanel(IEditable editable, Vector2f position)
         {
             var editList = new List<EditBase>();
             foreach (var editProperty in editable.EditProperties)
@@ -37,7 +37,7 @@ namespace WeBoard.Client.Services.Managers
             CurrentEditContainer = new VerticalStackContainer(editList)
             {
                 BackgroundColor = new Color(255, 255, 255, 120),
-                Padding = new(5,5),
+                Padding = new(5, 5),
                 SpaceBetween = 20,
                 Position = position
             };

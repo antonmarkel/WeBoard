@@ -23,18 +23,18 @@ namespace WeBoard.Core.Network.Serializable.Tools
             byte[] bytes = Convert.FromBase64String(dataString);
             ReadOnlySpan<byte> data = bytes.AsSpan();
 
-            BinaryHeaderDeserializer.GetHeaders(data,out byte typeId,out byte version);
+            BinaryHeaderDeserializer.GetHeaders(data, out byte typeId, out byte version);
 
             SerializableTypeIdEnum typeEnum = (SerializableTypeIdEnum)typeId;
 
             IBinarySerializable? binarySerializable;
             InteractiveComponentBase? component = null;
-            
+
             switch (typeEnum)
             {
                 case SerializableTypeIdEnum.Rectangle:
                     binarySerializable = new SerializableRectangle();
-                    component = new Rectangle(new(),new());
+                    component = new Rectangle(new(), new());
                     break;
                 case SerializableTypeIdEnum.Ellipse:
                     binarySerializable = new SerializableEllipse();

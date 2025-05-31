@@ -1,9 +1,6 @@
-﻿using System.Collections.Immutable;
-using SFML.Graphics;
-using SFML.System;
+﻿using SFML.System;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Menu.Containers.Base;
-using WeBoard.Core.Drawables.Shapes;
 
 namespace WeBoard.Core.Components.Menu.Containers
 {
@@ -16,7 +13,7 @@ namespace WeBoard.Core.Components.Menu.Containers
 
         public override void OnClick(Vector2f offset)
         {
-            
+
         }
 
         protected override void UpdateContainer()

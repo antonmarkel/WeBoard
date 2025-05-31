@@ -5,6 +5,6 @@ namespace WeBoard.Core.Components.Interfaces
 {
     public interface IContainer
     {
-         ImmutableList<MenuComponentBase> Children { get; }
+        ImmutableList<MenuComponentBase> Children { get; }
     }
 }

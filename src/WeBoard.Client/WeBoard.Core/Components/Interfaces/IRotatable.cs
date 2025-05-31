@@ -3,8 +3,8 @@
     public interface IRotatable
     {
         float Rotation { get; set; }
-        void SetRotation(float angle); 
-        void OnStartRotating() { } 
+        void SetRotation(float angle);
+        void OnStartRotating() { }
         void OnStopRotating() { }
     }
 }

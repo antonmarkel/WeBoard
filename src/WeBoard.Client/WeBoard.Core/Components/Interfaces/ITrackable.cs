@@ -6,6 +6,6 @@ namespace WeBoard.Core.Components.Interfaces
     {
         public bool IsUpdating { get; set; }
         public void TrackUpdate(IUpdate update);
-        public List<IUpdate> Updates { get; set;}
+        public List<IUpdate> Updates { get; set; }
     }
 }

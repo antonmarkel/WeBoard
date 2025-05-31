@@ -8,7 +8,7 @@ namespace WeBoard.Core.Components.Base
     {
         public bool IsHidden { get; set; }
         private Vector2f _beforeHiddenPosition = new();
-        protected const uint DefaultResolutionValue= 1080;
+        protected const uint DefaultResolutionValue = 1080;
 
         public virtual Vector2f Size { get; set; }
         protected float _adjustResizeCf = 1f;
@@ -46,17 +46,17 @@ namespace WeBoard.Core.Components.Base
 
         public override void OnMouseLeave()
         {
-           
+
         }
 
         public override void OnMouseOver()
         {
-     
+
         }
 
         public virtual void Show()
         {
-            if(IsHidden)
+            if (IsHidden)
                 Position = _beforeHiddenPosition;
 
             IsHidden = false;
@@ -73,7 +73,7 @@ namespace WeBoard.Core.Components.Base
 
         public override void Draw(RenderTarget target, RenderStates states)
         {
-            if(!IsHidden) 
+            if (!IsHidden)
                 base.Draw(target, states);
         }
 
@@ -81,7 +81,7 @@ namespace WeBoard.Core.Components.Base
         {
             var newResolutionValue = Math.Min(width, height);
             var newCf = (float)newResolutionValue / DefaultResolutionValue;
-            Size = new Vector2f(Size.X / _adjustResizeCf * newCf, Size.Y / _adjustResizeCf * newCf); 
+            Size = new Vector2f(Size.X / _adjustResizeCf * newCf, Size.Y / _adjustResizeCf * newCf);
             _adjustResizeCf = (float)newResolutionValue / DefaultResolutionValue;
         }
     }

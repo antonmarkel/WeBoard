@@ -2,7 +2,6 @@
 using SFML.System;
 using SFML.Window;
 using WeBoard.Client.Services.Managers;
-using WeBoard.Core.Components.Interfaces;
 
 namespace WeBoard.Client.Services.Render
 {
@@ -31,7 +30,7 @@ namespace WeBoard.Client.Services.Render
             var menuItems = ComponentManager.GetInstance().GetMenuComponents();
             foreach (var menuItem in menuItems)
             {
-                menuItem.AdjustToResolution(e.Width,e.Height);
+                menuItem.AdjustToResolution(e.Width, e.Height);
             }
 
             _cameraView.Size = new Vector2f(e.Width, e.Height);

@@ -8,7 +8,7 @@ namespace WeBoard.Core.Animations.Button
     {
         private readonly Vector2f _startSize, _endSize;
 
-        public ButtonResizeAnimation(Vector2f startSize, Vector2f endSize,float duration)
+        public ButtonResizeAnimation(Vector2f startSize, Vector2f endSize, float duration)
             : base(duration)
         {
             _startSize = startSize;
@@ -18,7 +18,7 @@ namespace WeBoard.Core.Animations.Button
             : base(duration)
         {
             _startSize = startSize;
-            _endSize = new Vector2f(_startSize.X * deltaSize,_startSize.Y * deltaSize);
+            _endSize = new Vector2f(_startSize.X * deltaSize, _startSize.Y * deltaSize);
         }
 
 

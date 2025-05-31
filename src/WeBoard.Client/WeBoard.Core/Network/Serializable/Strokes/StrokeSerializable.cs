@@ -18,7 +18,7 @@ namespace WeBoard.Core.Network.Serializable.Strokes
         public Vector2f Position { get; set; }
         public Vector2f Size { get; set; }
         public Color Color { get; set; }
-        public float Radius { get;set; }
+        public float Radius { get; set; }
         public ImmutableList<Vector2f> Dots { get; set; } = [];
 
         public StrokeSerializable(byte typeId)

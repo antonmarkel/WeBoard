@@ -42,14 +42,15 @@ namespace WeBoard.Core.Components.Menu.Visuals
 
         public override Vector2f Size
         {
-            get => new (_text.CharacterSize*Content.Length,_text.CharacterSize);
+            get => new(_text.CharacterSize * Content.Length, _text.CharacterSize);
             set
             {
                 var newVal = Math.Min(value.X, value.Y);
                 if (Size.Y > newVal)
                 {
                     _text.CharacterSize = (uint)Math.Floor(Math.Min(value.X, value.Y));
-                }else
+                }
+                else
                     _text.CharacterSize = (uint)Math.Ceiling(Math.Min(value.X, value.Y));
             }
         }
@@ -83,7 +84,7 @@ namespace WeBoard.Core.Components.Menu.Visuals
 
         public override void OnClick(Vector2f offset)
         {
-           
+
         }
     }
 }

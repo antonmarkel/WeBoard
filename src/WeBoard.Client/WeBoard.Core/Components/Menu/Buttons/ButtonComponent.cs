@@ -51,13 +51,13 @@ namespace WeBoard.Core.Components.Menu.Buttons
         {
             get => _buttonShape.CornerPointCount;
             set => _buttonShape.CornerPointCount = value;
-            
+
         }
         public float CornerRadius
         {
             get => _buttonShape.CornerRadius;
             set => _buttonShape.CornerRadius = value;
-           
+
         }
 
 
@@ -96,10 +96,10 @@ namespace WeBoard.Core.Components.Menu.Buttons
 
         private void UpdateContentView()
         {
-   
+
             if (ContentView is not null)
             {
-                ContentView.Size = new Vector2f(Size.X - Padding*2, Size.Y - Padding*2);
+                ContentView.Size = new Vector2f(Size.X - Padding * 2, Size.Y - Padding * 2);
                 ContentView.Position = new Vector2f(Position.X + Padding, Position.Y + Padding);
             }
         }
@@ -128,8 +128,8 @@ namespace WeBoard.Core.Components.Menu.Buttons
 
         public override void OnMouseOver()
         {
-            
-            if(!_underMouse)
+
+            if (!_underMouse)
             {
                 _activeAnimations.Remove(_resizeAnimation);
                 _resizeAnimation?.Reset();
@@ -146,7 +146,7 @@ namespace WeBoard.Core.Components.Menu.Buttons
             _underMouse = false;
             _activeAnimations.Remove(_resizeAnimation);
             _resizeAnimation.Reset();
-         
+
             base.OnMouseLeave();
         }
     }

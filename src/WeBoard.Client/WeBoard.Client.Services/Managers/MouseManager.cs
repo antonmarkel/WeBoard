@@ -1,9 +1,7 @@
-﻿using SFML.Graphics;
-using SFML.System;
+﻿using SFML.System;
 using SFML.Window;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
-using WeBoard.Core.Components.Shapes;
 using WeBoard.Core.Components.Tools;
 using WeBoard.Core.Components.Visuals;
 using WeBoard.Core.Enums.Menu;
@@ -114,7 +112,7 @@ namespace WeBoard.Client.Services.Managers
             if (e.Button == Mouse.Button.Left)
             {
                 var currentInstrument = MenuManager.GetInstance().CurrentInstrument;
-                
+
                 if (currentInstrument is InstrumentOptionsEnum.Brush
                     or InstrumentOptionsEnum.Pencil
                     or InstrumentOptionsEnum.Eraser)
@@ -168,7 +166,7 @@ namespace WeBoard.Client.Services.Managers
                         ComponentManager.GetInstance().AddComponent(shape);
                         _focusManager.UpdateFocus(shape);
                         UpdateManager.GetInstance().TrackUpdate(
-                            new CreateUpdate(shape.Id,ComponentSerializer.Serialize(shape)));
+                            new CreateUpdate(shape.Id, ComponentSerializer.Serialize(shape)));
                         MenuManager.GetInstance().CurrentInstrument = InstrumentOptionsEnum.Cursor;
                     }
                     return;

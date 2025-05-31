@@ -15,7 +15,7 @@ namespace WeBoard.Core.Components.Visuals
             _sprite = new Sprite(texture);
             _focusRectangle = new RectangleShape();
             var originalSize = new Vector2f(texture.Size.X, texture.Size.Y);
-            
+
             Position = new Vector2f(100, 100);
             SetSize(originalSize);
 
@@ -62,7 +62,7 @@ namespace WeBoard.Core.Components.Visuals
 
             UpdateSpriteScale();
 
-            UpdateHandles();       
+            UpdateHandles();
             UpdateFocusShape();
 
             base.SetSize(size);

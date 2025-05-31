@@ -22,7 +22,7 @@ namespace WeBoard.Client.Services.Initializers
         {
             _menuManager = MenuManager.GetInstance();
             _toolManager = ToolManager.GetInstance();
-            _editManager = EditManager.GetInstance(); 
+            _editManager = EditManager.GetInstance();
         }
 
         private static RadioButtonComponent CopyButton(ButtonComponent button)

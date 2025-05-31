@@ -39,7 +39,6 @@ public class BoardHubClient : IDisposable
             .WithAutomaticReconnect(new[] { TimeSpan.Zero, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(5) })
             .Build();
 
-        // Setup handlers
         _hubConnection.On<Update>("ReceiveUpdate", HandleUpdate);
         _hubConnection.On<List<Update>>("InitialSync", HandleInitialSync);
         _hubConnection.On("AuthFailed", () => OnAuthFailed?.Invoke());
@@ -51,10 +50,8 @@ public class BoardHubClient : IDisposable
             await _hubConnection.StartAsync();
             _isConnected = true;
 
-            // Join board after connection
-            await _hubConnection.InvokeAsync("JoinBoard", _boardId, _authToken, _lastUpdateId);
+            await _hubConnection.InvokeAsync("JoinBoard", _boardId, _authToken, 0 /*_lastUpdateId*/);
 
-            // Start processing queue
             _ = ProcessOutgoingQueue();
         }
         catch (Exception ex)

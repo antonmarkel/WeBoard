@@ -1,6 +1,5 @@
 ﻿using SFML.Graphics;
 using SFML.System;
-using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Shapes.Base;
 using WeBoard.Core.Network.Serializable.Interfaces;
 using WeBoard.Core.Network.Serializable.Shapes;
@@ -17,7 +16,7 @@ namespace WeBoard.Core.Components.Shapes
         {
             _ellipseShape = new ConvexShape(60)
             {
-                Origin = size / 2f 
+                Origin = size / 2f
             };
             _size = size;
             UpdateEllipsePoints(size);

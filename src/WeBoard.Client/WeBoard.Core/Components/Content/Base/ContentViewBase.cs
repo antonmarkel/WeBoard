@@ -10,6 +10,6 @@ namespace WeBoard.Core.Components.Content.Base
         public virtual Vector2f Size { get; set; }
         public virtual float Rotation { get; set; }
         public abstract void Draw(RenderTarget target, RenderStates states);
-       
+
     }
 }

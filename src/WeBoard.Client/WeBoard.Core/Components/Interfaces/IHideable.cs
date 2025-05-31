@@ -2,7 +2,7 @@
 {
     public interface IHidden
     {
-        public bool IsHidden { get;}
+        public bool IsHidden { get; }
         public void Show();
         public void Hide();
     }

@@ -58,7 +58,7 @@ namespace WeBoard.Core.Drawables.Strokes
                 bottom = MathF.Max(bottom, _points[i].Y);
             }
 
-            _size = new Vector2f(right - left + 2*_radius, bottom - top + 2 * _radius);
+            _size = new Vector2f(right - left + 2 * _radius, bottom - top + 2 * _radius);
             Position = new Vector2f((left + right) / 2f, (top + bottom) / 2f);
 
             _focusShape.Size = _size;
@@ -81,7 +81,7 @@ namespace WeBoard.Core.Drawables.Strokes
         {
             base.Drag(offset);
 
-            for(int i = 0;i < _points.Count;i++) 
+            for (int i = 0; i < _points.Count; i++)
             {
                 _points[i] += offset;
             }
@@ -97,7 +97,7 @@ namespace WeBoard.Core.Drawables.Strokes
 
         public override Vector2f GetSize() => _size;
         public override void SetSize(Vector2f size) => _size = size;
-    
+
         protected override void UpdateHandles() { }
         public override void FromSerializable(IBinarySerializable serializable)
         {

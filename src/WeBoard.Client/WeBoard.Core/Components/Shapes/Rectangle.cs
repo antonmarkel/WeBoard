@@ -1,6 +1,5 @@
 ﻿using SFML.Graphics;
 using SFML.System;
-using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Shapes.Base;
 using WeBoard.Core.Network.Serializable.Interfaces;
 using WeBoard.Core.Network.Serializable.Shapes;
@@ -16,7 +15,7 @@ namespace WeBoard.Core.Components.Shapes
         {
             _rectangleShape = new RectangleShape(size)
             {
-                Origin = size / 2f 
+                Origin = size / 2f
             };
             Position = position;
         }

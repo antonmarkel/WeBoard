@@ -1,5 +1,4 @@
-﻿using WeBoard.Core.Animations.Base;
-using WeBoard.Core.Components.Interfaces;
+﻿using WeBoard.Core.Components.Interfaces;
 
 namespace WeBoard.Client.Services.Managers
 {
@@ -20,8 +19,9 @@ namespace WeBoard.Client.Services.Managers
             foreach (var animComponent in _animComponents)
             {
                 var activeAnimations = animComponent.ActiveAnimations;
-                foreach (var anim in activeAnimations){
-                
+                foreach (var anim in activeAnimations)
+                {
+
                     anim.Update(deltaTime);
                 }
             }
