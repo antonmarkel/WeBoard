@@ -95,5 +95,22 @@ namespace WeBoard.Server.Controllers
             return Ok(names);
 
         }
+        [HttpGet("boards/{token}")]
+        public async Task<IActionResult> GetAllBoardUsersAsync([FromRoute] Guid token)
+        {
+            var userEntity = await IsAuthorizedAsync(token);
+            if (userEntity is null)
+                return BadRequest("Not authorized!");
+
+            var boardIds = await _context.UserBoards
+                .Where(ub => ub.UserId == userEntity.Id)
+                .Select(ub => ub.BoardId)
+                .ToListAsync();
+
+            var boards = await _context.Boards.Where(b => boardIds.Contains(b.Id)).ToListAsync();
+         
+            return Ok(boards);
+
+        }
     }
 }
