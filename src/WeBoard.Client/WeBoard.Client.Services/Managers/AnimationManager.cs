@@ -5,7 +5,7 @@ namespace WeBoard.Client.Services.Managers
     public class AnimationManager
     {
         private static AnimationManager? Instance;
-        public AnimationManager() { }
+        private AnimationManager() { }
         public static AnimationManager GetInstance()
         {
             return Instance ?? (Instance = new());

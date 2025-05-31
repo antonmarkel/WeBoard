@@ -68,7 +68,8 @@ namespace WeBoard.Core.Drawables.Strokes
 
         public override void Draw(RenderTarget target, RenderStates states)
         {
-            foreach (var dot in _points)
+            var points = _points.ToImmutableList();
+            foreach (var dot in points)
             {
                 _circleShape.Position = dot;
                 target.Draw(_circleShape, states);

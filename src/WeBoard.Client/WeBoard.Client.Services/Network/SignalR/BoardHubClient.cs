@@ -2,11 +2,10 @@
 using Microsoft.AspNetCore.SignalR.Client;
 using WeBoard.Core.Network.Dtos;
 
-
 public class BoardHubClient : IDisposable
 {
-    public event Action<Update>? OnUpdateReceived;
-    public event Action<List<Update>>? OnInitialSync;
+    public event Action<NetworkUpdate>? OnUpdateReceived;
+    public event Action<List<NetworkUpdate>>? OnInitialSync;
     public event Action? OnAuthFailed;
     public event Action? OnAccessDenied;
     public event Action? OnConnectionClosed;
@@ -17,7 +16,7 @@ public class BoardHubClient : IDisposable
     private readonly Guid _boardId;
     private long _lastUpdateId;
     private bool _isConnected;
-    private readonly ConcurrentQueue<Update> _outgoingQueue = new();
+    private readonly ConcurrentQueue<NetworkUpdate> _outgoingQueue = new();
 
     public BoardHubClient(string hubUrl, string authToken, Guid boardId, long lastUpdateId)
     {
@@ -39,8 +38,8 @@ public class BoardHubClient : IDisposable
             .WithAutomaticReconnect(new[] { TimeSpan.Zero, TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(5) })
             .Build();
 
-        _hubConnection.On<Update>("ReceiveUpdate", HandleUpdate);
-        _hubConnection.On<List<Update>>("InitialSync", HandleInitialSync);
+        _hubConnection.On<NetworkUpdate>("ReceiveUpdate", HandleUpdate);
+        _hubConnection.On<List<NetworkUpdate>>("InitialSync", HandleInitialSync);
         _hubConnection.On("AuthFailed", () => OnAuthFailed?.Invoke());
         _hubConnection.On("AccessDenied", () => OnAccessDenied?.Invoke());
         _hubConnection.Closed += HandleConnectionClosed;
@@ -60,9 +59,9 @@ public class BoardHubClient : IDisposable
         }
     }
 
-    public void QueueUpdate(Update update)
+    public void QueueUpdate(NetworkUpdate networkUpdate)
     {
-        _outgoingQueue.Enqueue(update);
+        _outgoingQueue.Enqueue(networkUpdate);
     }
 
     private async Task ProcessOutgoingQueue()
@@ -75,7 +74,7 @@ public class BoardHubClient : IDisposable
                 {
                     await _hubConnection!.InvokeAsync("SendUpdate", _boardId, update);
 
-                    // Update last processed ID
+                    // NetworkUpdate last processed ID
                     if (update.Id > _lastUpdateId)
                         _lastUpdateId = update.Id;
                 }
@@ -88,15 +87,15 @@ public class BoardHubClient : IDisposable
         }
     }
 
-    private void HandleUpdate(Update update)
+    private void HandleUpdate(NetworkUpdate networkUpdate)
     {
-        if (update.Id <= _lastUpdateId) return;
+        if (networkUpdate.Id <= _lastUpdateId) return;
 
-        _lastUpdateId = update.Id;
-        OnUpdateReceived?.Invoke(update);
+        _lastUpdateId = networkUpdate.Id;
+        OnUpdateReceived?.Invoke(networkUpdate);
     }
 
-    private void HandleInitialSync(List<Update> updates)
+    private void HandleInitialSync(List<NetworkUpdate> updates)
     {
         if (updates.Count > 0)
         {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using WeBoard.Server.Persistence.Data;
 using WeBoard.Server.Persistence.Entities;
@@ -74,7 +75,13 @@ public class BoardHub : Hub
 
             if (room.Connections.Count == 0)
             {
-                await _context.BoardUpdates.AddRangeAsync(room.Updates);
+                foreach (var update in room.Updates)
+                {
+                    if (!await _context.BoardUpdates.AnyAsync(up => up.Id == update.Id))
+                    {
+                        await _context.BoardUpdates.AddAsync(update);
+                    }
+                }
                 await _context.SaveChangesAsync();
                 _activeRooms.Remove(room.BoardId);
             }

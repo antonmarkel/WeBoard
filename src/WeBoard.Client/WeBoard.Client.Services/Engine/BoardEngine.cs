@@ -18,6 +18,11 @@ namespace WeBoard.Client.Services.Engine
             OnUpdate += service.OnUpdate;
         }
 
+        private void InitNetwork()
+        {
+            
+        }
+
         public void Start()
         {
             _isRunning = true;
@@ -32,11 +37,19 @@ namespace WeBoard.Client.Services.Engine
             MenuManager.GetInstance().CurrentInstrument = InstrumentOptionsEnum.Cursor;
             CursorManager.GetInstance();
             EditManager.GetInstance();
+            var networkManager = NetworkManager.GetInstance();
+
+            networkManager.AuthToken = "7e698b12-1fec-458c-ae0c-2a3005df8a02";
+            Guid.TryParse("329cad88-8386-46de-8f1d-cf59ccc931d8", out Guid boardId);
+                networkManager.BoardId = boardId;
+            networkManager.ServerUrl = "http://localhost:51264";
+            networkManager.LastUpdateId = 0;
 
             var menuInitializer = new MenuInitializer();
             var menuComponents = menuInitializer.InitializeComponents();
 
             ComponentManager.GetInstance().InitMenu(menuComponents);
+            networkManager.Start();
         }
 
         public void Stop()

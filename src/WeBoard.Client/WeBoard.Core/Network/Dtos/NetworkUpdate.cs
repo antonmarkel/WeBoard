@@ -2,7 +2,7 @@
 
 namespace WeBoard.Core.Network.Dtos
 {
-    public class Update
+    public class NetworkUpdate
     {
         public long Id { get; set; }
         public Guid BoardId { get; set; }

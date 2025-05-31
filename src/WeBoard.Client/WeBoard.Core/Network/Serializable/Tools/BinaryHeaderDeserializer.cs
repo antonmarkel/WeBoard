@@ -8,5 +8,12 @@
             typeId = data[offset++];
             version = data[offset];
         }
+
+        public static void GetHeadersForUpdate(ReadOnlySpan<byte> data, out byte updateId)
+        {
+            int offset = 0;
+            offset += 2;
+            updateId = data[offset];
+        }
     }
 }
