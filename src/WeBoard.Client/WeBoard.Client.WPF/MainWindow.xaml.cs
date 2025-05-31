@@ -9,5 +9,12 @@ namespace WeBoard.Client.WPF
         {
             InitializeComponent();
         }
+
+        private void LogInButtonClick(object sender, RoutedEventArgs e)
+        {
+            LoginWindow loginWindow = new LoginWindow();
+            loginWindow.Show(); 
+            this.Close(); 
+        }
     }
 }

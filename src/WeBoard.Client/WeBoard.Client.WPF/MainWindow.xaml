@@ -197,7 +197,22 @@
                         BorderBrush="{DynamicResource AccentColorBrush}"
                         BorderThickness="1"
                         ClipToBounds="True">
-                    <TextBox controls:TextBoxHelper.Watermark="Enter your email"
+                    <TextBox controls:TextBoxHelper.Watermark="Nickname"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             Padding="10"
+                             Height="50"
+                             FontSize="18"
+                             Foreground="Black"/>
+                </Border>
+            </Border>
+            <Border CornerRadius="12" Background="White">
+                <Border CornerRadius="12"
+                        Background="White"
+                        BorderBrush="{DynamicResource AccentColorBrush}"
+                        BorderThickness="1"
+                        ClipToBounds="True">
+                    <PasswordBox controls:TextBoxHelper.Watermark="Password"
                              Background="Transparent"
                              BorderThickness="0"
                              Padding="10"
@@ -216,6 +231,7 @@
                 Width="130"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Top"
-                Margin="20"/>
+                Margin="20"
+                Click="LogInButtonClick"/>
     </Grid>
 </controls:MetroWindow>
