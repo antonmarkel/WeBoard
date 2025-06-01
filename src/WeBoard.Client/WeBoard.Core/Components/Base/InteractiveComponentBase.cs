@@ -241,7 +241,7 @@ namespace WeBoard.Core.Components.Base
             return null;
         }
 
-        public virtual void FromSerializable(IBinarySerializable serializable){}
+        public virtual void FromSerializable(IBinarySerializable serializable) { }
 
     }
 }

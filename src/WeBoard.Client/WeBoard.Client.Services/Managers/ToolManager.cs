@@ -1,7 +1,7 @@
-﻿using SFML.System;
-using SFML.Graphics;
-using WeBoard.Core.Components.Tools.Base;
+﻿using SFML.Graphics;
+using SFML.System;
 using WeBoard.Core.Components.Tools;
+using WeBoard.Core.Components.Tools.Base;
 using WeBoard.Core.Enums.Menu;
 
 namespace WeBoard.Client.Services.Managers

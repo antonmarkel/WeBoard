@@ -18,13 +18,13 @@ namespace WeBoard.Core.Components.Tools
             CreatedComponent = _currentStroke;
             _isDrawing = true;
         }
-        
+
         public override void OnMouseMoved(Vector2f worldPos)
         {
             if (_isDrawing && _currentStroke != null)
                 _currentStroke.AddPoint(worldPos);
         }
-        
+
         public override void OnMouseReleased(Vector2f worldPos)
         {
             _isDrawing = false;
@@ -35,7 +35,7 @@ namespace WeBoard.Core.Components.Tools
             _currentStroke.Updates.Add(createUpdate);
             _currentStroke = null;
         }
-        
+
         public override void Draw(RenderTarget target, RenderStates states)
         {
             if (_currentStroke != null)

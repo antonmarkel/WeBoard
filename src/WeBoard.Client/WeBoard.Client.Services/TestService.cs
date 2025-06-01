@@ -64,7 +64,7 @@ namespace WeBoard.Client.Services
             };
             componentManager.AddComponent(rectangle);
 
-            var triangle = new Triangle(new Vector2f(random.Next(100, 300), random.Next(100, 300)), 
+            var triangle = new Triangle(new Vector2f(random.Next(100, 300), random.Next(100, 300)),
                 new Vector2f(random.Next(-1000, 1000), random.Next(-1000, 1000)))
             {
                 FillColor = new Color(

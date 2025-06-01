@@ -12,7 +12,7 @@ namespace WeBoard.Core.Components.Menu.Containers
 
         public override void OnClick(Vector2f offset)
         {
-            
+
         }
 
         protected override void UpdateContainer()

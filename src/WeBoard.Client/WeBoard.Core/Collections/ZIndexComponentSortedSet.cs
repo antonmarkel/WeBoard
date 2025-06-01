@@ -10,7 +10,7 @@ namespace WeBoard.Core.Collections
         private readonly ComponentBaseComparer _comparer = new ComponentBaseComparer();
 
         public int Count { get => _sortedSet.Count; }
-        public ComponentBase? Last { get =>  _sortedSet.Count == 0 ? null : _sortedSet.Last(); }
+        public ComponentBase? Last { get => _sortedSet.Count == 0 ? null : _sortedSet.Last(); }
         public ComponentBase? First { get => _sortedSet.Count == 0 ? null : _sortedSet.First(); }
         public ZIndexComponentSortedSet()
         {

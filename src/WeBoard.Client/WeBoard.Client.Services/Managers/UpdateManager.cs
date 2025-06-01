@@ -23,14 +23,39 @@ namespace WeBoard.Client.Services.Managers
             foreach (var component in components)
             {
                 var trackable = (ITrackable)component;
-                _updates.AddRange(trackable.Updates);
+                foreach (var update in trackable.Updates)
+                {
+                    TrackUpdate(update);
+                }
 
                 trackable.Updates = [];
             }
         }
         public void TrackUpdate(IUpdate update)
         {
+            NetworkManager.GetInstance().SendUpdate(update);
             _updates.Add(update);
+        }
+
+        public void ApplyUpdate(IUpdate update)
+        {
+            if (update is CreateUpdate createUpdate)
+            {
+                _componentManager.AddComponent(createUpdate.GetComponent());
+                return;
+            }
+
+            if (update is RemoveUpdate removeUpdate)
+            {
+                _componentManager.RemoveComponent(removeUpdate.TargetId);
+                return;
+            }
+
+            var component = _componentManager.GetComponentsForLogic()
+                .FirstOrDefault(comp => comp.Id == update.TargetId);
+
+            if (component is ITrackable trackable)
+                update.Apply(trackable);
         }
 
         public void RemoveLastUpdate()
@@ -43,23 +68,7 @@ namespace WeBoard.Client.Services.Managers
 
             var cancelUpdate = update.GetCancelUpdate();
 
-            if (cancelUpdate is CreateUpdate createUpdate)
-            {
-                _componentManager.AddComponent(createUpdate.GetComponent());
-                return;
-            }
-
-            if (cancelUpdate is RemoveUpdate removeUpdate)
-            {
-                _componentManager.RemoveComponent(removeUpdate.TargetId);
-                return;
-            }
-
-            var component = _componentManager.GetComponentsForLogic()
-                .FirstOrDefault(comp => comp.Id == cancelUpdate.TargetId);
-
-            if(component is ITrackable trackable)
-                cancelUpdate.Apply(trackable);
+            ApplyUpdate(cancelUpdate);
         }
     }
 }

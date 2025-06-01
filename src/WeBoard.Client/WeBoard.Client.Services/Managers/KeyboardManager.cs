@@ -1,6 +1,4 @@
-﻿using System.Windows.Media;
-using SFML.Window;
-using WeBoard.Core.Components.Interfaces;
+﻿using SFML.Window;
 using WeBoard.Core.Components.Menu.Inputs;
 using WeBoard.Core.Components.Visuals;
 
@@ -31,7 +29,7 @@ namespace WeBoard.Client.Services.Managers
             {
                 if (e.Code == Keyboard.Key.V)
                     PasteImageFromClipboard();
-                else if(e.Code == Keyboard.Key.Z)
+                else if (e.Code == Keyboard.Key.Z)
                     UpdateManager.GetInstance().RemoveLastUpdate();
             }
             if (e.Code == Keyboard.Key.T)
@@ -65,9 +63,9 @@ namespace WeBoard.Client.Services.Managers
 
             if (focused is TextInputComponent textInput && textInput.IsEditing)
             {
-                if (e.Unicode == "\b") 
+                if (e.Unicode == "\b")
                     textInput.Backspace();
-                else if (e.Unicode != "\r" && e.Unicode != "\n") 
+                else if (e.Unicode != "\r" && e.Unicode != "\n")
                     textInput.AppendChar(e.Unicode);
             }
         }

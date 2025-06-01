@@ -59,7 +59,7 @@ namespace WeBoard.Core.Components.Menu.Buttons.RadioButtons
         }
         public override void OnMouseOver()
         {
-            if(!_isChosen)
+            if (!_isChosen)
                 base.OnMouseOver();
         }
 

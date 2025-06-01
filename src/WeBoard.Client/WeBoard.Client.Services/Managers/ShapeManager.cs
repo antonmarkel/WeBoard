@@ -1,6 +1,5 @@
 ﻿using SFML.Graphics;
 using SFML.System;
-using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Shapes;
 using WeBoard.Core.Components.Shapes.Base;
 using WeBoard.Core.Enums.Menu;

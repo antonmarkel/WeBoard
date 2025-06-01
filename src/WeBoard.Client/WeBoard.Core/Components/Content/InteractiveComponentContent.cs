@@ -16,7 +16,7 @@ namespace WeBoard.Core.Components.Content
         public override Vector2f Position
         {
             get => _component.Position;
-            set => _component.Position = value + _component.GetSize()/2f;
+            set => _component.Position = value + _component.GetSize() / 2f;
         }
         public override float Rotation
         {

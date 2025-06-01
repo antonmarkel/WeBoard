@@ -2,8 +2,8 @@
 {
     public enum ResizeDirectionEnum
     {
-        TopLeft, 
-        TopRight, 
+        TopLeft,
+        TopRight,
         BottomLeft,
         BottomRight
     }

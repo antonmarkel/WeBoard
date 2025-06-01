@@ -1,5 +1,4 @@
-﻿using System.Collections.Immutable;
-using SFML.System;
+﻿using SFML.System;
 using WeBoard.Core.Collections;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
@@ -21,7 +20,7 @@ namespace WeBoard.Client.Services.Managers
         public ComponentBase? GetByScreenPoint(Vector2i point, out Vector2f offset)
         {
             Vector2f newOffset = new Vector2f(0, 0);
-            var menuComponent = _menuComponents.FirstOrDefault(comp => comp.Intersect(point,out newOffset));
+            var menuComponent = _menuComponents.FirstOrDefault(comp => comp.Intersect(point, out newOffset));
             if (menuComponent != null)
             {
                 offset = newOffset;
@@ -55,7 +54,7 @@ namespace WeBoard.Client.Services.Managers
 
                 _menuComponents.Add(menuComponent);
             }
-          
+
         }
         public void RemoveMenuComponent(MenuComponentBase menuComponent)
         {
@@ -66,7 +65,7 @@ namespace WeBoard.Client.Services.Managers
         {
             component.ZIndex = _componentSet.Last is null ? 0 : _componentSet.Last.ZIndex + 1;
             _componentSet.Add(component);
-            if(component is IAnimatible animatible)
+            if (component is IAnimatible animatible)
                 AnimationManager.GetInstance().Add(animatible);
         }
         public void RemoveComponent(ComponentBase component)
@@ -89,7 +88,7 @@ namespace WeBoard.Client.Services.Managers
 
         public IEnumerable<ComponentBase> GetComponentsForLogic()
         {
-            
+
             return _menuComponents.Union(_componentSet.GetComponentsAscending());
         }
 

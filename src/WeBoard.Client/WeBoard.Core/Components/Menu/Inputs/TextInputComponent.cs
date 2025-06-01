@@ -1,6 +1,6 @@
-﻿using SFML.Graphics;
+﻿using System.Collections.Immutable;
+using SFML.Graphics;
 using SFML.System;
-using System.Collections.Immutable;
 using WeBoard.Core.Animations.Interfaces;
 using WeBoard.Core.Animations.TextComponent;
 using WeBoard.Core.Components.Base;
@@ -151,7 +151,7 @@ namespace WeBoard.Core.Components.Menu.Inputs
             float proposedWidth = testText.GetLocalBounds().Width;
 
             if (proposedWidth > maxWidth)
-                return; 
+                return;
 
             _text.DisplayedString = proposedText;
             OnInputKey?.Invoke(ch[0]);
@@ -202,9 +202,9 @@ namespace WeBoard.Core.Components.Menu.Inputs
         }
         public override void OnClick(Vector2f offset)
         {
-            if(!_isEditing)
+            if (!_isEditing)
                 StartEditing();
-            else 
+            else
                 StopEditing();
         }
 

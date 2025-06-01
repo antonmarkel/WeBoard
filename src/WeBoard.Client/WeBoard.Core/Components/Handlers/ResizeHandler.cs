@@ -1,10 +1,8 @@
-﻿using System.Runtime.CompilerServices;
-using SFML.Graphics;
+﻿using SFML.Graphics;
 using SFML.System;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
 using WeBoard.Core.Enums;
-using WeBoard.Core.Updates.Interactive;
 
 namespace WeBoard.Core.Components.Handlers
 {
@@ -106,7 +104,7 @@ namespace WeBoard.Core.Components.Handlers
         {
             var wasInFocus = IsInFocus;
             IsInFocus = false;
-            if(wasInFocus)
+            if (wasInFocus)
                 _target.OnStopResizing();
         }
 
