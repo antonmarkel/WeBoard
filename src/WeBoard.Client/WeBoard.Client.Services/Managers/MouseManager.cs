@@ -22,6 +22,7 @@ namespace WeBoard.Client.Services.Managers
         public bool IsDragging { get; set; }
         public Vector2i DragStartScreen { get; private set; }
         public Vector2f DragStartWorld { get; private set; }
+        private DateTime sentAt = DateTime.UtcNow;
 
         public MouseManager()
         {
@@ -66,7 +67,14 @@ namespace WeBoard.Client.Services.Managers
             var currentWorld = _global.RenderWindow.MapPixelToCoords(currentScreen);
             var offsetScreen = DragStartScreen - currentScreen;
             var offsetWorld = DragStartWorld - currentWorld;
-            RemoteCursorManager.GetInstance().UpdateUserCursor(currentWorld);
+
+            if ((DateTime.UtcNow - sentAt).TotalMilliseconds > 100)
+            {
+                sentAt = DateTime.UtcNow;
+                RemoteCursorManager.GetInstance().UpdateUserCursor(currentWorld);
+            }
+
+
             ToolManager.GetInstance().OnMouseMoved(currentWorld);
 
             if (!IsDragging)
