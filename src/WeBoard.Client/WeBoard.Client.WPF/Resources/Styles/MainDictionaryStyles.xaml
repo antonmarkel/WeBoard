@@ -6,6 +6,7 @@
         <ResourceDictionary Source="/Resources/Styles/ButtonStyles.xaml"/>
         <ResourceDictionary Source="/Resources/Styles/TextBoxStyles.xaml"/>
         <ResourceDictionary Source="/Resources/Styles/Effects.xaml"/>
+        <ResourceDictionary Source="/Resources/Styles/ContextMenuStyles.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

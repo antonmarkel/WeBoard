@@ -1,5 +1,7 @@
-﻿using System.Collections.ObjectModel;
-using System.Net.Http;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using MahApps.Metro.Controls;
@@ -9,11 +11,32 @@ using WeBoard.Client.WPF.Services;
 
 namespace WeBoard.Client.WPF.Windows
 {
-    public partial class AccountWindow : MetroWindow
+    public partial class AccountWindow : MetroWindow, INotifyPropertyChanged
     {
-        private readonly BoardApiService _boardService = new(new HttpClient());
+        private readonly BoardApiService _boardService = new(new System.Net.Http.HttpClient());
+
         public ObservableCollection<BoardModel> Boards { get; } = new();
+
+        private bool _showFavorites = false;
+        public bool ShowFavorites
+        {
+            get => _showFavorites;
+            set
+            {
+                if (_showFavorites != value)
+                {
+                    _showFavorites = value;
+                    OnPropertyChanged(nameof(ShowFavorites));
+                    OnPropertyChanged(nameof(DisplayedBoards));
+                }
+            }
+        }
+
+        public IEnumerable<BoardModel> DisplayedBoards =>
+            ShowFavorites ? Boards.Where(b => b.IsFavorite) : Boards;
+
         private readonly Guid _id;
+
         public AccountWindow(Guid id)
         {
             InitializeComponent();
@@ -22,18 +45,20 @@ namespace WeBoard.Client.WPF.Windows
 
             LoadBoardsAsync();
         }
+
         private async void LoadBoardsAsync()
         {
             var response = await _boardService.GetUserBoardsAsync(_id);
             Dispatcher.Invoke(() =>
             {
                 Boards.Clear();
+
                 if (response.Success && response.Boards != null)
                 {
                     foreach (var board in response.Boards)
-                    {
                         Boards.Add(board);
-                    }
+
+                    OnPropertyChanged(nameof(DisplayedBoards));
                     NoBoardsText.Visibility = Boards.Any() ? Visibility.Collapsed : Visibility.Visible;
                 }
                 else
@@ -43,6 +68,37 @@ namespace WeBoard.Client.WPF.Windows
             });
         }
 
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected void OnPropertyChanged(string propName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName));
+
+        private void CopyBoardIdClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem menuItem && menuItem.DataContext is BoardModel board)
+            {
+                Clipboard.SetText(board.Id.ToString());
+            }
+        }
+
+        private void ToggleFavoriteClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem menuItem && menuItem.DataContext is BoardModel board)
+            {
+                board.IsFavorite = !board.IsFavorite;
+                OnPropertyChanged(nameof(DisplayedBoards));
+            }
+        }
+
+        private void HomeButtonClick(object sender, RoutedEventArgs e)
+        {
+            ShowFavorites = false;
+        }
+
+        private void FavoritesButtonClick(object sender, RoutedEventArgs e)
+        {
+            ShowFavorites = true;
+        }
+
         private void AccountButtonClick(object sender, RoutedEventArgs e)
         {
             AccountMenu.IsOpen = !AccountMenu.IsOpen;
@@ -50,11 +106,16 @@ namespace WeBoard.Client.WPF.Windows
 
         private void LogOutButtonClick(object sender, RoutedEventArgs e)
         {
+            var loginWindow = new LoginWindow();
+            Close();
+            loginWindow.Show();
         }
+
         private void CreateBoardButtonClick(object sender, RoutedEventArgs e)
         {
             CreateBoardMenu.IsOpen = true;
         }
+
         private void CancelCreateBoardButtonClick(object sender, RoutedEventArgs e)
         {
             CreateBoardMenu.IsOpen = false;
@@ -77,7 +138,7 @@ namespace WeBoard.Client.WPF.Windows
                 }
             }
             CreateBoardMenu.IsOpen = false;
-            BoardTitleTextBox.Text = String.Empty;
+            BoardTitleTextBox.Text = string.Empty;
         }
 
         private void AddBoardButtonClick(object sender, RoutedEventArgs e)
@@ -100,21 +161,9 @@ namespace WeBoard.Client.WPF.Windows
                 {
                     LoadBoardsAsync();
                     AddBoardMenu.IsOpen = false;
-                    BoardIdTextBox.Text = String.Empty;
+                    BoardIdTextBox.Text = string.Empty;
                 }
             }
         }
-        
-        private void CopyBoardIdClick(object sender, RoutedEventArgs e)
-        {
-            if (sender is MenuItem menuItem)
-            {
-                if (menuItem.DataContext is BoardModel board)
-                {
-                    Clipboard.SetText(board.Id.ToString());
-                }
-            }
-        }
-
     }
 }

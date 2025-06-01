@@ -3,6 +3,7 @@
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
                       xmlns:local="clr-namespace:WeBoard.Client.WPF.Windows"
+                      xmlns:helpers="clr-namespace:WeBoard.Client.WPF.Helpers"
                       Title="WeBoard | Boards"
                       WindowState="Maximized"
                       WindowStartupLocation="CenterScreen"
@@ -15,14 +16,16 @@
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="/Resources/Styles/MainDictionaryStyles.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
+			<helpers:BoolToFavoriteTextConverter x:Key="BoolToFavoriteTextConverter"/>
 		</ResourceDictionary>
 	</controls:MetroWindow.Resources>
 
 	<Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+
 		<Border Grid.Column="0" Width="240" VerticalAlignment="Stretch" HorizontalAlignment="Left"
                 Background="{StaticResource SidebarGradient}" CornerRadius="0 20 20 0"
                 Effect="{StaticResource ShadowEffect}">
@@ -40,16 +43,14 @@
 				</StackPanel>
 
 				<Button Content="🏠 Home" Style="{StaticResource SidebarButtonStyle}"
-                        HorizontalAlignment="Stretch" Margin="20,10"/>
+                        HorizontalAlignment="Stretch" Margin="20,10" Click="HomeButtonClick"/>
 
 				<Rectangle Height="1" Margin="20 15" Fill="{StaticResource SidebarDividerBrush}" Opacity="0.6"/>
 
-				<Button Content="🌟 Starred" Style="{StaticResource SidebarButtonStyle}"
-                        HorizontalAlignment="Stretch" Margin="20,10"/>
-				<Button Content="🕒 Recent" Style="{StaticResource SidebarButtonStyle}"
-                        HorizontalAlignment="Stretch" Margin="20,10"/>
+				<Button Content="🌟 Favorites" Style="{StaticResource SidebarButtonStyle}"
+                        HorizontalAlignment="Stretch" Margin="20,10" Click="FavoritesButtonClick"/>
 
-                <Button Content="🆕 Create new"
+				<Button Content="🆕 Create new"
                         Style="{StaticResource SidebarButtonStyle}"
                         HorizontalAlignment="Stretch"
                         Margin="20,20,20,10"
@@ -65,13 +66,13 @@
 				</Grid.RowDefinitions>
 
 				<TextBlock Text="Your Boards"
-						   FontSize="28"
-						   FontWeight="Bold"
-						   Foreground="#2D3748"
-						   Margin="0,0,0,20"/>
+                           FontSize="28"
+                           FontWeight="Bold"
+                           Foreground="#2D3748"
+                           Margin="0,0,0,20"/>
 
 				<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-					<ItemsControl x:Name="BoardsList" ItemsSource="{Binding Boards}">
+					<ItemsControl ItemsSource="{Binding DisplayedBoards}">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
 								<WrapPanel Orientation="Horizontal"/>
@@ -81,18 +82,21 @@
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
 								<Border Width="220"
-										Height="180"
-										Background="White"
-										CornerRadius="15"
-										Margin="0,0,20,20"
-										Effect="{StaticResource ShadowEffect}"
-										Cursor="Hand">
-                                    <Border.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Header="{Binding Id}" IsEnabled="False"/>
-                                            <MenuItem Header="Copy ID" Click="CopyBoardIdClick"/>
-                                        </ContextMenu>
-                                    </Border.ContextMenu>
+                                        Height="180"
+                                        Background="White"
+                                        CornerRadius="15"
+                                        Margin="0,0,20,20"
+                                        Effect="{StaticResource ShadowEffect}"
+                                        Cursor="Hand">
+									<Border.ContextMenu>
+                                        <ContextMenu Style="{StaticResource RoundedContextMenuStyle}">
+											<MenuItem Header="{Binding Id}" IsEnabled="False"/>
+											<MenuItem Header="Copy ID" Click="CopyBoardIdClick" Style="{StaticResource RoundedMenuItemStyle}"/>
+											<Separator/>
+											<MenuItem Header="{Binding IsFavorite, Converter={StaticResource BoolToFavoriteTextConverter}}"
+                                                      Click="ToggleFavoriteClick" Style="{StaticResource RoundedMenuItemStyle}"/>
+										</ContextMenu>
+									</Border.ContextMenu>
 									<Border.Style>
 										<Style TargetType="Border">
 											<Setter Property="Background" Value="White"/>
@@ -112,20 +116,20 @@
 
 										<Viewbox Grid.Row="0" Width="60" Height="60">
 											<TextBlock Text="📋"
-													   FontSize="24"
-													   HorizontalAlignment="Center"
-													   VerticalAlignment="Center"/>
+                                                       FontSize="24"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
 										</Viewbox>
 
 										<TextBlock Grid.Row="1"
-												   Text="{Binding Name}"
-												   FontSize="18"
-												   FontWeight="SemiBold"
-												   Foreground="#2D3748"
-												   HorizontalAlignment="Center"
-												   TextWrapping="Wrap"
-												   Margin="15,0,15,20"
-												   TextAlignment="Center"/>
+                                                   Text="{Binding Name}"
+                                                   FontSize="18"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#2D3748"
+                                                   HorizontalAlignment="Center"
+                                                   TextWrapping="Wrap"
+                                                   Margin="15,0,15,20"
+                                                   TextAlignment="Center"/>
 									</Grid>
 								</Border>
 							</DataTemplate>
@@ -134,13 +138,13 @@
 				</ScrollViewer>
 
 				<TextBlock x:Name="NoBoardsText"
-						   Grid.Row="1"
-						   Text="You don't have any boards yet. Create your first board!"
-						   FontSize="18"
-						   Foreground="#718096"
-						   HorizontalAlignment="Center"
-						   VerticalAlignment="Center"
-						   Visibility="Collapsed"/>
+                           Grid.Row="1"
+                           Text="You don't have any boards yet. Create your first board!"
+                           FontSize="18"
+                           Foreground="#718096"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Visibility="Collapsed"/>
 			</Grid>
 		</Border>
 
@@ -157,37 +161,37 @@
 			</Button>
 		</Border>
 
-        <Popup  Grid.Column="1" x:Name="AccountMenu" PlacementTarget="{Binding ElementName=AccountButton}"
+		<Popup Grid.Column="1" x:Name="AccountMenu" PlacementTarget="{Binding ElementName=AccountButton}"
                Placement="Bottom" IsOpen="False" AllowsTransparency="True"
                Width="150" Height="140">
-            <Border Background="White" BorderBrush="#E8E2D5" BorderThickness="1"
+			<Border Background="White" BorderBrush="#E8E2D5" BorderThickness="1"
                     CornerRadius="15" SnapsToDevicePixels="True"
                     Effect="{StaticResource ShadowEffect}">
-                <StackPanel>
-                    <Border Background="#F7F5F0" CornerRadius="15 15 0 0" Padding="15">
-                        <TextBlock Text="Username" FontSize="18" FontWeight="SemiBold"
+				<StackPanel>
+					<Border Background="#F7F5F0" CornerRadius="15 15 0 0" Padding="15">
+						<TextBlock Text="Username" FontSize="18" FontWeight="SemiBold"
                                    Foreground="#3E352A" HorizontalAlignment="Center"/>
-                    </Border>
+					</Border>
 
-                    <Button Content="Log Out" HorizontalAlignment="Stretch"
+					<Button Content="Log Out" HorizontalAlignment="Stretch"
                             Margin="20,15" Padding="15,10" FontSize="16" FontWeight="Medium"
                             Foreground="#C44D58" Click="LogOutButtonClick"
                             Style="{StaticResource FlatMenuItemStyle}">
-                        <Button.ContentTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <Path Data="M9.3,5.71L10.71,7.11L8.83,9H16V11H8.83L10.71,12.88L9.3,14.3L5,10L9.3,5.71Z"
+						<Button.ContentTemplate>
+							<DataTemplate>
+								<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+									<Path Data="M9.3,5.71L10.71,7.11L8.83,9H16V11H8.83L10.71,12.88L9.3,14.3L5,10L9.3,5.71Z"
                                           Fill="#C44D58" Width="20" Height="20" Margin="0,0,10,0"/>
-                                    <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </Button.ContentTemplate>
-                    </Button>
-                </StackPanel>
-            </Border>
-        </Popup>
+									<TextBlock Text="{Binding}" VerticalAlignment="Center"/>
+								</StackPanel>
+							</DataTemplate>
+						</Button.ContentTemplate>
+					</Button>
+				</StackPanel>
+			</Border>
+		</Popup>
 
-		<Popup  Grid.Column="1" x:Name="AddBoardMenu" Placement="Center" IsOpen="False"
+		<Popup Grid.Column="1" x:Name="AddBoardMenu" Placement="Center" IsOpen="False"
                AllowsTransparency="True" Width="500" Height="380">
 			<Border Background="White" BorderBrush="#E2E8F0" BorderThickness="1"
                     CornerRadius="20" Width="420" Height="300"
@@ -217,7 +221,7 @@
                                Margin="0,8,0,25" Foreground="#718096" FontSize="14"/>
 
 					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-						<Button Content="Create" Width="140" Height="48"
+						<Button Content="Add" Width="140" Height="48"
                                 Background="#CBB994" Foreground="White" FontSize="18"
                                 FontWeight="SemiBold" Margin="10"
                                 Click="ConfirmAddBoardButtonClick"
@@ -236,7 +240,7 @@
 		</Popup>
 
 		<Popup Grid.Column="1" x:Name="CreateBoardMenu" Placement="Center" IsOpen="False"
-	   AllowsTransparency="True" Width="500" Height="380">
+           AllowsTransparency="True" Width="500" Height="380">
 			<Border Background="White" BorderBrush="#E2E8F0" BorderThickness="1"
                     CornerRadius="20" Width="420" Height="300"
                     SnapsToDevicePixels="True">
@@ -260,9 +264,6 @@
 						</Border>
 					</StackPanel>
 
-					<TextBlock Text="Letters, numbers and dashes only" HorizontalAlignment="Center"
-                               Margin="0,8,0,25" Foreground="#718096" FontSize="14"/>
-
 					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 						<Button Content="Create" Width="140" Height="48"
                                 Background="#CBB994" Foreground="White" FontSize="18"
@@ -283,4 +284,4 @@
 		</Popup>
 	</Grid>
 
-</controls:MetroWindow>  
+</controls:MetroWindow>
