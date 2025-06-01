@@ -66,7 +66,7 @@ namespace WeBoard.Client.Services.Managers
             var currentWorld = _global.RenderWindow.MapPixelToCoords(currentScreen);
             var offsetScreen = DragStartScreen - currentScreen;
             var offsetWorld = DragStartWorld - currentWorld;
-
+            RemoteCursorManager.GetInstance().UpdateUserCursor(currentWorld);
             ToolManager.GetInstance().OnMouseMoved(currentWorld);
 
             if (!IsDragging)

@@ -34,7 +34,7 @@ namespace WeBoard.Core.Network.Serializable.Tools
                     update = new CreateUpdate(0, string.Empty);
                     break;
                 case UpdateEnum.RemoveUpdate:
-                    update = new ResizeUpdate(0, new());
+                    update = new RemoveUpdate(0, string.Empty);
                     break;
                 case UpdateEnum.EditUpdate:
                     update = new EditUpdate(0, string.Empty, string.Empty, string.Empty);

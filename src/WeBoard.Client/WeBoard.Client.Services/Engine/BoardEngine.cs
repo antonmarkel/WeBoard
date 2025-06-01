@@ -39,10 +39,10 @@ namespace WeBoard.Client.Services.Engine
             EditManager.GetInstance();
             var networkManager = NetworkManager.GetInstance();
 
-            networkManager.AuthToken = "7e698b12-1fec-458c-ae0c-2a3005df8a02";
+            networkManager.AuthToken = "89226b36-9f1c-4088-9678-e2e862f93428";
             Guid.TryParse("329cad88-8386-46de-8f1d-cf59ccc931d8", out Guid boardId);
                 networkManager.BoardId = boardId;
-            networkManager.ServerUrl = "http://localhost:51264";
+            networkManager.ServerUrl = "http://localhost:51697";
             networkManager.LastUpdateId = 0;
 
             var menuInitializer = new MenuInitializer();

@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using WeBoard.Server.Persistence.Data;
 using WeBoard.Server.Persistence.Entities;
@@ -20,16 +19,16 @@ public class BoardHub : Hub
     [HubMethodName("JoinBoard")]
     public async Task JoinBoard(Guid boardId, string authToken, long updateDateId)
     {
-        var userId = await GetUserIdAsync(authToken);
+        var user = await GetUserAsync(authToken);
 
-        if (userId == -1)
+        if (user is null)
         {
             await Clients.Caller.SendAsync("AuthFailed");
             Context.Abort();
             return;
         }
 
-        if (!await _context.UserBoards.AnyAsync(ub => ub.BoardId == boardId && ub.UserId == userId))
+        if (!await _context.UserBoards.AnyAsync(ub => ub.BoardId == boardId && ub.UserId == user.Id))
         {
             await Clients.Caller.SendAsync("AccessDenied");
             return;
@@ -44,12 +43,26 @@ public class BoardHub : Hub
         }
 
         room.Connections.Add(Context.ConnectionId);
+
+        if (!room.Users.Any(u => u.UserId == user.Id))
+            room.Users.Add(new BoardMate { Name = user.UserName, UserId = user.Id });
+
         await Groups.AddToGroupAsync(Context.ConnectionId, boardId.ToString());
 
         var updatesToSend =
             room.Updates.Where(u => u.Id > updateDateId).ToList();
 
+        await Clients.Caller.SendAsync("ReceiveUserInfo", new BoardMate { Name = user.UserName, UserId = user.Id });
         await Clients.Caller.SendAsync("InitialSync", updatesToSend);
+
+        foreach (var mate in room.Users)
+        {
+            if(mate.UserId != user.Id)
+                await Clients.Caller.SendAsync("OnBoardMateJoined", mate);
+        }
+
+        await Clients.Others.SendAsync("OnBoardMateJoined",
+            new BoardMate { Name = user.UserName, UserId = user.Id });
     }
 
     [HubMethodName("SendUpdate")]
@@ -63,6 +76,12 @@ public class BoardHub : Hub
         await Clients.All.SendAsync("ReceiveUpdate", update);
     }
 
+    [HubMethodName("SendCursorUpdate")]
+    public async Task SendCursorUpdate(string cursorData)
+    {
+        await Clients.Others.SendAsync("ReceiveCursorUpdate", cursorData);
+    }
+
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
         var roomsToLeave = _activeRooms.Values
@@ -72,7 +91,6 @@ public class BoardHub : Hub
         foreach (var room in roomsToLeave)
         {
             room.Connections.Remove(Context.ConnectionId);
-
             if (room.Connections.Count == 0)
             {
                 foreach (var update in room.Updates)
@@ -92,29 +110,36 @@ public class BoardHub : Hub
         await base.OnDisconnectedAsync(exception);
     }
 
-    private async Task<long> GetUserIdAsync(string token)
+    private async Task<UserEntity?> GetUserAsync(string token)
     {
 
         if (!Guid.TryParse(token, out Guid tokenId))
         {
-            return -1;
+            return null;
         }
 
         var tokenEntity = await _context.Tokens.FirstOrDefaultAsync(token => token.Id == tokenId);
         if (tokenEntity is null || tokenEntity.ValidTillUtc < DateTime.UtcNow)
         {
-            return -1;
+            return null;
         }
 
-        return tokenEntity.UserId;
+        var userEntity = await _context.Users.FirstOrDefaultAsync(u => u.Id == tokenEntity.UserId);
 
+        return userEntity;
     }
 }
 
+public class BoardMate
+{
+    public long UserId { get; set; }
+    public string Name { get; set; } = string.Empty;
+}
 public class BoardRoom
 {
     public Guid BoardId { get; }
     public List<BoardUpdateEntity> Updates { get; set; } = new();
+    public List<BoardMate> Users { get; set; } = new();
     public HashSet<string> Connections { get; } = new();
 
     public BoardRoom(Guid boardId)
