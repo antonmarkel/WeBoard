@@ -30,8 +30,8 @@
                                VerticalAlignment="Center" FontFamily="Segoe UI Semibold"/>
 					<Button Content="➕" Style="{StaticResource CreateButtonStyle}"
                             HorizontalAlignment="Center" VerticalAlignment="Center"
-                            Click="CreateNewBoardButtonClick" Margin="15,0,0,0"
-                            ToolTip="Create new board"
+                            Click="AddBoardButtonClick" Margin="15,0,0,0"
+                            ToolTip="Add new board"
                             Foreground="{StaticResource SidebarTextBrush}"
                             BorderBrush="{StaticResource SidebarTextBrush}"/>
 				</StackPanel>
@@ -45,6 +45,12 @@
                         HorizontalAlignment="Stretch" Margin="20,10"/>
 				<Button Content="🕒 Recent" Style="{StaticResource SidebarButtonStyle}"
                         HorizontalAlignment="Stretch" Margin="20,10"/>
+
+                <Button Content="🆕 Create new"
+                        Style="{StaticResource SidebarButtonStyle}"
+                        HorizontalAlignment="Stretch"
+                        Margin="20,20,20,10"
+                        Click="CreateBoardButtonClick"/>
 			</StackPanel>
 		</Border>
 
@@ -91,7 +97,7 @@
             </Border>
         </Popup>
 
-		<Popup x:Name="CreateBoardMenu" Placement="Center" IsOpen="False"
+		<Popup x:Name="AddBoardMenu" Placement="Center" IsOpen="False"
                AllowsTransparency="True" Width="500" Height="380">
 			<Border Background="White" BorderBrush="#E2E8F0" BorderThickness="1"
                     CornerRadius="20" Width="420" Height="300"
@@ -101,7 +107,7 @@
 				</Border.Effect>
 
 				<StackPanel VerticalAlignment="Center">
-					<TextBlock Text="Create New Board" FontSize="24" FontWeight="SemiBold"
+					<TextBlock Text="Add new board" FontSize="24" FontWeight="SemiBold"
                                HorizontalAlignment="Center" Margin="0,0,0,20"
                                Foreground="#2D3748"/>
 
@@ -124,7 +130,7 @@
 						<Button Content="Create" Width="140" Height="48"
                                 Background="#CBB994" Foreground="White" FontSize="18"
                                 FontWeight="SemiBold" Margin="10"
-                                Click="ConfirmNewBoardButtonClick"
+                                Click="ConfirmAddBoardButtonClick"
                                 Style="{StaticResource RoundedAnimatedButton}">
 							<Button.Effect>
 								<DropShadowEffect BlurRadius="10" Opacity="0.3" ShadowDepth="3"/>
@@ -132,12 +138,58 @@
 						</Button>
 						<Button Content="Cancel" Width="140" Height="48"
                                 Background="#F7FAFC" Foreground="#718096" FontSize="18"
-                                Margin="10" Click="CancelNewBoardButtonClick"
+                                Margin="10" Click="CancelAddBoardButtonClick"
                                 Style="{StaticResource RoundedAnimatedButton}"/>
 					</StackPanel>
 				</StackPanel>
 			</Border>
 		</Popup>
 
+		<Popup x:Name="CreateBoardMenu" Placement="Center" IsOpen="False"
+	   AllowsTransparency="True" Width="500" Height="380">
+			<Border Background="White" BorderBrush="#E2E8F0" BorderThickness="1"
+                    CornerRadius="20" Width="420" Height="300"
+                    SnapsToDevicePixels="True">
+				<Border.Effect>
+					<DropShadowEffect Color="#4A5568" BlurRadius="25" ShadowDepth="5" Opacity="0.2"/>
+				</Border.Effect>
+
+				<StackPanel VerticalAlignment="Center">
+					<TextBlock Text="Add new board" FontSize="24" FontWeight="SemiBold"
+                               HorizontalAlignment="Center" Margin="0,0,0,20"
+                               Foreground="#2D3748"/>
+
+					<StackPanel Margin="20,0" Orientation="Horizontal"
+                                VerticalAlignment="Center" HorizontalAlignment="Center">
+						<Border CornerRadius="12" Background="#F7FAFC" BorderThickness="1"
+                                BorderBrush="#CBD5E0" Width="320" Height="60">
+							<TextBox x:Name="BoardTitleTextBox" VerticalContentAlignment="Center"
+                                     controls:TextBoxHelper.Watermark="Enter board title"
+                                     Background="Transparent" BorderThickness="0"
+                                     FontSize="18" Padding="12" Foreground="#2D3748"/>
+						</Border>
+					</StackPanel>
+
+					<TextBlock Text="Letters, numbers and dashes only" HorizontalAlignment="Center"
+                               Margin="0,8,0,25" Foreground="#718096" FontSize="14"/>
+
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+						<Button Content="Create" Width="140" Height="48"
+                                Background="#CBB994" Foreground="White" FontSize="18"
+                                FontWeight="SemiBold" Margin="10"
+                                Click="ConfirmCreateBoardButtonClick"
+                                Style="{StaticResource RoundedAnimatedButton}">
+							<Button.Effect>
+								<DropShadowEffect BlurRadius="10" Opacity="0.3" ShadowDepth="3"/>
+							</Button.Effect>
+						</Button>
+						<Button Content="Cancel" Width="140" Height="48"
+                                Background="#F7FAFC" Foreground="#718096" FontSize="18"
+                                Margin="10" Click="CancelCreateBoardButtonClick"
+                                Style="{StaticResource RoundedAnimatedButton}"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+		</Popup>
 	</Grid>
-</controls:MetroWindow>
+</controls:MetroWindow>  

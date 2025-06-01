@@ -18,20 +18,33 @@ namespace WeBoard.Client.WPF
         private void LogOutButtonClick(object sender, RoutedEventArgs e)
         {
         }
-
-        private void CreateNewBoardButtonClick(object sender, RoutedEventArgs e)
+        private void CreateBoardButtonClick(object sender, RoutedEventArgs e)
         {
             CreateBoardMenu.IsOpen = true;
         }
-
-        private void CancelNewBoardButtonClick(object sender, RoutedEventArgs e)
+        private void CancelCreateBoardButtonClick(object sender, RoutedEventArgs e)
         {
             CreateBoardMenu.IsOpen = false;
         }
 
-        private void ConfirmNewBoardButtonClick(object sender, RoutedEventArgs e)
+        private void ConfirmCreateBoardButtonClick(object sender, RoutedEventArgs e)
         {
             CreateBoardMenu.IsOpen = false;
+        }
+
+        private void AddBoardButtonClick(object sender, RoutedEventArgs e)
+        {
+            AddBoardMenu.IsOpen = true;
+        }
+
+        private void CancelAddBoardButtonClick(object sender, RoutedEventArgs e)
+        {
+            AddBoardMenu.IsOpen = false;
+        }
+
+        private void ConfirmAddBoardButtonClick(object sender, RoutedEventArgs e)
+        {
+            AddBoardMenu.IsOpen = false;
         }
 
     }
