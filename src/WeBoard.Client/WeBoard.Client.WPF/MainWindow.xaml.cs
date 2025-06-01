@@ -16,5 +16,12 @@ namespace WeBoard.Client.WPF
             loginWindow.Show(); 
             this.Close(); 
         }
+
+        private void SignUpButtonClick(object sender, RoutedEventArgs e)
+        {
+            AccountWindow accountWindow = new AccountWindow();
+            accountWindow.Show();
+            this.Close();
+        }
     }
 }

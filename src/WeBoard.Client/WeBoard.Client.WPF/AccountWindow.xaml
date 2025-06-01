@@ -1,0 +1,143 @@
+﻿<controls:MetroWindow x:Class="WeBoard.Client.WPF.AccountWindow"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
+                      xmlns:local="clr-namespace:WeBoard.Client.WPF"
+                      Title="WeBoard | Boards"
+                      WindowState="Maximized"
+                      WindowStartupLocation="CenterScreen"
+                      GlowBrush="Transparent"
+                      BorderThickness="0"
+                      Background="#F5F7FB">
+
+	<controls:MetroWindow.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/Resources/Styles/MainDictionaryStyles.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</controls:MetroWindow.Resources>
+
+	<Grid>
+
+		<Border Width="240" VerticalAlignment="Stretch" HorizontalAlignment="Left"
+                Background="{StaticResource SidebarGradient}" CornerRadius="0 20 20 0"
+                Effect="{StaticResource ShadowEffect}">
+			<StackPanel VerticalAlignment="Top" Margin="0,40,0,0">
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,30">
+					<TextBlock Text="WeBoard" FontSize="26" FontWeight="Bold"
+                               Foreground="{StaticResource SidebarTextBrush}"
+                               VerticalAlignment="Center" FontFamily="Segoe UI Semibold"/>
+					<Button Content="➕" Style="{StaticResource CreateButtonStyle}"
+                            HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Click="CreateNewBoardButtonClick" Margin="15,0,0,0"
+                            ToolTip="Create new board"
+                            Foreground="{StaticResource SidebarTextBrush}"
+                            BorderBrush="{StaticResource SidebarTextBrush}"/>
+				</StackPanel>
+
+				<Button Content="🏠 Home" Style="{StaticResource SidebarButtonStyle}"
+                        HorizontalAlignment="Stretch" Margin="20,10"/>
+
+				<Rectangle Height="1" Margin="20 15" Fill="{StaticResource SidebarDividerBrush}" Opacity="0.6"/>
+
+				<Button Content="🌟 Starred" Style="{StaticResource SidebarButtonStyle}"
+                        HorizontalAlignment="Stretch" Margin="20,10"/>
+				<Button Content="🕒 Recent" Style="{StaticResource SidebarButtonStyle}"
+                        HorizontalAlignment="Stretch" Margin="20,10"/>
+			</StackPanel>
+		</Border>
+
+		<Border Background="White" CornerRadius="15" Height="50" VerticalAlignment="Top"
+                HorizontalAlignment="Right" Width="50" Margin="0,20,20,0"
+                Effect="{StaticResource ShadowEffect}">
+			<Button x:Name="AccountButton" Content="👤️" HorizontalAlignment="Center"
+                    VerticalAlignment="Center" Width="50" Height="50"
+                    Click="AccountButtonClick" Style="{StaticResource RoundedAnimatedButton}"
+                    FontSize="20">
+				<Button.Effect>
+					<DropShadowEffect BlurRadius="8" Opacity="0.2" ShadowDepth="2"/>
+				</Button.Effect>
+			</Button>
+		</Border>
+
+        <Popup x:Name="AccountMenu" PlacementTarget="{Binding ElementName=AccountButton}"
+               Placement="Bottom" IsOpen="False" AllowsTransparency="True"
+               Width="150" Height="140">
+            <Border Background="White" BorderBrush="#E8E2D5" BorderThickness="1"
+                    CornerRadius="15" SnapsToDevicePixels="True"
+                    Effect="{StaticResource ShadowEffect}">
+                <StackPanel>
+                    <Border Background="#F7F5F0" CornerRadius="15 15 0 0" Padding="15">
+                        <TextBlock Text="Username" FontSize="18" FontWeight="SemiBold"
+                                   Foreground="#3E352A" HorizontalAlignment="Center"/>
+                    </Border>
+
+                    <Button Content="Log Out" HorizontalAlignment="Stretch"
+                            Margin="20,15" Padding="15,10" FontSize="16" FontWeight="Medium"
+                            Foreground="#C44D58" Click="LogOutButtonClick"
+                            Style="{StaticResource FlatMenuItemStyle}">
+                        <Button.ContentTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Path Data="M9.3,5.71L10.71,7.11L8.83,9H16V11H8.83L10.71,12.88L9.3,14.3L5,10L9.3,5.71Z"
+                                          Fill="#C44D58" Width="20" Height="20" Margin="0,0,10,0"/>
+                                    <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </Button.ContentTemplate>
+                    </Button>
+                </StackPanel>
+            </Border>
+        </Popup>
+
+		<Popup x:Name="CreateBoardMenu" Placement="Center" IsOpen="False"
+               AllowsTransparency="True" Width="500" Height="380">
+			<Border Background="White" BorderBrush="#E2E8F0" BorderThickness="1"
+                    CornerRadius="20" Width="420" Height="300"
+                    SnapsToDevicePixels="True">
+				<Border.Effect>
+					<DropShadowEffect Color="#4A5568" BlurRadius="25" ShadowDepth="5" Opacity="0.2"/>
+				</Border.Effect>
+
+				<StackPanel VerticalAlignment="Center">
+					<TextBlock Text="Create New Board" FontSize="24" FontWeight="SemiBold"
+                               HorizontalAlignment="Center" Margin="0,0,0,20"
+                               Foreground="#2D3748"/>
+
+					<StackPanel Margin="20,0" Orientation="Horizontal"
+                                VerticalAlignment="Center" HorizontalAlignment="Center">
+						<TextBlock Text="🔗" FontSize="24" VerticalAlignment="Center" Margin="0,0,10,0"/>
+						<Border CornerRadius="12" Background="#F7FAFC" BorderThickness="1"
+                                BorderBrush="#CBD5E0" Width="320" Height="60">
+							<TextBox x:Name="BoardIdTextBox" VerticalContentAlignment="Center"
+                                     controls:TextBoxHelper.Watermark="Enter unique board ID"
+                                     Background="Transparent" BorderThickness="0"
+                                     FontSize="18" Padding="12" Foreground="#2D3748"/>
+						</Border>
+					</StackPanel>
+
+					<TextBlock Text="Letters, numbers and dashes only" HorizontalAlignment="Center"
+                               Margin="0,8,0,25" Foreground="#718096" FontSize="14"/>
+
+					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+						<Button Content="Create" Width="140" Height="48"
+                                Background="#CBB994" Foreground="White" FontSize="18"
+                                FontWeight="SemiBold" Margin="10"
+                                Click="ConfirmNewBoardButtonClick"
+                                Style="{StaticResource RoundedAnimatedButton}">
+							<Button.Effect>
+								<DropShadowEffect BlurRadius="10" Opacity="0.3" ShadowDepth="3"/>
+							</Button.Effect>
+						</Button>
+						<Button Content="Cancel" Width="140" Height="48"
+                                Background="#F7FAFC" Foreground="#718096" FontSize="18"
+                                Margin="10" Click="CancelNewBoardButtonClick"
+                                Style="{StaticResource RoundedAnimatedButton}"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+		</Popup>
+
+	</Grid>
+</controls:MetroWindow>

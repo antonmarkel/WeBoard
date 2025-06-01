@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\MainMenu\Cursor.png" />
+    <None Remove="Resources\Images\MainMenu\Cursor.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\MainMenu\Cursor.png">
+    <Resource Include="Resources\Images\MainMenu\Cursor.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

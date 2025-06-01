@@ -10,54 +10,20 @@
                    GlowBrush="Transparent"
                    BorderThickness="0">
     <controls:MetroWindow.Resources>
-        <SolidColorBrush x:Key="AccentColorBrush" Color="#CBB994"/>
-        <Style x:Key="RoundedAnimatedButton" TargetType="Button" BasedOn="{StaticResource MahApps.Styles.Button}">
-            <Setter Property="Background" Value="{DynamicResource AccentColorBrush}"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Padding" Value="12,6"/>
-            <Setter Property="Height" Value="50"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="border"
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="20"
-                                RenderTransformOrigin="0.5,0.5"
-                                SnapsToDevicePixels="True">
-                            <Border.RenderTransform>
-                                <ScaleTransform ScaleX="1" ScaleY="1" />
-                            </Border.RenderTransform>
-                            <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"
-                                              RecognizesAccessKey="True"
-                                              TextElement.FontSize="22"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="border" Property="RenderTransform">
-                                    <Setter.Value>
-                                        <ScaleTransform ScaleX="0.95" ScaleY="0.95"/>
-                                    </Setter.Value>
-                                </Setter>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style TargetType="TextBox" BasedOn="{StaticResource MahApps.Styles.TextBox}">
-            <Setter Property="BorderBrush" Value="{DynamicResource AccentColorBrush}"/>
-            <Setter Property="Padding" Value="10"/>
-            <Setter Property="Height" Value="50"/>
-            <Setter Property="FontSize" Value="20"/>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles/MainDictionaryStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </controls:MetroWindow.Resources>
+
     <controls:MetroWindow.Background>
         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
             <GradientStop Color="#FDF8E8" Offset="0.0"/>
             <GradientStop Color="#F5E1A4" Offset="1.0"/>
         </LinearGradientBrush>
     </controls:MetroWindow.Background>
+
     <Grid>
         <TextBlock Text="WeBoard"
                    FontSize="320"
