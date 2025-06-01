@@ -42,7 +42,7 @@ namespace WeBoard.Client.Services.Engine
             networkManager.AuthToken = "89226b36-9f1c-4088-9678-e2e862f93428";
             Guid.TryParse("329cad88-8386-46de-8f1d-cf59ccc931d8", out Guid boardId);
                 networkManager.BoardId = boardId;
-            networkManager.ServerUrl = "http://localhost:51697";
+            networkManager.ServerUrl = "http://3.98.122.179:5005";
             networkManager.LastUpdateId = 0;
 
             var menuInitializer = new MenuInitializer();

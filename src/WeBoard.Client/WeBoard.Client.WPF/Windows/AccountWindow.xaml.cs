@@ -1,13 +1,15 @@
 ﻿using System.Windows;
 using MahApps.Metro.Controls;
 
-namespace WeBoard.Client.WPF
+namespace WeBoard.Client.WPF.Windows
 {
     public partial class AccountWindow : MetroWindow
     {
-        public AccountWindow()
+        private readonly string _token;
+        public AccountWindow(string token)
         {
             InitializeComponent();
+            _token = token;  
         }
 
         private void AccountButtonClick(object sender, RoutedEventArgs e)
