@@ -4,6 +4,8 @@ services:
     build:
       context: .
       dockerfile: WeBoard.Server/Dockerfile
+    ports:
+    - "5005:5005"
   mongodb:
     image: mongo:latest
     container_name: mongo_database
