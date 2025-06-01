@@ -19,8 +19,11 @@
 	</controls:MetroWindow.Resources>
 
 	<Grid>
-
-		<Border Width="240" VerticalAlignment="Stretch" HorizontalAlignment="Left"
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+		<Border Grid.Column="0" Width="240" VerticalAlignment="Stretch" HorizontalAlignment="Left"
                 Background="{StaticResource SidebarGradient}" CornerRadius="0 20 20 0"
                 Effect="{StaticResource ShadowEffect}">
 			<StackPanel VerticalAlignment="Top" Margin="0,40,0,0">
@@ -54,7 +57,94 @@
 			</StackPanel>
 		</Border>
 
-		<Border Background="White" CornerRadius="15" Height="50" VerticalAlignment="Top"
+		<Border Grid.Column="1" Background="#F5F7FB" Padding="20">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+
+				<TextBlock Text="Your Boards"
+						   FontSize="28"
+						   FontWeight="Bold"
+						   Foreground="#2D3748"
+						   Margin="0,0,0,20"/>
+
+				<ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+					<ItemsControl x:Name="BoardsList" ItemsSource="{Binding Boards}">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<WrapPanel Orientation="Horizontal"/>
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Border Width="220"
+										Height="180"
+										Background="White"
+										CornerRadius="15"
+										Margin="0,0,20,20"
+										Effect="{StaticResource ShadowEffect}"
+										Cursor="Hand">
+                                    <Border.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Header="{Binding Id}" IsEnabled="False"/>
+                                            <MenuItem Header="Copy ID" Click="CopyBoardIdClick"/>
+                                        </ContextMenu>
+                                    </Border.ContextMenu>
+									<Border.Style>
+										<Style TargetType="Border">
+											<Setter Property="Background" Value="White"/>
+											<Style.Triggers>
+												<Trigger Property="IsMouseOver" Value="True">
+													<Setter Property="Background" Value="#F8FAFC"/>
+												</Trigger>
+											</Style.Triggers>
+										</Style>
+									</Border.Style>
+
+									<Grid>
+										<Grid.RowDefinitions>
+											<RowDefinition Height="*"/>
+											<RowDefinition Height="Auto"/>
+										</Grid.RowDefinitions>
+
+										<Viewbox Grid.Row="0" Width="60" Height="60">
+											<TextBlock Text="📋"
+													   FontSize="24"
+													   HorizontalAlignment="Center"
+													   VerticalAlignment="Center"/>
+										</Viewbox>
+
+										<TextBlock Grid.Row="1"
+												   Text="{Binding Name}"
+												   FontSize="18"
+												   FontWeight="SemiBold"
+												   Foreground="#2D3748"
+												   HorizontalAlignment="Center"
+												   TextWrapping="Wrap"
+												   Margin="15,0,15,20"
+												   TextAlignment="Center"/>
+									</Grid>
+								</Border>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</ScrollViewer>
+
+				<TextBlock x:Name="NoBoardsText"
+						   Grid.Row="1"
+						   Text="You don't have any boards yet. Create your first board!"
+						   FontSize="18"
+						   Foreground="#718096"
+						   HorizontalAlignment="Center"
+						   VerticalAlignment="Center"
+						   Visibility="Collapsed"/>
+			</Grid>
+		</Border>
+
+		<Border Grid.Column="1" Background="White" CornerRadius="15" Height="50" VerticalAlignment="Top"
                 HorizontalAlignment="Right" Width="50" Margin="0,20,20,0"
                 Effect="{StaticResource ShadowEffect}">
 			<Button x:Name="AccountButton" Content="👤️" HorizontalAlignment="Center"
@@ -67,7 +157,7 @@
 			</Button>
 		</Border>
 
-        <Popup x:Name="AccountMenu" PlacementTarget="{Binding ElementName=AccountButton}"
+        <Popup  Grid.Column="1" x:Name="AccountMenu" PlacementTarget="{Binding ElementName=AccountButton}"
                Placement="Bottom" IsOpen="False" AllowsTransparency="True"
                Width="150" Height="140">
             <Border Background="White" BorderBrush="#E8E2D5" BorderThickness="1"
@@ -97,7 +187,7 @@
             </Border>
         </Popup>
 
-		<Popup x:Name="AddBoardMenu" Placement="Center" IsOpen="False"
+		<Popup  Grid.Column="1" x:Name="AddBoardMenu" Placement="Center" IsOpen="False"
                AllowsTransparency="True" Width="500" Height="380">
 			<Border Background="White" BorderBrush="#E2E8F0" BorderThickness="1"
                     CornerRadius="20" Width="420" Height="300"
@@ -145,7 +235,7 @@
 			</Border>
 		</Popup>
 
-		<Popup x:Name="CreateBoardMenu" Placement="Center" IsOpen="False"
+		<Popup Grid.Column="1" x:Name="CreateBoardMenu" Placement="Center" IsOpen="False"
 	   AllowsTransparency="True" Width="500" Height="380">
 			<Border Background="White" BorderBrush="#E2E8F0" BorderThickness="1"
                     CornerRadius="20" Width="420" Height="300"
@@ -192,4 +282,5 @@
 			</Border>
 		</Popup>
 	</Grid>
+
 </controls:MetroWindow>  

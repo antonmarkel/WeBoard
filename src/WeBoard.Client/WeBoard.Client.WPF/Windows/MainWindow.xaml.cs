@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using MahApps.Metro.Controls;
 using WeBoard.Client.WPF.Requests;
+using WeBoard.Client.WPF.Requests.Authentication;
 using WeBoard.Client.WPF.Responses;
 using WeBoard.Client.WPF.Services;
 
@@ -8,11 +9,11 @@ namespace WeBoard.Client.WPF.Windows
 {
     public partial class MainWindow : MetroWindow
     {
-        private readonly ApiService _apiService;
+        private readonly AuthenticationApiService _apiService;
         public MainWindow()
         {
             InitializeComponent();
-            _apiService = new ApiService();
+            _apiService = new AuthenticationApiService();
         }
 
         private void LogInButtonClick(object sender, RoutedEventArgs e)
@@ -40,7 +41,7 @@ namespace WeBoard.Client.WPF.Windows
                 Password = password
             };
 
-            ApiResponse registerResponse = await _apiService.RegisterAsync(registerRequest);
+            AuthenticationApiResponse registerResponse = await _apiService.RegisterAsync(registerRequest);
 
             if (registerResponse.Success)
             {

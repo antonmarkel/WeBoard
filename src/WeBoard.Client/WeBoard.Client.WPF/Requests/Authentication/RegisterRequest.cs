@@ -1,4 +1,4 @@
-﻿namespace WeBoard.Client.WPF.Requests
+﻿namespace WeBoard.Client.WPF.Requests.Authentication
 {
     public class RegisterRequest
     {

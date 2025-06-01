@@ -8,12 +8,12 @@ namespace WeBoard.Client.WPF.Windows
 {
     public partial class LoginWindow : MetroWindow
     {
-        private readonly ApiService _apiService;
+        private readonly AuthenticationApiService _apiService;
 
         public LoginWindow()
         {
             InitializeComponent();
-            _apiService = new ApiService();
+            _apiService = new AuthenticationApiService();
         }
 
         private async void LogInButtonClick(object sender, RoutedEventArgs e)
@@ -34,11 +34,11 @@ namespace WeBoard.Client.WPF.Windows
                 Password = password
             };
 
-            ApiResponse loginResponse = await _apiService.LoginAsync(loginRequest);
+            AuthenticationApiResponse loginResponse = await _apiService.LoginAsync(loginRequest);
 
             if (loginResponse.Success)
             {
-                AccountWindow accountWindow = new AccountWindow(_apiService.Id!); 
+                AccountWindow accountWindow = new AccountWindow(loginResponse.Id); 
                 Close();
                 accountWindow.Show();
             }
