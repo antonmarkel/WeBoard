@@ -33,8 +33,26 @@ namespace WeBoard.Client.Services.Managers
             _hubClient.OnAuthFailed += HandleAuthFailure;
             _hubClient.OnAccessDenied += HandleAccessDenied;
             _hubClient.OnConnectionClosed += HandleDisconnect;
+            _hubClient.OnBoardMateJoin += HandleBoardMateJoin;
+            _hubClient.OnRemoteCursorUpdate += HandleRemoteCursorUpdate;
+            _hubClient.OnReceiveUserInfo += HandleReceiveUserInfo;
 
             _hubClient.ConnectAsync();
+        }
+
+        private void HandleReceiveUserInfo(BoardMate obj)
+        {
+            RemoteCursorManager.GetInstance().InitUserCursor(obj.UserId);
+        }
+
+        private void HandleRemoteCursorUpdate(string obj)
+        {
+            RemoteCursorManager.GetInstance().UpdateRemoteCursor(obj);
+        }
+
+        private void HandleBoardMateJoin(BoardMate obj)
+        {
+            RemoteCursorManager.GetInstance().JoinMember(obj.Name,obj.UserId);
         }
 
         public void SendUpdate(IUpdate update)
@@ -47,6 +65,11 @@ namespace WeBoard.Client.Services.Managers
             };
             _handledUpdatesDateTicks.Add(update.Date.Ticks);
             _hubClient.QueueUpdate(networkUpdate);
+        }
+
+        public void SendCursorUpdate(string data)
+        {
+            _hubClient.QueueCursorUpdate(data);
         }
 
         private void HandleDisconnect()

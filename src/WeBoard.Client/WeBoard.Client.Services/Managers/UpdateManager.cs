@@ -67,7 +67,7 @@ namespace WeBoard.Client.Services.Managers
             _updates.Remove(update);
 
             var cancelUpdate = update.GetCancelUpdate();
-
+            NetworkManager.GetInstance().SendUpdate(cancelUpdate);
             ApplyUpdate(cancelUpdate);
         }
     }

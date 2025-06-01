@@ -1,5 +1,8 @@
-﻿using SFML.Graphics;
+﻿using System.Numerics;
+using SFML.Graphics;
+using SFML.System;
 using WeBoard.Client.Services.Managers;
+using WeBoard.Core.Drawables.Cursors;
 
 namespace WeBoard.Client.Services.Render
 {
@@ -35,7 +38,7 @@ namespace WeBoard.Client.Services.Render
                             window.Draw(renderObject);
                     }
                 }
-
+                RemoteCursorManager.GetInstance().Draw(window,RenderStates.Default);
                 ToolManager.GetInstance().Draw(window, RenderStates.Default);
 
                 window.SetView(_global.Camera.UiView);
@@ -51,6 +54,7 @@ namespace WeBoard.Client.Services.Render
 
                 if (EditManager.GetInstance().CurrentEditContainer != null) { }
                 window.Draw(_cursorManager);
+
 
                 window.Display();
             }

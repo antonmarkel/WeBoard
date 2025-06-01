@@ -10,6 +10,8 @@ namespace WeBoard.Client.Services.Render
         private View _cameraView;
         private View _uiView;
         private float _zoomLevel = 1.0f;
+
+        public float ZoomLevel => _zoomLevel;
         private const float ZoomStep = 0.1f;
         public View CameraView => new(_cameraView);
         public View UiView => _uiView;
