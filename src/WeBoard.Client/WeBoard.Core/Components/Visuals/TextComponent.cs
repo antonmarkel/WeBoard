@@ -6,6 +6,9 @@ using WeBoard.Core.Animations.TextComponent;
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Handlers;
 using WeBoard.Core.Components.Interfaces;
+using WeBoard.Core.Network.Serializable.Interfaces;
+using WeBoard.Core.Network.Serializable.Visuals;
+using WeBoard.Core.Updates.Creation;
 
 namespace WeBoard.Core.Components.Visuals
 {
@@ -124,6 +127,15 @@ namespace WeBoard.Core.Components.Visuals
 
         public void StopEditing()
         {
+            if (_isEditing)
+            {
+                var ser = ToSerializable();
+                var newText = new TextComponent(new());
+                newText.FromSerializable(ser);
+                Updates.Add(new RemoveUpdate(Id, ser));
+                Updates.Add(new CreateUpdate(newText.Id, newText.ToSerializable()));
+            }
+
             _isEditing = false;
             _cursorVisible = false;
             _activeAnimations.RemoveAll(anim => anim is BlinkingTextCursorAnimation);
@@ -206,6 +218,30 @@ namespace WeBoard.Core.Components.Visuals
                 _text.DisplayedString = _text.DisplayedString[..^1];
                 CalculateSizeAndPosition();
                 _cursorAnimation?.Reset();
+            }
+        }
+
+        public override IBinarySerializable ToSerializable()
+        {
+            var serializable = new SerializableText();
+            serializable.Position = Position;
+            serializable.Id = Id;
+            serializable.Rotation = Rotation;
+            serializable.Size = GetSize();
+            serializable.Text = Content;
+            
+            return serializable;
+        }
+
+        public override void FromSerializable(IBinarySerializable serializable)
+        {
+            if (serializable is SerializableText serializableText)
+            {
+                Position = serializableText.Position;
+                Id = serializableText.Id;
+                Rotation = serializableText.Rotation;
+                SetSize(serializableText.Size);
+                Content = serializableText.Text;
             }
         }
     }

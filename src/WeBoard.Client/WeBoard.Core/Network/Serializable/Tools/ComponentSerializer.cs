@@ -2,11 +2,13 @@
 using WeBoard.Core.Components.Base;
 using WeBoard.Core.Components.Interfaces;
 using WeBoard.Core.Components.Shapes;
+using WeBoard.Core.Components.Visuals;
 using WeBoard.Core.Drawables.Strokes;
 using WeBoard.Core.Network.Serializable.Enums;
 using WeBoard.Core.Network.Serializable.Interfaces;
 using WeBoard.Core.Network.Serializable.Shapes;
 using WeBoard.Core.Network.Serializable.Strokes;
+using WeBoard.Core.Network.Serializable.Visuals;
 
 namespace WeBoard.Core.Network.Serializable.Tools
 {
@@ -51,6 +53,10 @@ namespace WeBoard.Core.Network.Serializable.Tools
                 case SerializableTypeIdEnum.Pencil:
                     binarySerializable = new StrokeSerializable((byte)SerializableTypeIdEnum.Pencil);
                     component = new PencilStroke(Color.Black);
+                    break;
+                case SerializableTypeIdEnum.Text:
+                    binarySerializable = new SerializableText();
+                    component = new TextComponent(new());
                     break;
                 default:
                     binarySerializable = null;

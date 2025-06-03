@@ -9,5 +9,6 @@
         Pencil = 0x05,
         Update = 0x06,
         RemoteCursor = 0x07,
+        Text = 0x08,
     }
 }
