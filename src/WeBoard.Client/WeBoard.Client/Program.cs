@@ -14,7 +14,7 @@ var componentManager = ComponentManager.GetInstance();
 var boardRender = new BoardRender(renderManager.RenderWindow);
 
 BoardEngine engine = new BoardEngine();
-//engine.AddService(new TestService());
+engine.InitNetwork("91732bf6-fee0-4526-975d-0c85c7a54ce3", "61c4a00d-8744-4dd6-85dd-a280d2dae68d", "http://3.98.122.179:5005");
 
 engine.Start();
 boardRender.Start();
