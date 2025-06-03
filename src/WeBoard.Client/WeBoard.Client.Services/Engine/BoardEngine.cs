@@ -18,9 +18,16 @@ namespace WeBoard.Client.Services.Engine
             OnUpdate += service.OnUpdate;
         }
 
-        private void InitNetwork()
+        public void InitNetwork(string authToken,string boardIdStr,string url)
         {
-            
+            var networkManager = NetworkManager.GetInstance();
+
+            networkManager.AuthToken = authToken;
+            Guid.TryParse(boardIdStr, out Guid boardId);
+            networkManager.BoardId = boardId;
+            networkManager.ServerUrl = "http://3.98.122.179:5005";
+            networkManager.LastUpdateId = 0;
+
         }
 
         public void Start()
@@ -38,12 +45,6 @@ namespace WeBoard.Client.Services.Engine
             CursorManager.GetInstance();
             EditManager.GetInstance();
             var networkManager = NetworkManager.GetInstance();
-
-            networkManager.AuthToken = "89226b36-9f1c-4088-9678-e2e862f93428";
-            Guid.TryParse("329cad88-8386-46de-8f1d-cf59ccc931d8", out Guid boardId);
-                networkManager.BoardId = boardId;
-            networkManager.ServerUrl = "http://3.98.122.179:5005";
-            networkManager.LastUpdateId = 0;
 
             var menuInitializer = new MenuInitializer();
             var menuComponents = menuInitializer.InitializeComponents();
