@@ -157,6 +157,8 @@ namespace WeBoard.Client.Services.Managers
                 {
                     var textComponent = new TextComponent(DragStartWorld);
                     ComponentManager.GetInstance().AddComponent(textComponent);
+                    UpdateManager.GetInstance().TrackUpdate(
+                        new CreateUpdate(textComponent.Id, ComponentSerializer.Serialize(textComponent)));
                     _focusManager.HandleClick(textComponent.Position);
                     textComponent.StartEditing();
                     KeyboardManager.GetInstance().ExitTextMode();
