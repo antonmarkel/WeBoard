@@ -87,7 +87,8 @@
                                         CornerRadius="15"
                                         Margin="0,0,20,20"
                                         Effect="{StaticResource ShadowEffect}"
-                                        Cursor="Hand">
+                                        Cursor="Hand"
+                                        MouseLeftButtonDown="BoardMouseLeftButtonDownClick">
 									<Border.ContextMenu>
                                         <ContextMenu Style="{StaticResource RoundedContextMenuStyle}">
 											<MenuItem Header="{Binding Id}" IsEnabled="False"/>

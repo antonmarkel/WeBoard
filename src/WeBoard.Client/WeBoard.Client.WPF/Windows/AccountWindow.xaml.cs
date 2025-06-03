@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using MahApps.Metro.Controls;
 using WeBoard.Client.WPF.Models;
 using WeBoard.Client.WPF.Requests.Board;
@@ -163,6 +164,30 @@ namespace WeBoard.Client.WPF.Windows
                     AddBoardMenu.IsOpen = false;
                     BoardIdTextBox.Text = string.Empty;
                 }
+            }
+        }
+
+        private void BoardMouseLeftButtonDownClick(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is Border border && border.DataContext is BoardModel board)
+            {
+                string exePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "WeBoard.Client.exe");
+
+                Hide();
+
+                var processInfo = new ProcessStartInfo
+                {
+                    FileName = exePath,
+                    Arguments = $"{_id} {board.Id}",
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    WorkingDirectory = Path.GetDirectoryName(exePath)
+                };
+
+                var process = new Process { StartInfo = processInfo };
+                process.EnableRaisingEvents = true;
+                process.Exited += (s, args) => Dispatcher.Invoke(() => Show());
+                process.Start();
             }
         }
     }

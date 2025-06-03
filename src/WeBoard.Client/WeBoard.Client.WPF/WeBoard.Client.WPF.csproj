@@ -18,6 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\WeBoard.Client\WeBoard.Client.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Resources\Images\MainMenu\Cursor.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
